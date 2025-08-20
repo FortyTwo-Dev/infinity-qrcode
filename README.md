@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Infinity QRCode** is a free, simple, and open-source tool to generate QR codes in seconds. No tracking, no ads, just a straightforward way to create QR codes for URLs, text, Wi-Fi credentials, and more.
+**Infinity QRCode** is a free, simple, and open-source tool to generate QR codes in seconds. No tracking, no ads, just a straightforward way to create QR codes for URLs, text, Wi-Fi and more.
 
 ---
 
