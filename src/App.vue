@@ -135,7 +135,7 @@ watch([text, formatType, errorCorrectionLevel, colorDark, colorLight, margin, sc
           <div class="h-full content-center">
             <div class="h-full not-lg:m-4 content-center overflow-hidden">
               <div v-if="formatType === 'svg'" v-html="qrcodeSvg" class="flex not-dark:shadow-lg dark:shadow-white/50"></div>
-              <img v-else :src="qrcodeImg" alt="QRCode" class="flex not-dark:shadow-lg dark:shadow-white/50 lg:size-48 aspect-square">
+              <img v-else :src="qrcodeImg" alt="QRCode" class="flex not-dark:shadow-lg dark:shadow-white/50 not-lg:size-48 aspect-square">
             </div>
           </div>
 
