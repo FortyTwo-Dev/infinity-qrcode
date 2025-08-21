@@ -8,7 +8,6 @@ const emits = defineEmits(['change']);
 const addText = () => {
     const fullUrl = selectedPrefix.value + model.value;
     emits('change', fullUrl);
-    console.log(fullUrl);
 };
 </script>
 
