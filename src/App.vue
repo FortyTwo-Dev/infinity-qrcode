@@ -6,6 +6,7 @@ import Url from './qrcode/input/Url.vue';
 import Wifi from './qrcode/input/Wifi.vue';
 import Email from './qrcode/input/Email.vue';
 import QRCode from 'qrcode';
+import Prompt from './Prompt.vue';
 
 const text = ref('');
 const qrcodeSvg = ref('');
@@ -39,7 +40,6 @@ const setInputType = (type: InputType) => { inputType.value = type; text.value =
 
 async function generateQrCode() {
   const content = text.value || "Easter Egg";
-  console.log(content);
   if (formatType.value !== "svg") {
     try {
       qrcodeImg.value = await QRCode.toDataURL(content, {
@@ -98,6 +98,7 @@ watch([text, formatType, errorCorrectionLevel, colorDark, colorLight, margin, sc
   <div class="w-full h-full flex flex-col gap-18 items-center justify-center">
 
     <Theme/>
+    <Prompt/>
 
     <section class="flex flex-col gap-2 items-center justify-center px-4 text-center">
       <h1 class=" text-4xl font-semibold">Infinity QRCode</h1>

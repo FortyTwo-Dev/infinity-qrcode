@@ -4,6 +4,7 @@ import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,6 +12,19 @@ export default defineConfig({
     vue(),
     vueDevTools(),
     tailwindcss(),
+    VitePWA({
+      registerType: 'prompt',
+      workbox: {
+        globPatterns: ['**/*{js,css,html,ico,png,svg}'],
+      },
+      manifest: {
+        name: 'Infinity QRCode',
+        short_name: 'IQRCode',
+        description: 'Create QR codes effortlessly with this free, simple, and open-source tool.',
+        theme_color: '#8ec5ff',
+        background_color: '#fbfbfe'
+      }
+    }),
   ],
   resolve: {
     alias: {
