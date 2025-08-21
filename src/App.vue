@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const appVersion = __APP_VERSION__;
 import { ref, watch } from 'vue';
 import Theme from './Theme.vue';
 import Text from './qrcode/input/Text.vue';
@@ -341,7 +342,7 @@ watch([text, formatType, errorCorrectionLevel, colorDark, colorLight, margin, sc
     </main>
 
     <footer class="not-lg:pb-18 w-full h-full flex items-center justify-center text-center">
-      <h4 class="text-lg font-semibold">Infinity QRCode - {{ new Date().getFullYear() }} -  <a href="https://github.com/FortyTwo-Dev/infinity-qrcode" class=" hover:text-blue-300">Github</a></h4>
+      <h4 class="text-lg font-semibold">Infinity QRCode - {{ new Date().getFullYear() }} - <a href="https://github.com/FortyTwo-Dev/infinity-qrcode" class=" hover:text-blue-300">Github</a> - V {{ appVersion }}</h4>
     </footer>
 
   </div>

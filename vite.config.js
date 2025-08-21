@@ -1,5 +1,7 @@
 import { fileURLToPath, URL } from 'node:url'
 
+import packageJson from './package.json';
+
 import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue'
@@ -30,5 +32,8 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
+  },
+  define: {
+    __APP_VERSION__: JSON.stringify(packageJson.version),
   },
 })
