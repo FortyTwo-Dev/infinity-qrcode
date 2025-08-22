@@ -16,7 +16,7 @@ const onClick = (event) => {
 
 <template>
     <button @click="onClick"
-        class="w-full not-dark:shadow dark:bg-[#202020] hover:opacity-85 not-dark:hover:shadow-xs p-2 cursor-pointer">
+        class="w-full bg-secondary hover:opacity-85 p-2 cursor-pointer rounded-sm">
         <p class="text-center font-semibold">{{ text }}</p>
     </button>
 </template>

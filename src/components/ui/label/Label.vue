@@ -12,7 +12,7 @@ defineProps<Props>();
 
 const variantClasses = {
     default: '',
-    box: 'border border-[#202020] p-2',
+    box: 'border border-secondary p-2 rounded-sm',
 };
 
 const getVariantClasses = (variant: Variant) => {

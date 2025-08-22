@@ -1,3 +1,65 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+
+    --radius-sm: var(--radius);
+    --radius-md: calc(var(--radius) + 2px);
+    --radius-lg: calc(var(--radius) + 4px);
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+
+}
+
+:root {
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+
+    --primary: oklch(80.9% 0.105 251.813);
+    --primary-foreground: oklch(0.985 0 0);
+
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+
+    --destructive: oklch(0.577 0.245 27.325);
+    --destructive-foreground: oklch(0.205 0 0);
+
+    --radius: 0rem;
+}
+
+.dark {
+    --background: oklch(0.1822 0 0);
+    --foreground: oklch(0.9889 0.004 286.33);
+
+    --primary: oklch(80.9% 0.105 251.813);
+    --primary-foreground: oklch(0.1822 0 0);
+
+    --secondary: oklch(0.2435 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+
+    --destructive: oklch(0.577 0.245 27.325);
+    --destructive-foreground: oklch(0.205 0 0);
+
+    --radius: 0rem;
+}
+

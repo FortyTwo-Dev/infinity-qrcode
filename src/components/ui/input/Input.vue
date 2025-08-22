@@ -20,7 +20,8 @@ const onInput = (event) => {
 </script>
 
 <template>
-    <div class="h-full border border-[#202020] p-2 focus-within:border-blue-300">
-        <input v-model="model" :type="type" @input="onInput" :id="id" :placeholder="placeholder" class="w-full h-full outline-none"/>
+    <div class="h-full border border-secondary p-2 focus-within:border-primary rounded-sm">
+        <input v-model="model" :type="type" @input="onInput" :id="id" :placeholder="placeholder"
+            class="w-full h-full outline-none" />
     </div>
 </template>

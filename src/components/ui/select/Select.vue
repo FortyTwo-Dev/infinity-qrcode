@@ -17,7 +17,7 @@ const onChange = (event) => {
 </script>
 
 <template>
-    <select v-model="model" :id="id" class="border border-[#202020] p-2" @change="onChange">
+    <select v-model="model" :id="id" class="border border-secondary p-2 focus:border-primary rounded-sm" @change="onChange">
         <option v-if="placeholder" value="" disabled>{{placeholder}}</option>
         <slot></slot>
     </select>

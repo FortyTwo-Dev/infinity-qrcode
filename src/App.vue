@@ -23,7 +23,7 @@ const colorLight = ref<string>('#ffffff');
 const margin = ref<number>(2);
 const width = ref<number>(200);
 
-const handleQrcodeTypeChange = (newQrcodeType) => {qrcodeType.value = newQrcodeType; text.value = "";};
+const handleQrcodeTypeChange = (newQrcodeType) => { qrcodeType.value = newQrcodeType; text.value = ""; };
 
 const handleQrcodeOptionsUpdate = (newFormatType: FormatType, newErrorCorrectionLevel: ErrorCorrectionLevel, newColorDark: string, newColorLight: string, newMargin: number, newWidth: number) => {
   formatType.value = newFormatType;
@@ -34,10 +34,10 @@ const handleQrcodeOptionsUpdate = (newFormatType: FormatType, newErrorCorrection
   width.value = newWidth;
 }
 
-const handleTextChange = (newText: string) => {text.value = newText;};
-const handleUrlChange = (newUrl: string) => {text.value = newUrl;};
-const handleWifiChange = (newWifi: string) => {text.value = newWifi;};
-const handleEmailChange = (newEmail: string) => {text.value = newEmail;};
+const handleTextChange = (newText: string) => { text.value = newText; };
+const handleUrlChange = (newUrl: string) => { text.value = newUrl; };
+const handleWifiChange = (newWifi: string) => { text.value = newWifi; };
+const handleEmailChange = (newEmail: string) => { text.value = newEmail; };
 
 
 async function generateQrCode() {
@@ -97,8 +97,8 @@ watch([text, formatType, errorCorrectionLevel, colorDark, colorLight, margin, wi
 <template>
   <div class="w-full h-full flex flex-col gap-18 items-center justify-center">
 
-    <Theme/>
-    <Prompt/>
+    <Theme />
+    <Prompt />
 
     <section class="flex flex-col gap-2 items-center justify-center px-4 text-center">
       <h1 class=" text-4xl font-semibold">Infinity QRCode</h1>
@@ -106,47 +106,52 @@ watch([text, formatType, errorCorrectionLevel, colorDark, colorLight, margin, wi
     </section>
 
     <main>
-      <section class="border border-[#202020] w-full xl:w-7xl lg:w-5xl md:w-3xl lg:h-7/12">
-  
+      <section class="border border-secondary w-full xl:w-7xl lg:w-5xl md:w-3xl lg:h-7/12 rounded-sm">
+
         <div class="h-full flex lg:flex-row flex-col">
 
-          <Usage @change="handleQrcodeTypeChange"/>
-  
+          <Usage @change="handleQrcodeTypeChange" />
+
           <section class="w-full lg:w-5/10 flex flex-col items-center">
-  
+
             <div class="h-full content-center">
               <div class="h-full not-lg:m-4 content-center overflow-hidden">
-                <div v-if="formatType === 'svg'" v-html="qrcodeSvg" class="flex not-dark:shadow-lg dark:shadow-white/50"></div>
-                <img v-else :src="qrcodeImg" alt="QRCode" class="flex not-dark:shadow-lg dark:shadow-white/50 not-lg:size-48 aspect-square">
+                <div v-if="formatType === 'svg'" v-html="qrcodeSvg"
+                  class="flex not-dark:shadow-md dark:shadow-white/50"></div>
+                <img v-else :src="qrcodeImg" alt="QRCode"
+                  class="flex not-dark:shadow-md dark:shadow-white/50 not-lg:size-48 aspect-square">
               </div>
             </div>
-  
+
             <div class="w-full">
-              <div class="border-t border-[#202020] w-full p-3">
-    
+              <div class="border-t border-secondary w-full p-3">
+
                 <Text v-if="qrcodeType == 'text'" @change="handleTextChange"></Text>
                 <Url v-if="qrcodeType == 'url'" @change="handleUrlChange"></Url>
                 <Wifi v-if="qrcodeType == 'wi-fi'" @change="handleWifiChange"></Wifi>
                 <Email v-if="qrcodeType == 'email'" @change="handleEmailChange"></Email>
-    
+
               </div>
-    
-              <div class="border-t border-[#202020] w-full p-3">
+
+              <div class="border-t border-secondary w-full p-3">
                 <Button @click="downloadQRCode" text="Download" />
               </div>
             </div>
-  
+
           </section>
 
-          <Tools @change="handleQrcodeOptionsUpdate"/>
-  
+          <Tools @change="handleQrcodeOptionsUpdate" />
+
         </div>
-  
+
       </section>
     </main>
 
     <footer class="not-lg:pb-18 w-full h-full flex items-center justify-center text-center">
-      <h4 class="text-lg font-semibold">Infinity QRCode - {{ new Date().getFullYear() }} - <a href="https://github.com/FortyTwo-Dev/infinity-qrcode" class=" hover:text-blue-300">Github</a> - V {{ appVersion }}</h4>
+      <h4 class="text-lg font-semibold">Infinity QRCode - {{ new Date().getFullYear() }} - <a
+          href="https://github.com/FortyTwo-Dev/infinity-qrcode"
+          class=" hover:text-primary">Github</a> - V
+        {{ appVersion }}</h4>
     </footer>
 
   </div>

@@ -15,7 +15,7 @@ const width = ref<number>(200);
 
 const emits = defineEmits(['change'])
 
-const updateQrcodeOptions = () => { 
+const updateQrcodeOptions = () => {
     emits('change', formatType.value, errorCorrectionLevel.value, colorDark.value, colorLight.value, margin.value, width.value);
 };
 
@@ -24,11 +24,11 @@ watch([formatType, errorCorrectionLevel, colorDark, colorLight, margin, width], 
 </script>
 
 <template>
-    <section class="h-full w-full lg:w-3/10 lg:border-l not-lg:border-t border-[#202020] flex flex-col items-center">
-        <h2 class="w-full text-xl font-semibold py-2 lg:border-b border-[#202020] text-center">Tools</h2>
+    <section class="h-full w-full lg:w-3/10 lg:border-l not-lg:border-t border-secondary flex flex-col items-center">
+        <h2 class="w-full text-xl font-semibold py-2 lg:border-b border-secondary text-center">Tools</h2>
         <ul class="flex flex-col gap-4 lg:overflow-scroll px-4">
 
-            <li class="not-last:border-b-2 border-[#202020] py-2">
+            <li class="not-last:border-b-2 border-secondary py-2">
                 <h3 class=" font-medium mb-1">Format</h3>
                 <div class="w-full flex flex-row flex-wrap gap-2">
 
@@ -40,7 +40,7 @@ watch([formatType, errorCorrectionLevel, colorDark, colorLight, margin, width], 
                 </div>
             </li>
 
-            <li class="not-last:border-b-2 border-[#202020] py-2">
+            <li class="not-last:border-b-2 border-secondary py-2">
                 <h3 class=" font-medium mb-1">Error correction level</h3>
                 <div class="w-full flex flex-row flex-wrap gap-2">
 
@@ -52,23 +52,23 @@ watch([formatType, errorCorrectionLevel, colorDark, colorLight, margin, width], 
                 </div>
             </li>
 
-            <li class="not-last:border-b-2 border-[#202020] py-2">
+            <li class="not-last:border-b-2 border-secondary py-2">
                 <h3 class=" font-medium mb-1">Color</h3>
                 <div class="w-full flex flex-row gap-2">
                     <div class="inline-flex items-center gap-2 p-2">
                         <Label id="light" label="Light :" />
-                        <input class="border border-blue-300" v-model="colorLight" type="color" name="light" id="light"
-                            value="#ffffff">
+                        <input class="border border-secondary"
+                            v-model="colorLight" type="color" name="light" id="light" value="#ffffff">
                     </div>
                     <div class="inline-flex items-center gap-2 p-2">
                         <Label id="dark" label="Dark :" />
-                        <input class="border border-blue-300" v-model="colorDark" type="color" name="dark" id="dark"
+                        <input class="border border-secondary" v-model="colorDark" type="color" name="dark" id="dark"
                             value="#000000">
                     </div>
                 </div>
             </li>
 
-            <li class="not-last:border-b-2 border-[#202020] py-2">
+            <li class="not-last:border-b-2 border-secondary py-2">
                 <h3 class=" font-medium mb-1">Margin</h3>
                 <div class="w-full flex flex-row gap-2">
                     <div class="inline-flex items-center gap-2 p-2">
