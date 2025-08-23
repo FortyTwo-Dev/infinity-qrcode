@@ -18,19 +18,23 @@ const setQrcodeType = (type: QrcodeType) => { qrcodeType.value = type; emits('ch
         <ul class="w-full flex flex-col gap-2 overflow-scroll">
 
             <li class="w-full first:pt-2 last:pb-2 px-2">
-                <Button @click="setQrcodeType('text')" text="Text" />
+                <Button v-if="qrcodeType == 'text'" text="Text" variant="secondarySelectPrimary"/>
+                <Button v-else @click="setQrcodeType('text')" text="Text" variant="secondary"/>
             </li>
 
             <li class="w-full first:pt-2 last:pb-2 px-2">
-                <Button @click="setQrcodeType('url')" text="URL" />
+                <Button v-if="qrcodeType == 'url'" text="URL" variant="secondarySelectPrimary"/>
+                <Button v-else @click="setQrcodeType('url')" text="URL" variant="secondary"/>
             </li>
 
             <li class="w-full first:pt-2 last:pb-2 px-2">
-                <Button @click="setQrcodeType('wi-fi')" text="Wi-Fi" />
+                <Button v-if="qrcodeType == 'wi-fi'" text="Wi-Fi" variant="secondarySelectPrimary"/>
+                <Button v-else @click="setQrcodeType('wi-fi')" text="Wi-Fi" variant="secondary"/>
             </li>
 
             <li class="w-full first:pt-2 last:pb-2 px-2">
-                <Button @click="setQrcodeType('email')" text="Email" />
+                <Button v-if="qrcodeType == 'email'" text="Email" variant="secondarySelectPrimary"/>
+                <Button v-else @click="setQrcodeType('email')" text="Email" variant="secondary"/>
             </li>
 
         </ul>

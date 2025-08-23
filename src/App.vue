@@ -134,7 +134,7 @@ watch([text, formatType, errorCorrectionLevel, colorDark, colorLight, margin, wi
               </div>
 
               <div class="border-t border-secondary w-full p-3">
-                <Button @click="downloadQRCode" text="Download" />
+                <Button @click="downloadQRCode" text="Download" class="" />
               </div>
             </div>
 

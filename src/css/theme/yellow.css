@@ -1,0 +1,37 @@
+.light-yellow {
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+
+    --primary: oklch(85.2% 0.199 91.936);
+    --primary-foreground: oklch(0.1822 0 0);
+
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+
+    --destructive: oklch(0.577 0.245 27.325);
+    --destructive-foreground: oklch(0.205 0 0);
+
+    --radius: 0rem;
+}
+
+.dark-yellow {
+    --background: oklch(0.1822 0 0);
+    --foreground: oklch(0.9889 0.004 286.33);
+
+    --primary: oklch(85.2% 0.199 91.936);
+    --primary-foreground: oklch(0.1822 0 0);
+
+    --secondary: oklch(0.2435 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+
+    --destructive: oklch(0.577 0.245 27.325);
+    --destructive-foreground: oklch(0.205 0 0);
+
+    --radius: 0rem;
+}
