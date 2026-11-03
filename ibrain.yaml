@@ -12,5 +12,8 @@ packs:
     path: "~/.iapp/ibrain/packs/github.com/FortyTwo-Dev/ibrain-packs/vue"
     priority: 100
   - source: path
+    path: "~/.iapp/ibrain/packs/github.com/InfinityLib/iqrcode-ibrain-packs/iqrcode-wasm"
+    priority: 100
+  - source: path
     path: ibrain
     layer: project
