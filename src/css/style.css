@@ -1,3 +1,12 @@
+/**
+ * Cascade order for the whole application.
+ *
+ * Declared before the imports because the first declaration wins: Tailwind's
+ * own statement is ignored, and its utilities stay above the theme base while
+ * `it.overrides` remains the last word.
+ */
+@layer theme, base, it.tokens, it.base, it.variants, components, utilities, it.overrides;
+
 @import 'tailwindcss';
 
 @theme {

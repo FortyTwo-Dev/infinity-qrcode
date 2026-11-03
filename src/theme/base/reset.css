@@ -35,4 +35,15 @@
   :where(.it-theme) :where(button, [type='button'], [type='submit'], [type='reset']) {
     appearance: none;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    :where(.it-theme) *,
+    :where(.it-theme) *::before,
+    :where(.it-theme) *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }

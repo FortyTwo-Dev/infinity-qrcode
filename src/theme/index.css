@@ -13,5 +13,7 @@
 @import './base/typography.css';
 @import './base/forms.css';
 @import './variants/buttons.css';
+@import './variants/choices.css';
 @import './variants/forms.css';
+@import './variants/navigation.css';
 @import './variants/typography.css';

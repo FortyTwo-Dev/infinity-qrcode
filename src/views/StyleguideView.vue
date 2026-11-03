@@ -19,8 +19,16 @@ const email = ref('')
 const bio = ref('')
 const plan = ref('pro')
 const contact = ref('email')
+const channel = ref('email')
 const agree = ref(false)
 const newsletter = ref(true)
+
+const CHANNELS = [
+  { value: 'email', label: 'Email' },
+  { value: 'phone', label: 'Phone' },
+  { value: 'sms', label: 'SMS' },
+  { value: 'chat', label: 'Chat' },
+]
 </script>
 
 <template>
@@ -117,6 +125,15 @@ const accent = 'blue'</code></pre>
         </div>
       </section>
 
+      <section class="section" aria-labelledby="navigation-title">
+        <h2 id="navigation-title">Navigation</h2>
+        <nav class="row" aria-label="Example navigation">
+          <a href="#" class="it-nav-link" aria-current="page">Generate</a>
+          <a href="#" class="it-nav-link">Learn</a>
+          <a href="#" class="it-nav-link">Theme</a>
+        </nav>
+      </section>
+
       <section class="section" aria-labelledby="forms-title">
         <h2 id="forms-title">Forms</h2>
 
@@ -178,6 +195,27 @@ const accent = 'blue'</code></pre>
             <ItCheckbox v-model="newsletter" label="Newsletter" />
             <ItRadio v-model="contact" name="contact" value="email" label="Email" />
             <ItRadio v-model="contact" name="contact" value="phone" label="Phone" />
+          </div>
+        </fieldset>
+
+        <fieldset class="it-fieldset-plain">
+          <legend>Choice group</legend>
+          <div class="it-choice-group it-choice-group-4">
+            <label
+              v-for="item in CHANNELS"
+              :key="item.value"
+              :for="`sg-channel-${item.value}`"
+              class="it-choice"
+            >
+              <input
+                :id="`sg-channel-${item.value}`"
+                v-model="channel"
+                type="radio"
+                name="sg-channel"
+                :value="item.value"
+              />
+              <span>{{ item.label }}</span>
+            </label>
           </div>
         </fieldset>
       </section>
