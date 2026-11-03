@@ -60,7 +60,7 @@ const maskCandidates = computed<boolean>({
       html-for="trace-version"
       hint="Auto picks the smallest version that fits."
     >
-      <Select id="trace-version" v-model="version">
+      <Select id="trace-version" v-model="version" aria-label="Version">
         <Option value="" text="Auto" />
         <Option
           v-for="value in 40"
@@ -72,7 +72,7 @@ const maskCandidates = computed<boolean>({
     </Field>
 
     <Field label="Detail" html-for="trace-stride" hint="Lower values create more frames.">
-      <Select id="trace-stride" v-model="stride">
+      <Select id="trace-stride" v-model="stride" aria-label="Detail">
         <Option value="1" text="Every data module" />
         <Option value="5" text="Every 5 modules" />
         <Option value="10" text="Every 10 modules" />

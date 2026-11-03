@@ -111,10 +111,22 @@ const light = computed<string>({
 
     <div class="grid grid-cols-2 gap-3">
       <Field label="Dark colour" html-for="color-dark">
-        <Input id="color-dark" v-model="dark" type="color" class="h-10 p-1" />
+        <Input
+          id="color-dark"
+          v-model="dark"
+          aria-label="Dark colour"
+          type="color"
+          class="h-10 p-1"
+        />
       </Field>
       <Field label="Light colour" html-for="color-light">
-        <Input id="color-light" v-model="light" type="color" class="h-10 p-1" />
+        <Input
+          id="color-light"
+          v-model="light"
+          aria-label="Light colour"
+          type="color"
+          class="h-10 p-1"
+        />
       </Field>
     </div>
   </section>

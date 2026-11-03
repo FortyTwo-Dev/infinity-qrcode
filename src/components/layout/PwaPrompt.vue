@@ -12,20 +12,20 @@ function close() {
 </script>
 
 <template>
-  <div
+  <output
     v-if="offlineReady || needRefresh"
-    class="fixed right-4 bottom-4 z-50 max-w-sm rounded-sm border border-secondary bg-background p-3 shadow-md"
-    role="status"
+    aria-label="Application update status"
+    class="fixed right-4 bottom-4 z-50 block max-w-sm rounded-sm border border-secondary bg-background p-3 shadow-md"
     aria-live="polite"
   >
-    <p class="text-sm">
+    <span class="block text-sm">
       {{
         offlineReady ? 'Ready to work offline.' : 'A new version is available. Reload to update.'
       }}
-    </p>
-    <div class="mt-2 flex gap-2">
+    </span>
+    <span class="mt-2 flex gap-2">
       <Button v-if="needRefresh" @click="updateServiceWorker()">Reload</Button>
       <Button variant="secondary" @click="close">Close</Button>
-    </div>
-  </div>
+    </span>
+  </output>
 </template>

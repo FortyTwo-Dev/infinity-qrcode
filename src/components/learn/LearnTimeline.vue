@@ -113,7 +113,7 @@ function markerClass(phase: LearnPhase): string {
 
       <label for="timeline-speed" class="ml-auto flex items-center gap-2 text-sm">
         Speed
-        <Select id="timeline-speed" v-model="speed" class="w-24">
+        <Select id="timeline-speed" v-model="speed" aria-label="Speed" class="w-24">
           <Option value="0.5" text="0.5×" />
           <Option value="1" text="1×" />
           <Option value="2" text="2×" />

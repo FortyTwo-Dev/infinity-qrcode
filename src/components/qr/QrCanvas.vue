@@ -59,10 +59,12 @@ watchEffect(() => {
 </script>
 
 <template>
-  <canvas
-    ref="canvas"
-    role="img"
-    :aria-label="label"
-    class="block max-w-full text-primary [image-rendering:pixelated]"
-  />
+  <figure class="m-0">
+    <canvas
+      ref="canvas"
+      aria-hidden="true"
+      class="block max-w-full text-primary [image-rendering:pixelated]"
+    />
+    <figcaption class="sr-only">{{ label }}</figcaption>
+  </figure>
 </template>

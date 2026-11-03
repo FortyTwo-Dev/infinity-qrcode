@@ -1,6 +1,16 @@
 import type { PayloadResult, FormState, QrcodeType } from '@/types/qr'
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+/** Validate an email address without a backtracking-prone regular expression. */
+export function isValidEmail(value: string): boolean {
+  const at = value.indexOf('@')
+  if (at <= 0 || at !== value.lastIndexOf('@')) return false
+
+  const local = value.slice(0, at)
+  const domain = value.slice(at + 1)
+  if (!local || !domain || value.includes(' ')) return false
+  if (domain.startsWith('.') || domain.endsWith('.')) return false
+  return domain.includes('.')
+}
 
 /** Normalize a phone number to digits with an optional leading `+`. */
 export function normalizePhone(value: string): string {
@@ -13,20 +23,21 @@ export function normalizePhone(value: string): string {
 /** Escape a vCard text value. */
 export function escapeVCard(value: string): string {
   return value
-    .replace(/\\/g, '\\\\')
-    .replace(/\r?\n/g, '\\n')
-    .replace(/;/g, '\\;')
-    .replace(/,/g, '\\,')
+    .replaceAll('\\', String.raw`\\`)
+    .replaceAll('\r\n', String.raw`\n`)
+    .replaceAll('\n', String.raw`\n`)
+    .replaceAll(';', String.raw`\;`)
+    .replaceAll(',', String.raw`\,`)
 }
 
 /** Escape a Wi-Fi field value. */
 export function escapeWifi(value: string): string {
   return value
-    .replace(/\\/g, '\\\\')
-    .replace(/;/g, '\\;')
-    .replace(/,/g, '\\,')
-    .replace(/:/g, '\\:')
-    .replace(/"/g, '\\"')
+    .replaceAll('\\', String.raw`\\`)
+    .replaceAll(';', String.raw`\;`)
+    .replaceAll(',', String.raw`\,`)
+    .replaceAll(':', String.raw`\:`)
+    .replaceAll('"', String.raw`\"`)
 }
 
 /** Convert a `datetime-local` value to the iCalendar UTC form. */
@@ -85,14 +96,15 @@ function buildWifi(state: FormState): PayloadResult {
 
 function buildEmail(state: FormState): PayloadResult {
   const email = state.email.trim()
-  if (!EMAIL_RE.test(email)) return fail({ email: 'Enter a valid email address.' })
+  if (!isValidEmail(email)) return fail({ email: 'Enter a valid email address.' })
 
   const params = new URLSearchParams()
   if (state.emailSubject.trim()) params.set('subject', state.emailSubject.trim())
   if (state.emailBody.trim()) params.set('body', state.emailBody)
   const query = params.toString()
 
-  return ok(`mailto:${email}${query ? `?${query}` : ''}`)
+  const suffix = query ? `?${query}` : ''
+  return ok(`mailto:${email}${suffix}`)
 }
 
 function buildVCard(state: FormState): PayloadResult {
@@ -105,7 +117,7 @@ function buildVCard(state: FormState): PayloadResult {
   const displayName = fullName || organization.trim()
 
   if (!displayName) return fail({ vcardName: 'Enter a name or an organization.' })
-  if (email.trim() && !EMAIL_RE.test(email.trim())) {
+  if (email.trim() && !isValidEmail(email.trim())) {
     return fail({ vcardEmail: 'Enter a valid email address.' })
   }
 
@@ -184,7 +196,8 @@ function buildWhatsApp(state: FormState): PayloadResult {
   if (!number) return fail({ whatsappNumber: 'Enter a phone number with country code.' })
 
   const message = state.whatsappMessage.trim()
-  return ok(`https://wa.me/${number}${message ? `?text=${encodeURIComponent(message)}` : ''}`)
+  const suffix = message ? `?text=${encodeURIComponent(message)}` : ''
+  return ok(`https://wa.me/${number}${suffix}`)
 }
 
 /** Build the payload for the selected content type. */

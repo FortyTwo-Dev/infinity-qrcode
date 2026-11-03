@@ -27,7 +27,9 @@ defineEmits<{ download: [] }>()
       </p>
     </div>
 
-    <p v-if="loading" class="text-sm" role="status">Loading QR engine…</p>
+    <output v-if="loading" class="block text-sm" aria-label="QR engine status"
+      >Loading QR engine…</output
+    >
 
     <p
       v-else-if="error"

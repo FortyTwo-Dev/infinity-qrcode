@@ -64,6 +64,7 @@ watch(
         <Input
           id="text"
           v-model="form.text"
+          aria-label="Text"
           placeholder="Hello world"
           :invalid="Boolean(errors.text)"
           :describedby="errors.text ? 'text-error' : undefined"
@@ -81,6 +82,7 @@ watch(
           <Input
             id="url"
             v-model="form.url"
+            aria-label="URL"
             placeholder="example.com"
             :invalid="Boolean(errors.url)"
             :describedby="errors.url ? 'url-error' : undefined"
@@ -94,13 +96,14 @@ watch(
         <Input
           id="wifi-ssid"
           v-model="form.wifiSsid"
+          aria-label="Network name (SSID)"
           placeholder="My network"
           :invalid="Boolean(errors.wifiSsid)"
           :describedby="errors.wifiSsid ? 'wifi-ssid-error' : undefined"
         />
       </Field>
       <Field label="Encryption" html-for="wifi-encryption">
-        <Select id="wifi-encryption" v-model="wifiEncryption">
+        <Select id="wifi-encryption" v-model="wifiEncryption" aria-label="Encryption">
           <Option value="WPA" text="WPA/WPA2" />
           <Option value="WPA3" text="WPA3" />
           <Option value="WEP" text="WEP" />
@@ -116,6 +119,7 @@ watch(
         <Input
           id="wifi-password"
           v-model="form.wifiPassword"
+          aria-label="Password"
           type="text"
           placeholder="Network password"
           :invalid="Boolean(errors.wifiPassword)"
@@ -129,6 +133,7 @@ watch(
         <Input
           id="email"
           v-model="form.email"
+          aria-label="Email address"
           type="email"
           placeholder="contact@example.com"
           :invalid="Boolean(errors.email)"
@@ -136,10 +141,20 @@ watch(
         />
       </Field>
       <Field label="Subject" html-for="email-subject">
-        <Input id="email-subject" v-model="form.emailSubject" placeholder="Optional subject" />
+        <Input
+          id="email-subject"
+          v-model="form.emailSubject"
+          aria-label="Subject"
+          placeholder="Optional subject"
+        />
       </Field>
       <Field label="Message" html-for="email-body">
-        <Textarea id="email-body" v-model="form.emailBody" placeholder="Optional message" />
+        <Textarea
+          id="email-body"
+          v-model="form.emailBody"
+          aria-label="Message"
+          placeholder="Optional message"
+        />
       </Field>
     </template>
 
@@ -149,31 +164,54 @@ watch(
           <Input
             id="vcard-first"
             v-model="form.vcard.firstName"
+            aria-label="First name"
             placeholder="Ada"
             :invalid="Boolean(errors.vcardName)"
             :describedby="errors.vcardName ? 'vcard-first-error' : undefined"
           />
         </Field>
         <Field label="Last name" html-for="vcard-last">
-          <Input id="vcard-last" v-model="form.vcard.lastName" placeholder="Lovelace" />
+          <Input
+            id="vcard-last"
+            v-model="form.vcard.lastName"
+            aria-label="Last name"
+            placeholder="Lovelace"
+          />
         </Field>
       </div>
       <div class="grid gap-3 sm:grid-cols-2">
         <Field label="Organization" html-for="vcard-org">
-          <Input id="vcard-org" v-model="form.vcard.organization" placeholder="Company" />
+          <Input
+            id="vcard-org"
+            v-model="form.vcard.organization"
+            aria-label="Organization"
+            placeholder="Company"
+          />
         </Field>
         <Field label="Job title" html-for="vcard-title">
-          <Input id="vcard-title" v-model="form.vcard.title" placeholder="Engineer" />
+          <Input
+            id="vcard-title"
+            v-model="form.vcard.title"
+            aria-label="Job title"
+            placeholder="Engineer"
+          />
         </Field>
       </div>
       <div class="grid gap-3 sm:grid-cols-2">
         <Field label="Phone" html-for="vcard-phone">
-          <Input id="vcard-phone" v-model="form.vcard.phone" type="tel" placeholder="+1 555 0100" />
+          <Input
+            id="vcard-phone"
+            v-model="form.vcard.phone"
+            aria-label="Phone"
+            type="tel"
+            placeholder="+1 555 0100"
+          />
         </Field>
         <Field label="Email" html-for="vcard-email" :error="errors.vcardEmail">
           <Input
             id="vcard-email"
             v-model="form.vcard.email"
+            aria-label="Email"
             type="email"
             placeholder="ada@example.com"
             :invalid="Boolean(errors.vcardEmail)"
@@ -182,12 +220,18 @@ watch(
         </Field>
       </div>
       <Field label="Website" html-for="vcard-website">
-        <Input id="vcard-website" v-model="form.vcard.website" placeholder="https://example.com" />
+        <Input
+          id="vcard-website"
+          v-model="form.vcard.website"
+          aria-label="Website"
+          placeholder="https://example.com"
+        />
       </Field>
       <Field label="Address" html-for="vcard-address">
         <Input
           id="vcard-address"
           v-model="form.vcard.address"
+          aria-label="Address"
           placeholder="Street, city, country"
         />
       </Field>
@@ -198,6 +242,7 @@ watch(
         <Input
           id="sms-number"
           v-model="form.smsNumber"
+          aria-label="Phone number"
           type="tel"
           placeholder="+1 555 0100"
           :invalid="Boolean(errors.smsNumber)"
@@ -208,6 +253,7 @@ watch(
         <Textarea
           id="sms-message"
           v-model="form.smsMessage"
+          aria-label="Message"
           placeholder="Message"
           :invalid="Boolean(errors.smsMessage)"
           :describedby="errors.smsMessage ? 'sms-message-error' : undefined"
@@ -220,6 +266,7 @@ watch(
         <Input
           id="phone"
           v-model="form.phone"
+          aria-label="Phone number"
           type="tel"
           placeholder="+1 555 0100"
           :invalid="Boolean(errors.phone)"
@@ -234,6 +281,7 @@ watch(
           <Input
             id="geo-lat"
             v-model="form.latitude"
+            aria-label="Latitude"
             type="number"
             step="any"
             placeholder="48.8566"
@@ -245,6 +293,7 @@ watch(
           <Input
             id="geo-lng"
             v-model="form.longitude"
+            aria-label="Longitude"
             type="number"
             step="any"
             placeholder="2.3522"
@@ -260,19 +309,26 @@ watch(
         <Input
           id="event-title"
           v-model="form.eventTitle"
+          aria-label="Title"
           placeholder="Event title"
           :invalid="Boolean(errors.eventTitle)"
           :describedby="errors.eventTitle ? 'event-title-error' : undefined"
         />
       </Field>
       <Field label="Location" html-for="event-location">
-        <Input id="event-location" v-model="form.eventLocation" placeholder="Optional location" />
+        <Input
+          id="event-location"
+          v-model="form.eventLocation"
+          aria-label="Location"
+          placeholder="Optional location"
+        />
       </Field>
       <div class="grid gap-3 sm:grid-cols-2">
         <Field label="Starts" html-for="event-start" :error="errors.eventStart">
           <Input
             id="event-start"
             v-model="form.eventStart"
+            aria-label="Starts"
             type="datetime-local"
             :invalid="Boolean(errors.eventStart)"
             :describedby="errors.eventStart ? 'event-start-error' : undefined"
@@ -282,6 +338,7 @@ watch(
           <Input
             id="event-end"
             v-model="form.eventEnd"
+            aria-label="Ends"
             type="datetime-local"
             :invalid="Boolean(errors.eventEnd)"
             :describedby="errors.eventEnd ? 'event-end-error' : undefined"
@@ -292,6 +349,7 @@ watch(
         <Textarea
           id="event-description"
           v-model="form.eventDescription"
+          aria-label="Description"
           placeholder="Optional description"
         />
       </Field>
@@ -302,6 +360,7 @@ watch(
         <Input
           id="whatsapp-number"
           v-model="form.whatsappNumber"
+          aria-label="Phone number"
           type="tel"
           placeholder="+1 555 0100"
           :invalid="Boolean(errors.whatsappNumber)"
@@ -312,6 +371,7 @@ watch(
         <Textarea
           id="whatsapp-message"
           v-model="form.whatsappMessage"
+          aria-label="Message"
           placeholder="Optional message"
         />
       </Field>
