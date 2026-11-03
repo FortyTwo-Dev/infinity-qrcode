@@ -42,7 +42,7 @@ jobs:
             ${{ runner.os }}-playwright-
 
       - name: Install Playwright browsers
-        run: bunx playwright install --with-deps chromium
+        run: ./node_modules/.bin/playwright install --with-deps chromium
 
       - name: Lint
         run: bun run lint
