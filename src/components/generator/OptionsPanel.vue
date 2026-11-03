@@ -1,8 +1,22 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { ItField, ItInput, ItRadio, ItRange } from '@components/theme'
+import { ItField, ItInput, ItRange } from '@components/theme'
 import type { ErrorCorrectionLevel, FormatType, QrOptions } from '@/types/qr'
+
+const LEVELS = [
+  { value: 'L', label: 'Low (L)' },
+  { value: 'M', label: 'Medium (M)' },
+  { value: 'Q', label: 'Quartile (Q)' },
+  { value: 'H', label: 'High (H)' },
+] as const satisfies ReadonlyArray<{ value: ErrorCorrectionLevel; label: string }>
+
+const FORMATS = [
+  { value: 'svg', label: 'SVG' },
+  { value: 'png', label: 'PNG' },
+  { value: 'webp', label: 'WebP' },
+  { value: 'jpeg', label: 'JPEG' },
+] as const satisfies ReadonlyArray<{ value: FormatType; label: string }>
 
 const model = defineModel<QrOptions>({ required: true })
 
@@ -47,25 +61,51 @@ const light = computed<string>({
 
     <fieldset class="it-fieldset-plain">
       <legend class="mb-2 text-sm font-medium">Error correction</legend>
-      <div class="flex flex-wrap gap-2">
-        <ItRadio id="level-l" v-model="level" name="level" value="L" label="Low" />
-        <ItRadio id="level-m" v-model="level" name="level" value="M" label="Medium" />
-        <ItRadio id="level-q" v-model="level" name="level" value="Q" label="Quartile" />
-        <ItRadio id="level-h" v-model="level" name="level" value="H" label="High" />
+      <div class="it-choice-group it-choice-group-2">
+        <label
+          v-for="option in LEVELS"
+          :key="option.value"
+          :for="`level-${option.value}`"
+          class="it-choice"
+        >
+          <input
+            :id="`level-${option.value}`"
+            v-model="level"
+            type="radio"
+            name="level"
+            :value="option.value"
+          />
+          <span>{{ option.label }}</span>
+        </label>
       </div>
     </fieldset>
 
     <fieldset class="it-fieldset-plain">
       <legend class="mb-2 text-sm font-medium">Format</legend>
-      <div class="flex flex-wrap gap-2">
-        <ItRadio id="format-svg" v-model="format" name="format" value="svg" label="SVG" />
-        <ItRadio id="format-png" v-model="format" name="format" value="png" label="PNG" />
-        <ItRadio id="format-webp" v-model="format" name="format" value="webp" label="WebP" />
-        <ItRadio id="format-jpeg" v-model="format" name="format" value="jpeg" label="JPEG" />
+      <div class="it-choice-group it-choice-group-4">
+        <label
+          v-for="option in FORMATS"
+          :key="option.value"
+          :for="`format-${option.value}`"
+          class="it-choice"
+        >
+          <input
+            :id="`format-${option.value}`"
+            v-model="format"
+            type="radio"
+            name="format"
+            :value="option.value"
+          />
+          <span>{{ option.label }}</span>
+        </label>
       </div>
     </fieldset>
 
-    <ItField label="Module size" html-for="module-size" hint="Pixels per QR module.">
+    <ItField
+      label="Module size"
+      html-for="module-size"
+      hint="Export resolution, in pixels per module."
+    >
       <div class="flex items-center gap-3">
         <ItRange
           id="module-size"

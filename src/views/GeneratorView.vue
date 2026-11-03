@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
-import { RouterLink } from 'vue-router'
 
 import ContentPicker from '@components/generator/ContentPicker.vue'
 import OptionsPanel from '@components/generator/OptionsPanel.vue'
@@ -73,45 +72,38 @@ function handleDownload() {
 }
 
 const displayError = computed(() => wasmError.value ?? generationError.value)
-
-const learnLink = computed(() => ({
-  name: 'learn',
-  query: valid.value ? { data: payload.value, level: options.value.level } : {},
-}))
 </script>
 
 <template>
   <div class="mx-auto w-full max-w-7xl px-4 py-8">
     <header class="mb-8 flex flex-col items-center gap-2 text-center">
-      <h1 class="text-4xl font-semibold">Infinity QRCode</h1>
-      <p class="max-w-2xl opacity-80">
-        Generate a QR code for text, links, Wi-Fi, contacts and more, or
-        <RouterLink :to="learnLink" class="text-primary hover:underline">
-          see how it is built
-        </RouterLink>
-        step by step.
-      </p>
+      <h1 class="text-3xl font-semibold sm:text-4xl">QR Code generator</h1>
+      <p class="max-w-2xl opacity-80">Simple, free, open-source QR code generator.</p>
     </header>
 
     <div class="grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)_18rem]">
-      <section class="flex flex-col gap-6 rounded-sm border border-border p-4" aria-label="Content">
+      <section class="rounded-sm border border-border p-4">
         <ContentPicker v-model="type" />
-        <PayloadForm :type="type" @update:payload="handlePayload" @update:errors="handleErrors" />
       </section>
 
-      <QrPreview
-        :data="data"
-        :options="options"
-        :loading="!ready && !wasmError"
-        :error="displayError"
-        @download="handleDownload"
-      >
-        <template #actions>
-          <RouterLink :to="learnLink" class="text-sm text-primary hover:underline">
-            Learn how it is built
-          </RouterLink>
-        </template>
-      </QrPreview>
+      <div class="flex flex-col gap-6">
+        <QrPreview
+          class="order-2 lg:order-1"
+          :data="data"
+          :options="options"
+          :loading="!ready && !wasmError"
+          :error="displayError"
+          @download="handleDownload"
+        />
+
+        <section
+          class="order-1 rounded-sm border border-border p-4 lg:order-2"
+          aria-labelledby="details-heading"
+        >
+          <h2 id="details-heading" class="it-h5 mb-3 text-lg font-semibold">Content</h2>
+          <PayloadForm :type="type" @update:payload="handlePayload" @update:errors="handleErrors" />
+        </section>
+      </div>
 
       <section class="rounded-sm border border-border p-4">
         <OptionsPanel v-model="options" />

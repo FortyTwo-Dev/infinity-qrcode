@@ -17,10 +17,10 @@ const { theme, isDark, toggleMode, setThemeColor } = useTheme()
       @update:theme="setThemeColor"
       @toggle-mode="toggleMode"
     />
+    <PwaPrompt />
     <main class="flex-1">
       <RouterView />
     </main>
     <AppFooter />
-    <PwaPrompt />
   </div>
 </template>
