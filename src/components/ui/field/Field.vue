@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import Label from '../label/Label.vue'
-
 interface Props {
   label: string
   htmlFor?: string
@@ -17,7 +15,7 @@ const errorId = computed(() => (props.htmlFor ? `${props.htmlFor}-error` : undef
 
 <template>
   <div class="flex flex-col gap-1.5">
-    <Label :html-for="htmlFor">{{ label }}</Label>
+    <span class="text-sm font-medium">{{ label }}</span>
     <slot />
     <p v-if="error" :id="errorId" class="text-xs text-destructive" role="alert">
       {{ error }}

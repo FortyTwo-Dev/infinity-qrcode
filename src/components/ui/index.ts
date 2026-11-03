@@ -1,7 +1,6 @@
 export { default as Button } from './button/Button.vue'
 export { default as Input } from './input/Input.vue'
 export { default as Textarea } from './textarea/Textarea.vue'
-export { default as Label } from './label/Label.vue'
 export { default as Field } from './field/Field.vue'
 export { default as Radio } from './radio/Radio.vue'
 export { default as Range } from './range/Range.vue'
