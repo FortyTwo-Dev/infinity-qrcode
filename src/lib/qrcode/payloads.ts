@@ -67,6 +67,9 @@ function buildText(state: FormState): PayloadResult {
 function buildUrl(state: FormState): PayloadResult {
   const raw = state.url.trim()
   if (!raw) return fail({ url: 'Enter a URL.' })
+  // Browsers percent-encode spaces in a host, so `https://not a url` would
+  // otherwise be accepted. Reject whitespace before parsing.
+  if (/\s/.test(raw)) return fail({ url: 'Enter a valid URL.' })
 
   const candidate = /^[a-z][a-z0-9+.-]*:\/\//i.test(raw) ? raw : `${state.urlScheme}${raw}`
 
