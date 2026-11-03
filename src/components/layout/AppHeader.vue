@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTemplateRef } from 'vue'
+import { onBeforeUnmount, onMounted, useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
 
 import { THEME_COLORS, type SiteThemeColor } from '@/types/theme'
@@ -18,35 +18,67 @@ const emit = defineEmits<{
 
 const themeDetails = useTemplateRef<HTMLDetailsElement>('themeDetails')
 
-function selectTheme(color: SiteThemeColor) {
-  emit('update:theme', color)
+function closeThemeMenu() {
   themeDetails.value?.removeAttribute('open')
 }
+
+function selectTheme(color: SiteThemeColor) {
+  emit('update:theme', color)
+  closeThemeMenu()
+}
+
+function handlePointerDown(event: PointerEvent) {
+  const details = themeDetails.value
+  if (details?.open && !details.contains(event.target as Node)) closeThemeMenu()
+}
+
+function handleKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape' && themeDetails.value?.open) closeThemeMenu()
+}
+
+onMounted(() => {
+  document.addEventListener('pointerdown', handlePointerDown)
+  document.addEventListener('keydown', handleKeydown)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('pointerdown', handlePointerDown)
+  document.removeEventListener('keydown', handleKeydown)
+})
 </script>
 
 <template>
   <header class="border-b border-border">
     <div class="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-2 px-4 py-3">
-      <RouterLink to="/" class="it-btn it-btn-ghost mr-auto text-lg font-semibold">
+      <RouterLink
+        to="/"
+        class="mr-auto text-lg font-semibold text-foreground no-underline hover:text-primary"
+      >
         Infinity QRCode
       </RouterLink>
 
-      <nav aria-label="Main" class="flex items-center gap-1">
-        <RouterLink
-          to="/"
-          class="it-btn it-btn-ghost it-btn-sm"
-          active-class="it-btn-primary"
-          exact-active-class="it-btn-primary"
-        >
-          Generate
-        </RouterLink>
-        <RouterLink to="/learn" class="it-btn it-btn-ghost it-btn-sm" active-class="it-btn-primary">
-          Learn
-        </RouterLink>
+      <nav aria-label="Main" class="order-3 flex w-full items-center gap-1 sm:order-none sm:w-auto">
+        <RouterLink to="/" class="it-nav-link">Generate</RouterLink>
+        <RouterLink to="/learn" class="it-nav-link">Learn</RouterLink>
       </nav>
 
-      <details ref="themeDetails" class="relative">
-        <summary class="it-btn it-btn-ghost it-btn-sm cursor-pointer list-none">Theme</summary>
+      <details ref="themeDetails" class="relative order-2 sm:order-none">
+        <summary class="it-nav-link">
+          Theme
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="m2 4 4 4 4-4" />
+          </svg>
+        </summary>
         <div
           class="absolute right-0 z-20 mt-2 flex w-44 flex-col gap-1 border border-border bg-background p-2 shadow-md"
         >
@@ -54,11 +86,12 @@ function selectTheme(color: SiteThemeColor) {
             v-for="color in THEME_COLORS"
             :key="color.value"
             type="button"
-            class="it-btn it-btn-ghost it-btn-sm w-full justify-start"
-            :class="{ 'it-btn-primary': theme === color.value }"
+            class="it-nav-link w-full justify-start"
+            :class="{ 'text-primary font-semibold': theme === color.value }"
             :aria-pressed="theme === color.value"
             @click="selectTheme(color.value)"
           >
+            <span class="w-4" aria-hidden="true">{{ theme === color.value ? '✓' : '' }}</span>
             {{ color.label }}
           </button>
         </div>
@@ -66,7 +99,7 @@ function selectTheme(color: SiteThemeColor) {
 
       <button
         type="button"
-        class="it-btn it-btn-ghost it-btn-sm"
+        class="it-btn it-btn-ghost it-btn-sm order-2 sm:order-none"
         :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
         :aria-pressed="isDark"
         @click="$emit('toggle-mode')"
