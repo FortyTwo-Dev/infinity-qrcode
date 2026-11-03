@@ -19,7 +19,7 @@ const options = ref<QrOptions>({
   level: 'H',
   format: 'svg',
   moduleSize: 8,
-  quietZone: 4,
+  quietZone: 2,
   dark: '#000000',
   light: '#ffffff',
 })
@@ -106,7 +106,7 @@ const displayError = computed(() => wasmError.value ?? generationError.value)
       </div>
 
       <section class="rounded-sm border border-border p-4">
-        <OptionsPanel v-model="options" />
+        <OptionsPanel v-model="options" :module-count="data?.size ?? null" />
       </section>
     </div>
   </div>

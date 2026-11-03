@@ -16,6 +16,8 @@ const FORMATS = [
   { value: 'jpeg', label: 'JPEG' },
 ] as const satisfies ReadonlyArray<{ value: FormatType; label: string }>
 
+const props = withDefaults(defineProps<{ moduleCount?: number | null }>(), { moduleCount: null })
+
 const model = defineModel<QrOptions>({ required: true })
 
 function update(patch: Partial<QrOptions>) {
@@ -51,6 +53,39 @@ const light = computed<string>({
   get: () => model.value.light,
   set: (value) => update({ light: value }),
 })
+
+function relativeLuminance(hex: string): number {
+  const match = /^#?([0-9a-f]{6})$/i.exec(hex)
+  if (!match) return 0
+
+  const value = match[1]
+  const channels = [0, 2, 4].map((offset) => parseInt(value.slice(offset, offset + 2), 16) / 255)
+  const linear = channels.map((channel) =>
+    channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4,
+  )
+  return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+}
+
+const darkLuminance = computed(() => relativeLuminance(model.value.dark))
+const lightLuminance = computed(() => relativeLuminance(model.value.light))
+const inverted = computed(() => darkLuminance.value > lightLuminance.value)
+const contrastRatio = computed(() => {
+  const lighter = Math.max(darkLuminance.value, lightLuminance.value)
+  const darker = Math.min(darkLuminance.value, lightLuminance.value)
+  return (lighter + 0.05) / (darker + 0.05)
+})
+const lowContrast = computed(() => contrastRatio.value < 4.5)
+
+const exportSize = computed(() => {
+  if (props.moduleCount === null) return null
+  return (props.moduleCount + model.value.quietZone * 2) * model.value.moduleSize
+})
+
+const moduleHint = computed(() =>
+  exportSize.value === null
+    ? 'Export resolution, in pixels per module.'
+    : `Export resolution. Current file: ${exportSize.value} × ${exportSize.value} px.`,
+)
 </script>
 
 <template>
@@ -99,11 +134,7 @@ const light = computed<string>({
       </div>
     </fieldset>
 
-    <ItField
-      label="Module size"
-      html-for="module-size"
-      hint="Export resolution, in pixels per module."
-    >
+    <ItField label="Module size" html-for="module-size" :hint="moduleHint">
       <div class="flex items-center gap-3">
         <ItRange
           id="module-size"
@@ -125,27 +156,33 @@ const light = computed<string>({
       </div>
     </ItField>
 
-    <ItField label="Quiet zone" html-for="quiet-zone" hint="Modules of margin around the code.">
-      <div class="flex items-center gap-3">
-        <ItRange
-          id="quiet-zone"
-          v-model="quietZone"
-          aria-label="Quiet zone"
-          :min="0"
-          :max="12"
-          :step="1"
-          class="flex-1"
-        />
-        <ItInput
-          v-model="quietZone"
-          type="number"
-          aria-label="Quiet zone value"
-          :min="0"
-          :max="12"
-          class="w-20"
-        />
-      </div>
-    </ItField>
+    <div class="flex flex-col gap-1">
+      <ItField label="Quiet zone" html-for="quiet-zone" hint="Modules of margin around the code.">
+        <div class="flex items-center gap-3">
+          <ItRange
+            id="quiet-zone"
+            v-model="quietZone"
+            aria-label="Quiet zone"
+            :min="0"
+            :max="12"
+            :step="1"
+            class="flex-1"
+          />
+          <ItInput
+            v-model="quietZone"
+            type="number"
+            aria-label="Quiet zone value"
+            :min="0"
+            :max="12"
+            class="w-20"
+          />
+        </div>
+      </ItField>
+      <p v-if="quietZone < 1" class="border-l-2 border-warning bg-secondary p-2 text-xs">
+        No quiet zone. Many scanners need some margin: add at least 1 module or leave room in the
+        layout.
+      </p>
+    </div>
 
     <div class="grid grid-cols-2 gap-3">
       <ItField label="Dark colour" html-for="color-dark">
@@ -167,5 +204,13 @@ const light = computed<string>({
         />
       </ItField>
     </div>
+
+    <p v-if="inverted" class="border-l-2 border-destructive bg-secondary p-2 text-xs">
+      The dark colour is lighter than the light one. Most scanners expect a dark code on a light
+      background.
+    </p>
+    <p v-else-if="lowContrast" class="border-l-2 border-warning bg-secondary p-2 text-xs">
+      Low contrast ({{ contrastRatio.toFixed(1) }}:1). Some scanners may fail to read this code.
+    </p>
   </section>
 </template>
