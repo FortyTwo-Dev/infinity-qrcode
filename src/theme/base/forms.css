@@ -84,8 +84,73 @@
     opacity: 1;
   }
 
+  /* Inset chevron, used when the browser does not support base-select. */
   :where(.it-theme) :where(select, .it-select) {
+    appearance: none;
+    padding-inline-end: calc(var(--it-input-padding) + 1.25rem);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23525252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m2 4 4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--it-input-padding) center;
+    background-size: 0.75rem;
     cursor: pointer;
+  }
+
+  :where([data-theme='dark']) :where(select, .it-select) {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23a3a3a3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m2 4 4 4 4-4'/%3E%3C/svg%3E");
+  }
+
+  @supports (appearance: base-select) {
+    :where(.it-theme) :where(select, .it-select) {
+      appearance: base-select;
+      padding-inline-end: var(--it-input-padding);
+      background-image: none;
+    }
+
+    :where(.it-theme) :where(select, .it-select)::picker-icon {
+      color: var(--it-muted);
+      margin-inline-start: var(--it-space-2);
+      transition: rotate var(--it-duration) var(--it-easing-standard);
+    }
+
+    :where(.it-theme) :where(select, .it-select):open::picker-icon {
+      rotate: 180deg;
+    }
+
+    :where(.it-theme) :where(select, .it-select)::picker(select) {
+      appearance: base-select;
+      max-height: 18rem;
+      overflow: auto;
+      border: var(--it-border-width) solid var(--it-border);
+      border-radius: var(--it-radius);
+      background: var(--it-bg);
+      color: var(--it-fg);
+      padding: var(--it-space-1);
+    }
+
+    :where(.it-theme) :where(select, .it-select) option {
+      border-radius: var(--it-radius);
+      background: transparent;
+      color: var(--it-fg);
+      padding: var(--it-space-2) var(--it-space-3);
+    }
+
+    :where(.it-theme) :where(select, .it-select) option:hover,
+    :where(.it-theme) :where(select, .it-select) option:focus {
+      background: var(--it-surface);
+      color: var(--it-fg);
+    }
+
+    :where(.it-theme) :where(select, .it-select) option:checked {
+      background: var(--it-accent);
+      color: var(--it-accent-fg);
+      font-weight: var(--it-font-weight-semibold);
+    }
+
+    :where(.it-theme) :where(select, .it-select) option::checkmark {
+      content: '✓';
+      margin-inline-start: auto;
+      color: var(--it-accent-fg);
+    }
   }
 
   :where(.it-theme)

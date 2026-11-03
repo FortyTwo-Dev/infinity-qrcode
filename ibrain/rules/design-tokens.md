@@ -53,6 +53,10 @@ layout proportions.
   route as a primary button.
 - Mutually exclusive choices use `.it-choice-group` (with `-2` or `-4`) and a
   `.it-choice` label wrapping a native radio. Do not rebuild it with buttons.
+- Selects stay native. Style the closed control with `appearance: none` and an
+  inset chevron. Where `appearance: base-select` is supported, style
+  `::picker(select)` with the theme tokens; other browsers keep the native
+  picker. Do not add a select library.
 - Do not add a second component style in a Vue file. The CSS library is the
   source of truth.
 - The Vue wrappers live in `src/components/theme/` and contain no `<style>`.
