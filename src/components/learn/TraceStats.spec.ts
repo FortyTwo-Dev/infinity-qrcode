@@ -33,6 +33,9 @@ const TERMS = [
   'Mask',
 ] as const
 
+type Term = (typeof TERMS)[number]
+type State = 'unknown' | 'active' | 'normal'
+
 const CODEWORD_TERMS = [
   'Blocks',
   'Data codewords',
@@ -40,6 +43,19 @@ const CODEWORD_TERMS = [
   'Total codewords',
   'Data modules',
 ] as const
+
+const VALUES: Record<Term, string> = {
+  Version: '4',
+  Size: '33×33',
+  Level: 'Q',
+  Segments: 'byte',
+  Blocks: '4',
+  'Data codewords': '72',
+  'ECC per block': '18',
+  'Total codewords': '144',
+  'Data modules': '656',
+  Mask: '5',
+}
 
 const STATE_VALUES = ['unknown', 'active', 'normal']
 
@@ -69,10 +85,17 @@ function cellFor(wrapper: Wrapper, term: string): HTMLElement {
   return cell!.element as HTMLElement
 }
 
-function expectValue(wrapper: Wrapper, term: string, value: string, state: string) {
+function expectValue(wrapper: Wrapper, term: Term, state: State) {
   const cell = cellFor(wrapper, term)
-  expect(normalize(cell.textContent ?? ''), `value of "${term}"`).toBe(value)
+  const expected = state === 'unknown' ? '?' : VALUES[term]
+  expect(normalize(cell.textContent ?? ''), `value of "${term}"`).toBe(expected)
   expect(cell.dataset.state, `state of "${term}"`).toBe(state)
+}
+
+function expectStates(wrapper: Wrapper, expected: Partial<Record<State, readonly Term[]>>) {
+  for (const state of ['active', 'normal', 'unknown'] as const) {
+    for (const term of expected[state] ?? []) expectValue(wrapper, term, state)
+  }
 }
 
 describe('TraceStats', () => {
@@ -93,80 +116,53 @@ describe('TraceStats', () => {
   test('keeps the codeword and mask values unknown before data placement', () => {
     const wrapper = mountStats({ phase: 'timing' })
 
-    expectValue(wrapper, 'Version', '4', 'normal')
-    expectValue(wrapper, 'Size', '33×33', 'normal')
-    expectValue(wrapper, 'Level', 'Q', 'normal')
-    expectValue(wrapper, 'Segments', 'byte', 'normal')
-
-    for (const term of CODEWORD_TERMS) expectValue(wrapper, term, '?', 'unknown')
-    expectValue(wrapper, 'Mask', '?', 'unknown')
+    expectStates(wrapper, {
+      normal: ['Version', 'Size', 'Level', 'Segments'],
+      unknown: [...CODEWORD_TERMS, 'Mask'],
+    })
   })
 
   test('treats a null phase like a phase before data placement', () => {
     const wrapper = mountStats({ phase: null })
 
-    for (const term of CODEWORD_TERMS) expectValue(wrapper, term, '?', 'unknown')
-    expectValue(wrapper, 'Mask', '?', 'unknown')
-    expectValue(wrapper, 'Version', '4', 'normal')
+    expectStates(wrapper, {
+      normal: ['Version'],
+      unknown: [...CODEWORD_TERMS, 'Mask'],
+    })
   })
 
   test('reveals the codeword values as active during data placement', () => {
     const wrapper = mountStats({ phase: 'data_placement' })
 
-    expectValue(wrapper, 'Blocks', '4', 'active')
-    expectValue(wrapper, 'Data codewords', '72', 'active')
-    expectValue(wrapper, 'ECC per block', '18', 'active')
-    expectValue(wrapper, 'Total codewords', '144', 'active')
-    expectValue(wrapper, 'Data modules', '656', 'active')
-
-    expectValue(wrapper, 'Mask', '?', 'unknown')
-    expectValue(wrapper, 'Version', '4', 'normal')
-    expectValue(wrapper, 'Level', 'Q', 'normal')
+    expectStates(wrapper, {
+      active: CODEWORD_TERMS,
+      normal: ['Version', 'Level'],
+      unknown: ['Mask'],
+    })
   })
 
   test('activates the mask value once the mask is chosen', () => {
     const wrapper = mountStats({ phase: 'mask_chosen' })
 
-    expectValue(wrapper, 'Mask', '5', 'active')
-
-    expectValue(wrapper, 'Blocks', '4', 'normal')
-    expectValue(wrapper, 'Data codewords', '72', 'normal')
-    expectValue(wrapper, 'ECC per block', '18', 'normal')
-    expectValue(wrapper, 'Total codewords', '144', 'normal')
-    expectValue(wrapper, 'Data modules', '656', 'normal')
-    expectValue(wrapper, 'Version', '4', 'normal')
-    expectValue(wrapper, 'Level', 'Q', 'normal')
+    expectStates(wrapper, {
+      active: ['Mask'],
+      normal: [...CODEWORD_TERMS, 'Version', 'Level'],
+    })
   })
 
   test('activates the level and the mask during format info', () => {
     const wrapper = mountStats({ phase: 'format_info' })
 
-    expectValue(wrapper, 'Level', 'Q', 'active')
-    expectValue(wrapper, 'Mask', '5', 'active')
-
-    expectValue(wrapper, 'Version', '4', 'normal')
-    expectValue(wrapper, 'Size', '33×33', 'normal')
-    expectValue(wrapper, 'Segments', 'byte', 'normal')
-    expectValue(wrapper, 'Blocks', '4', 'normal')
-    expectValue(wrapper, 'Data codewords', '72', 'normal')
-    expectValue(wrapper, 'ECC per block', '18', 'normal')
-    expectValue(wrapper, 'Total codewords', '144', 'normal')
-    expectValue(wrapper, 'Data modules', '656', 'normal')
+    expectStates(wrapper, {
+      active: ['Level', 'Mask'],
+      normal: ['Version', 'Size', 'Segments', ...CODEWORD_TERMS],
+    })
   })
 
   test('shows every value and no active cell at the final phase', () => {
     const wrapper = mountStats({ phase: 'final' })
 
-    expectValue(wrapper, 'Version', '4', 'normal')
-    expectValue(wrapper, 'Size', '33×33', 'normal')
-    expectValue(wrapper, 'Level', 'Q', 'normal')
-    expectValue(wrapper, 'Segments', 'byte', 'normal')
-    expectValue(wrapper, 'Blocks', '4', 'normal')
-    expectValue(wrapper, 'Data codewords', '72', 'normal')
-    expectValue(wrapper, 'ECC per block', '18', 'normal')
-    expectValue(wrapper, 'Total codewords', '144', 'normal')
-    expectValue(wrapper, 'Data modules', '656', 'normal')
-    expectValue(wrapper, 'Mask', '5', 'normal')
+    expectStates(wrapper, { normal: TERMS })
 
     const states = wrapper.findAll('dd').map((node) => (node.element as HTMLElement).dataset.state)
     expect(states).not.toContain('active')
