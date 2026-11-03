@@ -675,7 +675,7 @@ Normative summary for Vue 3 applications. Detailed rationale lives in the
 - A service worker must not cache authenticated or user-specific responses
   unless the cache is explicitly scoped and cleared.
 
-### writing-style (from project:project)
+### writing-style (from project:infinity-qrcode)
 
 # Writing style
 
