@@ -5,17 +5,6 @@ import { THEME_COLORS, type SiteThemeColor } from '@/types/theme'
 const STORAGE_MODE = 'theme'
 const STORAGE_COLOR = 'themeColor'
 
-const THEME_CLASSES = [
-  'light-blue',
-  'light-red',
-  'light-pink',
-  'light-yellow',
-  'dark-blue',
-  'dark-red',
-  'dark-pink',
-  'dark-yellow',
-]
-
 function isThemeColor(value: string | null): value is SiteThemeColor {
   return THEME_COLORS.some((entry) => entry.value === value)
 }
@@ -36,16 +25,15 @@ function writeStorage(key: string, value: string): void {
   }
 }
 
-/** Theme state, persistence and the `<html>` class contract. */
+/** Theme state, persistence and the data-theme/data-accent contract. */
 export function useTheme() {
   const theme = ref<SiteThemeColor>('blue')
   const isDark = ref(false)
 
   function applyTheme() {
     const root = document.documentElement
-    root.classList.remove(...THEME_CLASSES)
-    root.classList.add(`${isDark.value ? 'dark' : 'light'}-${theme.value}`)
-    root.classList.toggle('dark', isDark.value)
+    root.dataset.theme = isDark.value ? 'dark' : 'light'
+    root.dataset.accent = theme.value
     root.style.colorScheme = isDark.value ? 'dark' : 'light'
   }
 

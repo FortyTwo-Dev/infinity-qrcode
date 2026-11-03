@@ -1,47 +1,46 @@
-@import 'tailwindcss';
-@import './theme/blue.css';
-@import './theme/red.css';
-@import './theme/yellow.css';
-@import './theme/pink.css';
+/**
+ * Cascade order for the whole application.
+ *
+ * Declared before the imports because the first declaration wins: Tailwind's
+ * own statement is ignored, and its utilities stay above the theme base while
+ * `it.overrides` remains the last word.
+ */
+@layer theme, base, it.tokens, it.base, it.variants, components, utilities, it.overrides;
 
-@custom-variant dark (&:where(.dark, .dark *));
+@import 'tailwindcss';
 
 @theme {
-  --radius-sm: var(--radius);
-  --radius-md: calc(var(--radius) + 2px);
-  --radius-lg: calc(var(--radius) + 4px);
+  --radius-sm: var(--it-radius);
+  --radius-md: var(--it-radius);
+  --radius-lg: var(--it-radius);
 
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--it-bg);
+  --color-foreground: var(--it-fg);
 
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--it-accent);
+  --color-primary-foreground: var(--it-accent-fg);
 
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--it-surface);
+  --color-secondary-foreground: var(--it-surface-fg);
 
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--it-accent);
+  --color-accent-foreground: var(--it-accent-fg);
 
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--it-border);
+
+  --color-destructive: var(--it-danger);
+  --color-destructive-foreground: var(--it-danger-fg);
+
+  --color-success: var(--it-success);
+  --color-success-foreground: var(--it-success-fg);
+
+  --color-warning: var(--it-warning);
+  --color-warning-foreground: var(--it-warning-fg);
+
+  --color-info: var(--it-info);
+  --color-info-foreground: var(--it-info-fg);
 }
 
-:root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-
-  --primary: oklch(80.9% 0.105 251.813);
-  --primary-foreground: oklch(0.985 0 0);
-
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.205 0 0);
-
-  --radius: 0rem;
+body {
+  margin: 0;
 }

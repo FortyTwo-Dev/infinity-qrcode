@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="light-blue">
+<html lang="en" class="it-theme" data-theme="dark" data-accent="blue">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.ico" />
@@ -31,8 +31,11 @@
           const dark = storedMode
             ? storedMode === 'dark'
             : window.matchMedia('(prefers-color-scheme: dark)').matches
-          document.documentElement.className = `${dark ? 'dark' : 'light'}-${color}`
-          document.documentElement.classList.toggle('dark', dark)
+          document.documentElement.dataset.theme = dark ? 'dark' : 'light'
+          document.documentElement.dataset.accent = color
+          if (localStorage.getItem('readingFont') === 'dyslexic') {
+            document.documentElement.dataset.font = 'dyslexic'
+          }
         } catch {
           // The theme composable applies the default when storage is unavailable.
         }

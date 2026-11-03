@@ -4,6 +4,7 @@ export type LearnPhase =
   | 'finders'
   | 'timing'
   | 'alignment'
+  | 'version_info'
   | 'format_reserved'
   | 'data_placement'
   | 'mask_candidate'

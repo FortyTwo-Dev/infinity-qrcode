@@ -14,6 +14,21 @@ const router = createRouter({
       component: () => import('@/views/LearnView.vue'),
     },
     {
+      path: '/credits',
+      name: 'credits',
+      component: () => import('@/views/CreditsView.vue'),
+    },
+    {
+      path: '/legal',
+      name: 'legal',
+      component: () => import('@/views/LegalView.vue'),
+    },
+    {
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('@/views/PrivacyView.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: '/',
     },

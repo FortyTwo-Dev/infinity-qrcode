@@ -1,34 +1,112 @@
 <script setup lang="ts">
-import type { TraceMetadata } from '@/types/learn'
+import { computed } from 'vue'
 
-defineProps<{ metadata: TraceMetadata | null }>()
+import type { LearnPhase, TraceMetadata } from '@/types/learn'
+
+interface Props {
+  metadata: TraceMetadata | null
+  phase: LearnPhase | null
+}
+
+const props = defineProps<Props>()
+
+const PHASE_ORDER: LearnPhase[] = [
+  'empty',
+  'finders',
+  'timing',
+  'alignment',
+  'version_info',
+  'format_reserved',
+  'data_placement',
+  'mask_candidate',
+  'mask_chosen',
+  'format_info',
+  'final',
+]
+
+type RowState = 'unknown' | 'normal' | 'active'
+
+function state(revealed: boolean, active: boolean): RowState {
+  if (!revealed) return 'unknown'
+  return active ? 'active' : 'normal'
+}
+
+interface Row {
+  label: string
+  value: string | number
+  state: RowState
+}
+
+/** A value appears when its concept enters the trace, and is accented while the
+ * current phase produces it. */
+const rows = computed<Row[]>(() => {
+  const metadata = props.metadata
+  if (!metadata) return []
+
+  const index = props.phase ? PHASE_ORDER.indexOf(props.phase) : -1
+  const codewordsRevealed = index >= PHASE_ORDER.indexOf('data_placement')
+  const maskRevealed = index >= PHASE_ORDER.indexOf('mask_chosen')
+
+  const codewordsActive = props.phase === 'data_placement'
+  const maskActive = props.phase === 'mask_chosen' || props.phase === 'format_info'
+  const levelActive = props.phase === 'format_info'
+
+  return [
+    { label: 'Version', value: metadata.version, state: 'normal' },
+    { label: 'Size', value: `${metadata.size}×${metadata.size}`, state: 'normal' },
+    { label: 'Level', value: metadata.level, state: levelActive ? 'active' : 'normal' },
+    { label: 'Segments', value: metadata.segments, state: 'normal' },
+    {
+      label: 'Blocks',
+      value: codewordsRevealed ? metadata.blocks : '?',
+      state: state(codewordsRevealed, codewordsActive),
+    },
+    {
+      label: 'Data codewords',
+      value: codewordsRevealed ? metadata.dataCodewords : '?',
+      state: state(codewordsRevealed, codewordsActive),
+    },
+    {
+      label: 'ECC per block',
+      value: codewordsRevealed ? metadata.eccPerBlock : '?',
+      state: state(codewordsRevealed, codewordsActive),
+    },
+    {
+      label: 'Total codewords',
+      value: codewordsRevealed ? metadata.totalCodewords : '?',
+      state: state(codewordsRevealed, codewordsActive),
+    },
+    {
+      label: 'Data modules',
+      value: codewordsRevealed ? metadata.dataModules : '?',
+      state: state(codewordsRevealed, codewordsActive),
+    },
+    {
+      label: 'Mask',
+      value: maskRevealed ? metadata.mask : '?',
+      state: state(maskRevealed, maskActive),
+    },
+  ]
+})
 </script>
 
 <template>
   <section aria-labelledby="stats-heading" class="flex flex-col gap-3">
-    <h2 id="stats-heading" class="text-lg font-semibold">Trace</h2>
+    <h2 id="stats-heading" class="it-h5 text-lg font-semibold">QR code</h2>
 
     <dl v-if="metadata" class="grid grid-cols-2 gap-x-3 gap-y-1 text-sm">
-      <dt class="opacity-70">Version</dt>
-      <dd>{{ metadata.version }}</dd>
-      <dt class="opacity-70">Size</dt>
-      <dd>{{ metadata.size }}×{{ metadata.size }}</dd>
-      <dt class="opacity-70">Level</dt>
-      <dd>{{ metadata.level }}</dd>
-      <dt class="opacity-70">Mask</dt>
-      <dd>{{ metadata.mask }}</dd>
-      <dt class="opacity-70">Blocks</dt>
-      <dd>{{ metadata.blocks }}</dd>
-      <dt class="opacity-70">Data codewords</dt>
-      <dd>{{ metadata.dataCodewords }}</dd>
-      <dt class="opacity-70">ECC per block</dt>
-      <dd>{{ metadata.eccPerBlock }}</dd>
-      <dt class="opacity-70">Total codewords</dt>
-      <dd>{{ metadata.totalCodewords }}</dd>
-      <dt class="opacity-70">Data modules</dt>
-      <dd>{{ metadata.dataModules }}</dd>
-      <dt class="opacity-70">Segments</dt>
-      <dd class="break-words">{{ metadata.segments }}</dd>
+      <template v-for="row in rows" :key="row.label">
+        <dt class="opacity-70">{{ row.label }}</dt>
+        <dd
+          :data-state="row.state"
+          :class="{
+            'text-primary font-semibold': row.state === 'active',
+            'opacity-50': row.state === 'unknown',
+          }"
+        >
+          {{ row.value }}
+        </dd>
+      </template>
     </dl>
 
     <p v-else class="text-sm opacity-70">Build a trace to see its metadata.</p>

@@ -17,7 +17,7 @@ export default defineConfig({
       registerType: 'prompt',
       injectRegister: false,
       workbox: {
-        globPatterns: ['**/*{js,css,html,ico,png,svg,wasm}'],
+        globPatterns: ['**/*{js,css,html,ico,png,svg,wasm,woff,woff2,ttf}'],
       },
       manifest: {
         name: 'Infinity QRCode',
@@ -45,7 +45,6 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       '@components': fileURLToPath(new URL('./src/components', import.meta.url)),
-      '@ui': fileURLToPath(new URL('./src/components/ui', import.meta.url)),
     },
   },
   optimizeDeps: {

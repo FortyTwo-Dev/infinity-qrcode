@@ -20,23 +20,29 @@ rewriting it. Keep the index in `docs/decisions/README.md` up to date.
 
 ## Project overview
 
-Infinity QRCode is a client-side Vue 3 application with two routes:
+Infinity QRCode is a client-side Vue 3 application with two product routes:
 
 - `/` (`src/views/GeneratorView.vue`): generate a QR code from one of ten
   payload types and export it as SVG, PNG, WebP or JPEG.
 - `/learn` (`src/views/LearnView.vue`): replay the construction of a QR code
   frame by frame with `iqrcode-learn-wasm`.
 
+The shell also exposes `/credits` (open-source and font credits), `/legal`
+(mentions légales) and `/privacy` (politique de confidentialité). The last two
+are written in French for the French legal notice.
+
 Generation uses `iqrcode-wasm`; tracing uses `iqrcode-learn-wasm`. Both are
 `wasm-bindgen` web-target packages loaded lazily per route. The two views share
 `QrCanvas`, the payload builders, the export utilities and the theme.
 
-Layers: `views` → `components/{generator,learn,qr}` → `composables`/`lib` →
+Layers: `views` → `components/{generator,learn,qr,theme}` → `composables`/`lib` →
 `types`. `App.vue` is the shell only. No QR business logic lives in a component;
-components use the adapters in `src/lib/qrcode/` and the WASM composables.
+components use the adapters in `src/lib/qrcode/` and the WASM composables. The
+`src/theme` library owns tokens and base HTML styles; `src/components/theme`
+contains thin Vue wrappers without styles.
 
-See `docs/decisions/ADR-0001` (rebuild and routes), `ADR-0002` (toolchain) and
-`ADR-0003` (visual identity).
+See `docs/decisions/ADR-0001` (rebuild and routes), `ADR-0002` (toolchain),
+`ADR-0003` (visual identity) and `ADR-0004` (theme library).
 
 ## Code conventions
 
@@ -44,10 +50,11 @@ See `docs/decisions/ADR-0001` (rebuild and routes), `ADR-0002` (toolchain) and
   new code. TypeScript strict; no `any`.
 - Bun is the package manager and runner: `bun install`, `bun run dev`,
   `bun run build`. Do not add an npm/yarn/pnpm lockfile.
-- Tailwind 4 with the semantic tokens (`background`, `foreground`, `primary`,
-  `secondary`, `accent`, `destructive`). No hard-coded design colours.
-- Four accent themes (blue, red, pink, yellow) and light/dark mode, driven by a
-  class on `<html>` and persisted in `localStorage`.
+- UI components and tokens come from `src/theme` and `src/components/theme`.
+  Use `it-*` classes and `--it-*` tokens. Tailwind is for layout only; its
+  semantic colours are mapped to `--it-*` in `src/css/style.css`.
+- Four accent themes (blue, red, pink, yellow) and light/dark mode, driven by
+  `data-accent` and `data-theme` on `<html>` and persisted in `localStorage`.
 - Components are presentational or feature blocks; stateful behaviour lives in
   a composable; pure logic lives in `src/lib/`.
 - Before editing a file, run `ibrain resolve <path> --list` and read the rules
@@ -55,14 +62,20 @@ See `docs/decisions/ADR-0001` (rebuild and routes), `ADR-0002` (toolchain) and
 
 ## Testing
 
-- `bun test` runs the test suite; `bun run lint`, `bun run type-check` and
-  `bun run build` are the other gates.
+- `bun test` covers the domain logic; `bun run test:unit` runs the component
+  tests with Vitest and `happy-dom`; `bun run test:e2e` runs Playwright against
+  the built app.
+- `bun run lint`, `bun run type-check` and `bun run build` are the other gates.
+- `bun run check` runs lint, type-check, Bun tests and component tests.
+  `bun run check:all` adds the end-to-end suite.
 - Cover unit and feature behaviour, positive and negative cases, and the
   boundaries listed in `ibrain/rules/testing.md`.
 - Mandatory invariant: `LearnTrace.final.matrix()` equals `QrCodeWasm.matrix()`
   for the same payload and level, on L/M/Q/H.
 - A QR that renders is not a QR that scans: scan one code per payload type with
   a phone before release.
+- Check the app in light/dark and all four accents when a token or a base
+  element changes.
 - Tests are deterministic: no network, no real timers, no shared state.
 
 <!-- ibrain:begin -->

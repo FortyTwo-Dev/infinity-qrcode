@@ -10,6 +10,17 @@ export type QrcodeType =
 /** Error correction levels supported by the QR specification. */
 export type ErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H'
 
+/** Labels for the error correction levels, shared by the generator and the trace. */
+export const ERROR_CORRECTION_LEVELS: ReadonlyArray<{
+  value: ErrorCorrectionLevel
+  label: string
+}> = [
+  { value: 'L', label: 'Low (L)' },
+  { value: 'M', label: 'Medium (M)' },
+  { value: 'Q', label: 'Quartile (Q)' },
+  { value: 'H', label: 'High (H)' },
+]
+
 /** Export formats offered by the generator. */
 export type FormatType = 'svg' | 'png' | 'webp' | 'jpeg'
 

@@ -40,6 +40,15 @@ describe('payload builders', () => {
     )
     expect(invalid.value).toBe('')
     expect(invalid.errors.url).toBeDefined()
+
+    const spaced = buildPayload(
+      'url',
+      state((value) => {
+        value.url = 'not a url'
+      }),
+    )
+    expect(spaced.value).toBe('')
+    expect(spaced.errors.url).toBeDefined()
   })
 
   test('wi-fi escapes separators and requires a password unless open', () => {

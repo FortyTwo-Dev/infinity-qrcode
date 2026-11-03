@@ -58,8 +58,11 @@ bun run preview
 | `bun run lint` | Run ESLint with zero warnings allowed |
 | `bun run lint:fix` | Apply ESLint fixes |
 | `bun run type-check` | Run `vue-tsc --noEmit` |
-| `bun test` | Run the Bun test suite |
-| `bun run check` | Lint, type-check and test |
+| `bun test` | Run the domain test suite |
+| `bun run test:unit` | Run the component tests with Vitest |
+| `bun run test:e2e` | Run the Playwright suite against the built app |
+| `bun run check` | Lint, type-check, domain and component tests |
+| `bun run check:all` | `check` plus the end-to-end suite |
 | `bun run format` | Format with Prettier |
 | `bun run governance:sync` | Refresh the ibrain materialized rules |
 | `bun run governance:check` | Check that the generated rules are current |
@@ -68,13 +71,14 @@ bun run preview
 
 ```
 src/
-├── views/                 # GeneratorView, LearnView
+├── views/                 # Generator, Learn, Credits, Legal, Privacy
 ├── components/
 │   ├── generator/         # content picker, payload form, options, preview
 │   ├── learn/             # controls, stage, timeline, phase panel, stats
 │   ├── qr/                # shared matrix renderer
-│   ├── layout/            # header and footer
-│   └── ui/                # primitives
+│   ├── theme/             # thin Vue wrappers, no styles
+│   └── layout/            # header, footer and PWA prompt
+├── theme/                 # tokens, base HTML and it-* variants
 ├── composables/           # WASM loaders and theme state
 ├── lib/
 │   ├── qrcode/            # payload builders, rendering, export
@@ -88,19 +92,42 @@ The generator and the learn view share the payload builders, `QrCanvas`, the
 export utilities and the theme. The WASM modules are loaded lazily on the route
 that needs them.
 
+## Theme library
+
+The UI uses the in-repo Infinity Theme library:
+
+- `src/theme` owns design tokens, base HTML styles and `it-*` variants.
+- `src/components/theme` contains thin Vue wrappers without styles.
+
+Tailwind is used for layout only. Its semantic colours map to `--it-*` in
+`src/css/style.css`. The active theme is set with `data-theme` and `data-accent`
+on `<html>`.
+
+## Fonts
+
+- **Space Grotesk** (variable, SIL OFL 1.1) is the base typeface.
+- **OpenDyslexic** (Bitstream Vera license) is available from the accessibility
+  button in the header, which switches the whole interface.
+
+Both families and their license files live in `src/assets/fonts`.
+
 ## Testing
 
 ```sh
-bun test
+bun test           # domain logic and WASM
+bun run test:unit  # components with Vitest and happy-dom
+bun run test:e2e   # Chromium against the built app
 ```
 
-The suite covers:
+Three layers:
 
-- every payload builder, including invalid and boundary input;
-- the mandatory invariant that the final learn matrix equals the generator
-  matrix for L, M, Q and H;
-- the structural phases of a trace;
-- SVG rendering.
+- **Domain**: every payload builder, invalid and boundary input, the mandatory
+  invariant that the final learn matrix equals the generator matrix for L, M, Q
+  and H, the structural phases of a trace, and SVG rendering.
+- **Components**: forms, choice groups, preview states and the theme menu.
+- **End to end**: generate, switch type, invalid then valid content, the download
+  state, the theme menu, dark mode, and no horizontal overflow at 360, 768 and
+  1440 px.
 
 A QR that renders is not necessarily a QR that scans. Scan one code per payload
 type with a phone before a release.

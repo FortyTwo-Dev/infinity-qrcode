@@ -48,6 +48,16 @@ forms only collect fields.
 - The learn trace's final matrix must equal the generator matrix for the same
   payload and level. This is a tested invariant, not an assumption.
 
+## Scannability
+
+- Warn when the quiet zone is 0. Do not block the export: an external margin can
+  provide it. A 1-module margin was tested as readable, but the specification
+  recommends 4 when the layout can afford it.
+- Warn when the contrast ratio between the two colours is below 4.5, and when
+  the dark colour is lighter than the light one.
+- These warnings never disable the download.
+- Show the current export size in pixels next to the module size.
+
 ## Capacity
 
 - The libraries throw when the data does not fit. Catch the error and show a
