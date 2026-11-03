@@ -2,14 +2,12 @@
 import { computed } from 'vue'
 
 import { ItField, ItInput, ItRange } from '@components/theme'
-import type { ErrorCorrectionLevel, FormatType, QrOptions } from '@/types/qr'
-
-const LEVELS = [
-  { value: 'L', label: 'Low (L)' },
-  { value: 'M', label: 'Medium (M)' },
-  { value: 'Q', label: 'Quartile (Q)' },
-  { value: 'H', label: 'High (H)' },
-] as const satisfies ReadonlyArray<{ value: ErrorCorrectionLevel; label: string }>
+import {
+  ERROR_CORRECTION_LEVELS,
+  type ErrorCorrectionLevel,
+  type FormatType,
+  type QrOptions,
+} from '@/types/qr'
 
 const FORMATS = [
   { value: 'svg', label: 'SVG' },
@@ -63,7 +61,7 @@ const light = computed<string>({
       <legend class="mb-2 text-sm font-medium">Error correction</legend>
       <div class="it-choice-group it-choice-group-2">
         <label
-          v-for="option in LEVELS"
+          v-for="option in ERROR_CORRECTION_LEVELS"
           :key="option.value"
           :for="`level-${option.value}`"
           class="it-choice"

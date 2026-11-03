@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { ItField, ItOption, ItRadio, ItSelect } from '@components/theme'
-import type { ErrorCorrectionLevel } from '@/types/qr'
+import { ItField, ItOption, ItSelect } from '@components/theme'
+import { ERROR_CORRECTION_LEVELS, type ErrorCorrectionLevel } from '@/types/qr'
 
 interface Props {
   level: ErrorCorrectionLevel
@@ -47,11 +47,22 @@ const maskCandidates = computed<boolean>({
 
     <fieldset class="it-fieldset-plain">
       <legend class="mb-2 text-sm font-medium">Error correction</legend>
-      <div class="flex flex-wrap gap-2">
-        <ItRadio id="trace-level-l" v-model="level" name="trace-level" value="L" label="Low" />
-        <ItRadio id="trace-level-m" v-model="level" name="trace-level" value="M" label="Medium" />
-        <ItRadio id="trace-level-q" v-model="level" name="trace-level" value="Q" label="Quartile" />
-        <ItRadio id="trace-level-h" v-model="level" name="trace-level" value="H" label="High" />
+      <div class="it-choice-group it-choice-group-2">
+        <label
+          v-for="option in ERROR_CORRECTION_LEVELS"
+          :key="option.value"
+          :for="`trace-level-${option.value}`"
+          class="it-choice"
+        >
+          <input
+            :id="`trace-level-${option.value}`"
+            v-model="level"
+            type="radio"
+            name="trace-level"
+            :value="option.value"
+          />
+          <span>{{ option.label }}</span>
+        </label>
       </div>
     </fieldset>
 

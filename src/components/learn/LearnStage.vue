@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
 
 import { ItButton } from '@components/theme'
 import QrCanvas from '@components/qr/QrCanvas.vue'
@@ -18,7 +18,36 @@ const props = defineProps<Props>()
 
 const emit = defineEmits<{ 'update:zoom': [zoom: number] }>()
 
-const moduleSize = computed(() => Math.max(2, Math.round(4 * props.zoom)))
+const stage = useTemplateRef<HTMLDivElement>('stage')
+const available = ref(0)
+let observer: ResizeObserver | undefined
+
+onMounted(() => {
+  const element = stage.value
+  if (!element) return
+
+  observer = new ResizeObserver(() => {
+    const style = getComputedStyle(element)
+    const width =
+      element.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight)
+    const height =
+      element.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom)
+    available.value = Math.max(0, Math.min(width, height))
+  })
+  observer.observe(element)
+})
+
+onBeforeUnmount(() => observer?.disconnect())
+
+const modules = computed(() => (props.frame ? props.frame.size + props.options.quietZone * 2 : 0))
+
+/** Module size that makes the code fill the stage; zoom is a multiplier of it. */
+const fitModuleSize = computed(() => {
+  if (!modules.value || !available.value) return 1
+  return Math.max(1, Math.floor(available.value / modules.value))
+})
+
+const moduleSize = computed(() => Math.max(1, Math.round(fitModuleSize.value * props.zoom)))
 </script>
 
 <template>
@@ -47,7 +76,8 @@ const moduleSize = computed(() => Math.max(2, Math.round(4 * props.zoom)))
     </div>
 
     <div
-      class="flex min-h-80 items-center justify-center overflow-auto rounded-sm border border-border p-4"
+      ref="stage"
+      class="flex h-96 items-center justify-center overflow-auto rounded-sm border border-border p-4"
     >
       <QrCanvas
         v-if="frame"
