@@ -1,24 +1,21 @@
 <script setup lang="ts">
-const model = defineModel();
+const model = defineModel<string>({ required: true })
 
 interface Props {
-    id?: string;
-    placeholder?: string;
+  id?: string
+  disabled?: boolean
 }
 
-defineProps<Props>();
-
-const emits = defineEmits(['change'])
-
-const onChange = (event) => {
-    emits('change', event);
-}
-
+withDefaults(defineProps<Props>(), { disabled: false })
 </script>
 
 <template>
-    <select v-model="model" :id="id" class="border border-secondary p-2 focus:border-primary rounded-sm" @change="onChange">
-        <option v-if="placeholder" value="" disabled>{{placeholder}}</option>
-        <slot></slot>
-    </select>
+  <select
+    :id="id"
+    v-model="model"
+    :disabled="disabled"
+    class="h-10 w-full cursor-pointer rounded-sm border border-secondary bg-background px-2 text-foreground outline-none focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50"
+  >
+    <slot />
+  </select>
 </template>

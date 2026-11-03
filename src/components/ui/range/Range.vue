@@ -1,19 +1,28 @@
 <script setup lang="ts">
-const model = defineModel();
+const model = defineModel<number>({ required: true })
 
 interface Props {
-    id?: string;
-    name?: string;
-    step?: string;
-    min?: string;
-    max?: string;
+  id?: string
+  min?: number
+  max?: number
+  step?: number
 }
 
-defineProps<Props>();
-
+withDefaults(defineProps<Props>(), {
+  min: 0,
+  max: 100,
+  step: 1,
+})
 </script>
 
 <template>
-    <input class="accent-primary" v-model="model" type="range" :name="name" :id="id" :step="step" :min="min"
-        :max="max">
+  <input
+    :id="id"
+    v-model.number="model"
+    type="range"
+    :min="min"
+    :max="max"
+    :step="step"
+    class="w-full cursor-pointer accent-primary"
+  />
 </template>

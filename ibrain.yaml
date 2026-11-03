@@ -1,0 +1,20 @@
+content:
+  rules: .ai/rules
+
+packs:
+  - source: path
+    path: "~/.iapp/ibrain/packs/github.com/FortyTwo-Dev/ibrain-packs/global"
+    priority: 0
+  - source: path
+    path: "~/.iapp/ibrain/packs/github.com/FortyTwo-Dev/ibrain-packs/ci"
+    priority: 40
+  - source: path
+    path: "~/.iapp/ibrain/packs/github.com/FortyTwo-Dev/ibrain-packs/vue"
+    priority: 100
+  - source: git
+    url: "https://github.com/InfinityLib/ibrain-packs"
+    ref: "main"
+    pack: "iqrcode-wasm"
+  - source: path
+    path: ibrain
+    layer: project

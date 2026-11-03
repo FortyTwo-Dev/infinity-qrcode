@@ -1,13 +1,12 @@
 <script setup lang="ts">
 interface Props {
-    value?: String;
-    text?: String;
+  value: string
+  text: string
 }
 
-defineProps<Props>();
-
+defineProps<Props>()
 </script>
 
 <template>
-    <option :value="value">{{ text }}</option>
+  <option :value="value">{{ text }}</option>
 </template>
