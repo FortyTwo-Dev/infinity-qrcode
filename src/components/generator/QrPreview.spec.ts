@@ -64,10 +64,7 @@ function cssWidth(element: Element): number | null {
   const html = element as HTMLElement
   const computed = element.ownerDocument.defaultView?.getComputedStyle(html)
   return (
-    px(html.style.width) ??
-    px(html.style.maxWidth) ??
-    px(computed?.width) ??
-    px(computed?.maxWidth)
+    px(html.style.width) ?? px(html.style.maxWidth) ?? px(computed?.width) ?? px(computed?.maxWidth)
   )
 }
 

@@ -44,7 +44,9 @@ function controlByLabel(wrapper: Wrapper, labelText: string) {
 function selectWithOption(wrapper: Wrapper, optionText: string) {
   const select = wrapper
     .findAll('select')
-    .find((node) => node.findAll('option').some((option) => normalize(option.text()) === optionText))
+    .find((node) =>
+      node.findAll('option').some((option) => normalize(option.text()) === optionText),
+    )
   expect(select, `select offering "${optionText}"`).toBeDefined()
   return select!
 }
