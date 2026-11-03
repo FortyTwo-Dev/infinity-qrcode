@@ -29,9 +29,13 @@ onMounted(() => {
   observer = new ResizeObserver(() => {
     const style = getComputedStyle(element)
     const width =
-      element.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight)
+      element.clientWidth -
+      Number.parseFloat(style.paddingLeft) -
+      Number.parseFloat(style.paddingRight)
     const height =
-      element.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom)
+      element.clientHeight -
+      Number.parseFloat(style.paddingTop) -
+      Number.parseFloat(style.paddingBottom)
     available.value = Math.max(0, Math.min(width, height))
   })
   observer.observe(element)

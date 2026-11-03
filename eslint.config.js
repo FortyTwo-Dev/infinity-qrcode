@@ -27,7 +27,7 @@ export default withVueTs(
     },
   },
   {
-    files: ['src/components/theme/ItField.vue', 'src/components/theme/ItLabel.vue'],
+    files: ['src/components/theme/ItField.vue'],
     rules: {
       'vuejs-accessibility/label-has-for': 'off',
     },

@@ -26,6 +26,11 @@ const PHASE_ORDER: LearnPhase[] = [
 
 type RowState = 'unknown' | 'normal' | 'active'
 
+function state(revealed: boolean, active: boolean): RowState {
+  if (!revealed) return 'unknown'
+  return active ? 'active' : 'normal'
+}
+
 interface Row {
   label: string
   value: string | number
@@ -45,11 +50,6 @@ const rows = computed<Row[]>(() => {
   const codewordsActive = props.phase === 'data_placement'
   const maskActive = props.phase === 'mask_chosen' || props.phase === 'format_info'
   const levelActive = props.phase === 'format_info'
-
-  function state(revealed: boolean, active: boolean): RowState {
-    if (!revealed) return 'unknown'
-    return active ? 'active' : 'normal'
-  }
 
   return [
     { label: 'Version', value: metadata.version, state: 'normal' },

@@ -166,7 +166,8 @@ function phaseTitle(phase: LearnPhase): string {
     </p>
 
     <div>
-      <div role="group" aria-label="Construction phases" class="flex h-4 w-full bg-secondary">
+      <fieldset class="it-fieldset-plain flex h-4 w-full bg-secondary">
+        <legend class="sr-only">Construction phases</legend>
         <button
           v-for="run in runs"
           :key="run.start"
@@ -182,7 +183,7 @@ function phaseTitle(phase: LearnPhase): string {
           :title="phaseTitle(run.phase)"
           @click="emit('update:frame-index', run.start)"
         />
-      </div>
+      </fieldset>
 
       <ul class="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
         <li v-for="family in FAMILIES" :key="family.id" class="flex items-center gap-1">

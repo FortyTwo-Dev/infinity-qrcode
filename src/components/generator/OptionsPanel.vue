@@ -59,7 +59,9 @@ function relativeLuminance(hex: string): number {
   if (!match) return 0
 
   const value = match[1]
-  const channels = [0, 2, 4].map((offset) => parseInt(value.slice(offset, offset + 2), 16) / 255)
+  const channels = [0, 2, 4].map(
+    (offset) => Number.parseInt(value.slice(offset, offset + 2), 16) / 255,
+  )
   const linear = channels.map((channel) =>
     channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4,
   )
