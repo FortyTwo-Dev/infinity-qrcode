@@ -1,26 +1,13 @@
 <script setup lang="ts">
-
-type Variant = 'default' | 'box';
-
 interface Props {
-    id?: string;
-    label?: String;
-    variant?: Variant;
+  htmlFor?: string
 }
 
-defineProps<Props>();
-
-const variantClasses = {
-    default: '',
-    box: 'border border-secondary p-2 rounded-sm',
-};
-
-const getVariantClasses = (variant: Variant) => {
-    return variantClasses[variant] || variantClasses.default;
-};
-
+defineProps<Props>()
 </script>
 
 <template>
-    <label v-show="label" :for="id" :class="getVariantClasses(variant ?? 'default')">{{ label }}</label>
+  <label :for="htmlFor" class="text-sm font-medium">
+    <slot />
+  </label>
 </template>

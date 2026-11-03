@@ -1,27 +1,37 @@
 <script setup lang="ts">
-const model = defineModel();
-
-type InputType = 'text' | 'number';
+const model = defineModel<string | number>()
 
 interface Props {
-    id?: string;
-    placeholder?: string;
-    type?: InputType;
+  id?: string
+  type?: 'text' | 'number' | 'email' | 'tel' | 'url' | 'color' | 'datetime-local'
+  placeholder?: string
+  min?: number | string
+  max?: number | string
+  step?: number | string
+  disabled?: boolean
+  invalid?: boolean
+  describedby?: string
 }
 
-defineProps<Props>();
-
-const emits = defineEmits(['input'])
-
-const onInput = (event) => {
-    emits('input', event);
-}
-
+withDefaults(defineProps<Props>(), {
+  type: 'text',
+  disabled: false,
+  invalid: false,
+})
 </script>
 
 <template>
-    <div class="h-full border border-secondary p-2 focus-within:border-primary rounded-sm">
-        <input v-model="model" :type="type" @input="onInput" :id="id" :placeholder="placeholder"
-            class="w-full h-full outline-none" />
-    </div>
+  <input
+    :id="id"
+    v-model="model"
+    :type="type"
+    :placeholder="placeholder"
+    :min="min"
+    :max="max"
+    :step="step"
+    :disabled="disabled"
+    :aria-invalid="invalid || undefined"
+    :aria-describedby="describedby"
+    class="h-10 w-full rounded-sm border border-secondary bg-background px-2 text-foreground outline-none focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50"
+  />
 </template>

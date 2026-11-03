@@ -1,36 +1,39 @@
 <script setup lang="ts">
-
-type Variant = 'primary' | 'secondary' | 'secondarySelectPrimary';
-
+type Variant = 'primary' | 'secondary' | 'ghost'
 
 interface Props {
-    text?: String
-    variant?: Variant;
+  variant?: Variant
+  type?: 'button' | 'submit'
+  disabled?: boolean
 }
 
-defineProps<Props>();
+withDefaults(defineProps<Props>(), {
+  variant: 'primary',
+  type: 'button',
+  disabled: false,
+})
 
-const emits = defineEmits(['click'])
+defineEmits<{ click: [event: MouseEvent] }>()
 
-const onClick = (event) => {
-    emits('click', event);
+const variantClasses: Record<Variant, string> = {
+  primary: 'bg-primary text-primary-foreground border-transparent hover:opacity-85',
+  secondary: 'bg-secondary text-foreground border-secondary hover:opacity-85',
+  ghost: 'bg-transparent text-foreground border-transparent hover:bg-secondary',
 }
-
-const variantClasses = {
-    primary: 'w-full bg-primary text-primary-foreground hover:opacity-85 p-2 cursor-pointer rounded-sm border-transparent',
-    secondary: 'w-full bg-secondary hover:opacity-85 p-2 cursor-pointer rounded-sm border border-transparent',
-    secondarySelectPrimary: 'w-full bg-secondary hover:opacity-85 p-2 cursor-pointer rounded-sm border border-primary',
-};
-
-const getVariantClasses = (variant: Variant) => {
-    return variantClasses[variant] || variantClasses.primary;
-};
-
 </script>
 
 <template>
-    <button @click="onClick"
-        :class="getVariantClasses(variant ?? 'primary')">
-        <p class="text-center font-semibold">{{ text }}</p>
-    </button>
+  <button
+    :type="type"
+    :disabled="disabled"
+    :class="[
+      'inline-flex cursor-pointer items-center justify-center rounded-sm border px-3 py-2 text-sm font-semibold transition-opacity',
+      'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
+      'disabled:cursor-not-allowed disabled:opacity-50',
+      variantClasses[variant],
+    ]"
+    @click="$emit('click', $event)"
+  >
+    <slot />
+  </button>
 </template>
