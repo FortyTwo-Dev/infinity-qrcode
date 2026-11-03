@@ -15,8 +15,11 @@ const errorId = computed(() => (props.htmlFor ? `${props.htmlFor}-error` : undef
 
 <template>
   <div class="it-field">
-    <label v-if="htmlFor" :for="htmlFor" class="it-field-label">{{ label }}</label>
-    <span v-else class="it-field-label">{{ label }}</span>
+    <div class="flex items-center gap-2">
+      <label v-if="htmlFor" :for="htmlFor" class="it-field-label">{{ label }}</label>
+      <span v-else class="it-field-label">{{ label }}</span>
+      <slot name="help" />
+    </div>
     <slot />
     <p v-if="error" :id="errorId" class="it-field-error" role="alert">{{ error }}</p>
     <p v-else-if="hint" class="it-field-hint">{{ hint }}</p>

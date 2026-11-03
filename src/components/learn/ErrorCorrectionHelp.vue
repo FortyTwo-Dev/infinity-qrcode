@@ -56,7 +56,7 @@ function previewModuleSize(data: QrMatrixData): number {
     <p v-else-if="error" class="text-sm text-destructive" role="alert">{{ error }}</p>
     <ul v-else class="grid grid-cols-2 gap-4 sm:grid-cols-4">
       <li v-for="example in examples" :key="example.level" class="flex flex-col items-center gap-1">
-        <div class="flex min-h-24 items-center justify-center bg-secondary p-2">
+        <div class="flex min-h-24 w-full items-center justify-center bg-secondary p-2">
           <QrCanvas
             :matrix="example.data.matrix"
             :size="example.data.size"

@@ -4,7 +4,9 @@ import { computed } from 'vue'
 import { ItField, ItOption, ItSelect } from '@components/theme'
 import { ERROR_CORRECTION_LEVELS, type ErrorCorrectionLevel } from '@/types/qr'
 
+import DetailHelp from './DetailHelp.vue'
 import ErrorCorrectionHelp from './ErrorCorrectionHelp.vue'
+import VersionHelp from './VersionHelp.vue'
 
 interface Props {
   level: ErrorCorrectionLevel
@@ -76,6 +78,9 @@ const maskCandidates = computed<boolean>({
       html-for="trace-version"
       hint="Auto picks the smallest version that fits."
     >
+      <template #help>
+        <VersionHelp />
+      </template>
       <ItSelect id="trace-version" v-model="version" aria-label="Version">
         <ItOption value="" text="Auto" />
         <ItOption
@@ -88,6 +93,9 @@ const maskCandidates = computed<boolean>({
     </ItField>
 
     <ItField label="Detail" html-for="trace-stride" hint="Lower values create more frames.">
+      <template #help>
+        <DetailHelp />
+      </template>
       <ItSelect id="trace-stride" v-model="stride" aria-label="Detail">
         <ItOption value="1" text="Every data module" />
         <ItOption value="5" text="Every 5 modules" />
