@@ -34,6 +34,9 @@ layout proportions.
   - `secondary` → `--it-surface`
   - `border` → `--it-border`
   - `destructive` → `--it-danger`
+  - `success` → `--it-success`
+  - `warning` → `--it-warning`
+  - `info` → `--it-info`
 - Use `border-border`, not `border-secondary`, for borders.
 - Do not hard-code a colour that a token already names. A hexadecimal value in a
   component is only acceptable as data (for example a QR colour preview).

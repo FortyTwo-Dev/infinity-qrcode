@@ -30,6 +30,15 @@
 
   --color-destructive: var(--it-danger);
   --color-destructive-foreground: var(--it-danger-fg);
+
+  --color-success: var(--it-success);
+  --color-success-foreground: var(--it-success-fg);
+
+  --color-warning: var(--it-warning);
+  --color-warning-foreground: var(--it-warning-fg);
+
+  --color-info: var(--it-info);
+  --color-info-foreground: var(--it-info-fg);
 }
 
 body {
