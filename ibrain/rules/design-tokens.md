@@ -61,6 +61,16 @@ layout proportions.
   source of truth.
 - The Vue wrappers live in `src/components/theme/` and contain no `<style>`.
 
+## Typography
+
+- The base typeface is Space Grotesk, loaded from `src/assets/fonts` under the
+  SIL OFL 1.1.
+- OpenDyslexic, under the Bitstream Vera license, is an accessibility
+  alternative. The header button toggles `data-font="dyslexic"` on `<html>`;
+  the choice is persisted in `localStorage` under `readingFont`.
+- Never set a font family in a component. Use `--it-font-sans`, which the
+  `data-font` override replaces.
+
 ## Cascade
 
 Layer order is declared once, at the top of `src/css/style.css`, before the
@@ -80,8 +90,8 @@ theme, base, it.tokens, it.base, it.variants, components, utilities, it.override
 
 ## Verification
 
-- `/styleguide` is the living documentation. Update it when a token, a base
-  element or a variant changes.
+- There is no styleguide page. Check a token, a base element or a variant on
+  the app itself.
 - Check light and dark modes, all four accents and the focus/disabled states.
 
 ## Layout

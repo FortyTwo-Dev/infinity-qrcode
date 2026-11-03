@@ -17,7 +17,7 @@ export default defineConfig({
       registerType: 'prompt',
       injectRegister: false,
       workbox: {
-        globPatterns: ['**/*{js,css,html,ico,png,svg,wasm}'],
+        globPatterns: ['**/*{js,css,html,ico,png,svg,wasm,woff,woff2,ttf}'],
       },
       manifest: {
         name: 'Infinity QRCode',

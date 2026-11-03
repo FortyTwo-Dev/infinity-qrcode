@@ -1,6 +1,6 @@
 @layer it.tokens {
   :root {
-    --it-font-sans: 'Inter', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    --it-font-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
     --it-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
     --it-color-white: oklch(100% 0 0);

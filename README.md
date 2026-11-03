@@ -71,7 +71,7 @@ bun run preview
 
 ```
 src/
-├── views/                 # Generator, Learn, Styleguide, Legal, Privacy
+├── views/                 # Generator, Learn, Credits, Legal, Privacy
 ├── components/
 │   ├── generator/         # content picker, payload form, options, preview
 │   ├── learn/             # controls, stage, timeline, phase panel, stats
@@ -98,11 +98,18 @@ The UI uses the in-repo Infinity Theme library:
 
 - `src/theme` owns design tokens, base HTML styles and `it-*` variants.
 - `src/components/theme` contains thin Vue wrappers without styles.
-- `/styleguide` is the living documentation for tokens and components.
 
 Tailwind is used for layout only. Its semantic colours map to `--it-*` in
 `src/css/style.css`. The active theme is set with `data-theme` and `data-accent`
 on `<html>`.
+
+## Fonts
+
+- **Space Grotesk** (variable, SIL OFL 1.1) is the base typeface.
+- **OpenDyslexic** (Bitstream Vera license) is available from the accessibility
+  button in the header, which switches the whole interface.
+
+Both families and their license files live in `src/assets/fonts`.
 
 ## Testing
 

@@ -10,6 +10,7 @@
 @import './tokens/themes/accents/pink.css';
 @import './tokens/themes/accents/yellow.css';
 @import './base/reset.css';
+@import './base/fonts.css';
 @import './base/typography.css';
 @import './base/forms.css';
 @import './variants/buttons.css';

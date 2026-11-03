@@ -26,7 +26,9 @@ function accessibleText(node: { element: Element }): string {
   return normalize(clone.textContent ?? '')
 }
 
-function mountHeader(overrides: Partial<{ theme: SiteThemeColor; isDark: boolean }> = {}) {
+function mountHeader(
+  overrides: Partial<{ theme: SiteThemeColor; isDark: boolean; dyslexia: boolean }> = {},
+) {
   return mount(AppHeader, {
     props: { theme: 'blue', isDark: false, ...overrides },
     global: { stubs: { RouterLink: RouterLinkStub } },
@@ -160,5 +162,23 @@ describe('AppHeader', () => {
     await wrapper.vm.$nextTick()
 
     expect(isThemeMenuOpen(wrapper)).toBe(false)
+  })
+
+  test('offers to enable the dyslexia-friendly font when it is off', async () => {
+    const wrapper = mountHeader({ dyslexia: false })
+
+    const button = buttonNamed(wrapper, 'Enable dyslexia-friendly font')
+    expect(button.attributes('aria-pressed')).toBe('false')
+
+    await button.trigger('click')
+
+    expect(wrapper.emitted('toggle-dyslexia')).toHaveLength(1)
+  })
+
+  test('offers to disable the dyslexia-friendly font when it is on', () => {
+    const wrapper = mountHeader({ dyslexia: true })
+
+    const button = buttonNamed(wrapper, 'Disable dyslexia-friendly font')
+    expect(button.attributes('aria-pressed')).toBe('true')
   })
 })

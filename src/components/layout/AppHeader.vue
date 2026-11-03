@@ -7,13 +7,15 @@ import { THEME_COLORS, type SiteThemeColor } from '@/types/theme'
 interface Props {
   theme: SiteThemeColor
   isDark: boolean
+  dyslexia?: boolean
 }
 
-defineProps<Props>()
+withDefaults(defineProps<Props>(), { dyslexia: false })
 
 const emit = defineEmits<{
   'update:theme': [theme: SiteThemeColor]
   'toggle-mode': []
+  'toggle-dyslexia': []
 }>()
 
 const themeDetails = useTemplateRef<HTMLDetailsElement>('themeDetails')
@@ -96,6 +98,18 @@ onBeforeUnmount(() => {
           </button>
         </div>
       </details>
+
+      <button
+        type="button"
+        class="it-btn it-btn-sm it-btn-icon order-2 sm:order-none"
+        :class="dyslexia ? 'it-btn-primary' : 'it-btn-secondary'"
+        :aria-label="dyslexia ? 'Disable dyslexia-friendly font' : 'Enable dyslexia-friendly font'"
+        :aria-pressed="dyslexia"
+        :title="dyslexia ? 'Disable dyslexia-friendly font' : 'Enable dyslexia-friendly font'"
+        @click="$emit('toggle-dyslexia')"
+      >
+        <span aria-hidden="true" class="text-sm font-semibold">aA</span>
+      </button>
 
       <button
         type="button"
