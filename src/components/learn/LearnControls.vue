@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { Field, Option, Radio, Select } from '@ui/index'
+import { ItField, ItOption, ItRadio, ItSelect } from '@components/theme'
 import type { ErrorCorrectionLevel } from '@/types/qr'
 
 interface Props {
@@ -43,43 +43,43 @@ const maskCandidates = computed<boolean>({
 
 <template>
   <section aria-labelledby="trace-options-heading" class="flex flex-col gap-4">
-    <h2 id="trace-options-heading" class="text-lg font-semibold">Trace</h2>
+    <h2 id="trace-options-heading" class="it-h5 text-lg font-semibold">Trace</h2>
 
-    <fieldset>
+    <fieldset class="it-fieldset-plain">
       <legend class="mb-2 text-sm font-medium">Error correction</legend>
       <div class="flex flex-wrap gap-2">
-        <Radio id="trace-level-l" v-model="level" name="trace-level" value="L" label="Low" />
-        <Radio id="trace-level-m" v-model="level" name="trace-level" value="M" label="Medium" />
-        <Radio id="trace-level-q" v-model="level" name="trace-level" value="Q" label="Quartile" />
-        <Radio id="trace-level-h" v-model="level" name="trace-level" value="H" label="High" />
+        <ItRadio id="trace-level-l" v-model="level" name="trace-level" value="L" label="Low" />
+        <ItRadio id="trace-level-m" v-model="level" name="trace-level" value="M" label="Medium" />
+        <ItRadio id="trace-level-q" v-model="level" name="trace-level" value="Q" label="Quartile" />
+        <ItRadio id="trace-level-h" v-model="level" name="trace-level" value="H" label="High" />
       </div>
     </fieldset>
 
-    <Field
+    <ItField
       label="Version"
       html-for="trace-version"
       hint="Auto picks the smallest version that fits."
     >
-      <Select id="trace-version" v-model="version" aria-label="Version">
-        <Option value="" text="Auto" />
-        <Option
+      <ItSelect id="trace-version" v-model="version" aria-label="Version">
+        <ItOption value="" text="Auto" />
+        <ItOption
           v-for="value in 40"
           :key="value"
           :value="String(value)"
           :text="`Version ${value}`"
         />
-      </Select>
-    </Field>
+      </ItSelect>
+    </ItField>
 
-    <Field label="Detail" html-for="trace-stride" hint="Lower values create more frames.">
-      <Select id="trace-stride" v-model="stride" aria-label="Detail">
-        <Option value="1" text="Every data module" />
-        <Option value="5" text="Every 5 modules" />
-        <Option value="10" text="Every 10 modules" />
-        <Option value="20" text="Every 20 modules" />
-        <Option value="50" text="Every 50 modules" />
-      </Select>
-    </Field>
+    <ItField label="Detail" html-for="trace-stride" hint="Lower values create more frames.">
+      <ItSelect id="trace-stride" v-model="stride" aria-label="Detail">
+        <ItOption value="1" text="Every data module" />
+        <ItOption value="5" text="Every 5 modules" />
+        <ItOption value="10" text="Every 10 modules" />
+        <ItOption value="20" text="Every 20 modules" />
+        <ItOption value="50" text="Every 50 modules" />
+      </ItSelect>
+    </ItField>
 
     <label for="trace-mask-candidates" class="flex items-center gap-2 text-sm">
       <input

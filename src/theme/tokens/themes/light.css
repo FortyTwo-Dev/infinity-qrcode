@@ -1,0 +1,17 @@
+@layer it.tokens {
+  :root,
+  [data-theme='light'] {
+    color-scheme: light;
+
+    --it-bg: var(--it-color-white);
+    --it-fg: var(--it-color-black);
+    --it-surface: oklch(97% 0 0);
+    --it-surface-fg: var(--it-fg);
+    --it-muted: oklch(55% 0 0);
+    --it-border: oklch(88% 0 0);
+
+    --it-disabled-bg: oklch(90% 0 0);
+    --it-disabled-fg: oklch(55% 0 0);
+    --it-disabled-border: oklch(85% 0 0);
+  }
+}

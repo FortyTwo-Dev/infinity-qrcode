@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { Button, Option, Range, Select } from '@ui/index'
+import { ItButton, ItOption, ItRange, ItSelect } from '@components/theme'
 import type { LearnPhase } from '@/types/learn'
 
 interface Props {
@@ -53,7 +53,7 @@ function markerClass(phase: LearnPhase): string {
 <template>
   <section aria-labelledby="timeline-heading" class="flex flex-col gap-3">
     <div class="flex items-center justify-between gap-2">
-      <h2 id="timeline-heading" class="text-lg font-semibold">Timeline</h2>
+      <h2 id="timeline-heading" class="it-h5 text-lg font-semibold">Timeline</h2>
       <p class="text-xs opacity-70" aria-live="polite">
         {{ frameCount ? frameIndex + 1 : 0 }} / {{ frameCount }}
       </p>
@@ -69,7 +69,7 @@ function markerClass(phase: LearnPhase): string {
       />
     </div>
 
-    <Range
+    <ItRange
       v-model="index"
       :min="0"
       :max="Math.max(0, frameCount - 1)"
@@ -79,47 +79,47 @@ function markerClass(phase: LearnPhase): string {
     />
 
     <div class="flex flex-wrap items-center gap-2">
-      <Button
+      <ItButton
         variant="secondary"
         :disabled="frameCount === 0 || frameIndex === 0"
         @click="emit('update:frame-index', 0)"
       >
         First
-      </Button>
-      <Button
+      </ItButton>
+      <ItButton
         variant="secondary"
         :disabled="frameCount === 0 || frameIndex === 0"
         @click="emit('update:frame-index', frameIndex - 1)"
       >
         Previous
-      </Button>
-      <Button :disabled="frameCount === 0" @click="emit('toggle')">
+      </ItButton>
+      <ItButton :disabled="frameCount === 0" @click="emit('toggle')">
         {{ playing ? 'Pause' : 'Play' }}
-      </Button>
-      <Button
+      </ItButton>
+      <ItButton
         variant="secondary"
         :disabled="frameCount === 0 || frameIndex >= frameCount - 1"
         @click="emit('update:frame-index', frameIndex + 1)"
       >
         Next
-      </Button>
-      <Button
+      </ItButton>
+      <ItButton
         variant="secondary"
         :disabled="frameCount === 0 || frameIndex >= frameCount - 1"
         @click="emit('update:frame-index', frameCount - 1)"
       >
         Last
-      </Button>
+      </ItButton>
 
-      <label for="timeline-speed" class="ml-auto flex items-center gap-2 text-sm">
-        Speed
-        <Select id="timeline-speed" v-model="speed" aria-label="Speed" class="w-24">
-          <Option value="0.5" text="0.5×" />
-          <Option value="1" text="1×" />
-          <Option value="2" text="2×" />
-          <Option value="4" text="4×" />
-        </Select>
-      </label>
+      <div class="ml-auto flex items-center gap-2 text-sm">
+        <span>Speed</span>
+        <ItSelect id="timeline-speed" v-model="speed" aria-label="Speed" class="w-24">
+          <ItOption value="0.5" text="0.5×" />
+          <ItOption value="1" text="1×" />
+          <ItOption value="2" text="2×" />
+          <ItOption value="4" text="4×" />
+        </ItSelect>
+      </div>
     </div>
   </section>
 </template>

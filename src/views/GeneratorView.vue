@@ -94,10 +94,7 @@ const learnLink = computed(() => ({
     </header>
 
     <div class="grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)_18rem]">
-      <section
-        class="flex flex-col gap-6 rounded-sm border border-secondary p-4"
-        aria-label="Content"
-      >
+      <section class="flex flex-col gap-6 rounded-sm border border-border p-4" aria-label="Content">
         <ContentPicker v-model="type" />
         <PayloadForm :type="type" @update:payload="handlePayload" @update:errors="handleErrors" />
       </section>
@@ -116,7 +113,7 @@ const learnLink = computed(() => ({
         </template>
       </QrPreview>
 
-      <section class="rounded-sm border border-secondary p-4">
+      <section class="rounded-sm border border-border p-4">
         <OptionsPanel v-model="options" />
       </section>
     </div>

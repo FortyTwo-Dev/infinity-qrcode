@@ -21,14 +21,13 @@ export default withVueTs(
     },
   },
   {
-    files: ['src/components/ui/**/*.vue'],
+    files: ['src/components/theme/**/*.vue'],
     rules: {
-      'vue/multi-word-component-names': 'off',
       'vue/require-default-prop': 'off',
     },
   },
   {
-    files: ['src/components/ui/label/Label.vue', 'src/components/ui/field/Field.vue'],
+    files: ['src/components/theme/ItField.vue', 'src/components/theme/ItLabel.vue'],
     rules: {
       'vuejs-accessibility/label-has-for': 'off',
     },

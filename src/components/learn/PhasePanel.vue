@@ -18,10 +18,10 @@ const info = computed(() => (props.phase ? PHASE_INFO[props.phase] : null))
 
 <template>
   <section aria-labelledby="phase-heading" class="flex flex-col gap-3">
-    <h2 id="phase-heading" class="text-lg font-semibold">Phase</h2>
+    <h2 id="phase-heading" class="it-h5 text-lg font-semibold">Phase</h2>
 
     <div v-if="info" aria-live="polite">
-      <h3 class="font-medium">{{ info.title }}</h3>
+      <h3 class="it-h5 font-medium">{{ info.title }}</h3>
       <p class="mt-1 text-sm opacity-80">{{ info.description }}</p>
 
       <dl class="mt-3 grid grid-cols-2 gap-2 text-sm">

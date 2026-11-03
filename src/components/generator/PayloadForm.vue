@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 
-import { Field, Input, Option, Select, Textarea } from '@ui/index'
+import { ItField, ItInput, ItOption, ItSelect, ItTextarea } from '@components/theme'
 import { buildPayload } from '@/lib/qrcode/payloads'
 import { createDefaultFormState, type FormState, type QrcodeType } from '@/types/qr'
 
@@ -60,8 +60,8 @@ watch(
 <template>
   <div class="flex flex-col gap-3">
     <template v-if="type === 'text'">
-      <Field label="Text" html-for="text" :error="errors.text">
-        <Input
+      <ItField label="Text" html-for="text" :error="errors.text">
+        <ItInput
           id="text"
           v-model="form.text"
           aria-label="Text"
@@ -69,17 +69,17 @@ watch(
           :invalid="Boolean(errors.text)"
           :describedby="errors.text ? 'text-error' : undefined"
         />
-      </Field>
+      </ItField>
     </template>
 
     <template v-else-if="type === 'url'">
-      <Field label="URL" html-for="url" :error="errors.url">
+      <ItField label="URL" html-for="url" :error="errors.url">
         <div class="flex gap-2">
-          <Select v-model="urlScheme" aria-label="Protocol" class="max-w-32">
-            <Option value="https://" text="https://" />
-            <Option value="http://" text="http://" />
-          </Select>
-          <Input
+          <ItSelect v-model="urlScheme" aria-label="Protocol" class="max-w-32">
+            <ItOption value="https://" text="https://" />
+            <ItOption value="http://" text="http://" />
+          </ItSelect>
+          <ItInput
             id="url"
             v-model="form.url"
             aria-label="URL"
@@ -88,12 +88,12 @@ watch(
             :describedby="errors.url ? 'url-error' : undefined"
           />
         </div>
-      </Field>
+      </ItField>
     </template>
 
     <template v-else-if="type === 'wi-fi'">
-      <Field label="Network name (SSID)" html-for="wifi-ssid" :error="errors.wifiSsid">
-        <Input
+      <ItField label="Network name (SSID)" html-for="wifi-ssid" :error="errors.wifiSsid">
+        <ItInput
           id="wifi-ssid"
           v-model="form.wifiSsid"
           aria-label="Network name (SSID)"
@@ -101,22 +101,22 @@ watch(
           :invalid="Boolean(errors.wifiSsid)"
           :describedby="errors.wifiSsid ? 'wifi-ssid-error' : undefined"
         />
-      </Field>
-      <Field label="Encryption" html-for="wifi-encryption">
-        <Select id="wifi-encryption" v-model="wifiEncryption" aria-label="Encryption">
-          <Option value="WPA" text="WPA/WPA2" />
-          <Option value="WPA3" text="WPA3" />
-          <Option value="WEP" text="WEP" />
-          <Option value="nopass" text="No password" />
-        </Select>
-      </Field>
-      <Field
+      </ItField>
+      <ItField label="Encryption" html-for="wifi-encryption">
+        <ItSelect id="wifi-encryption" v-model="wifiEncryption" aria-label="Encryption">
+          <ItOption value="WPA" text="WPA/WPA2" />
+          <ItOption value="WPA3" text="WPA3" />
+          <ItOption value="WEP" text="WEP" />
+          <ItOption value="nopass" text="No password" />
+        </ItSelect>
+      </ItField>
+      <ItField
         v-if="form.wifiEncryption !== 'nopass'"
         label="Password"
         html-for="wifi-password"
         :error="errors.wifiPassword"
       >
-        <Input
+        <ItInput
           id="wifi-password"
           v-model="form.wifiPassword"
           aria-label="Password"
@@ -125,12 +125,12 @@ watch(
           :invalid="Boolean(errors.wifiPassword)"
           :describedby="errors.wifiPassword ? 'wifi-password-error' : undefined"
         />
-      </Field>
+      </ItField>
     </template>
 
     <template v-else-if="type === 'email'">
-      <Field label="Email address" html-for="email" :error="errors.email">
-        <Input
+      <ItField label="Email address" html-for="email" :error="errors.email">
+        <ItInput
           id="email"
           v-model="form.email"
           aria-label="Email address"
@@ -139,29 +139,29 @@ watch(
           :invalid="Boolean(errors.email)"
           :describedby="errors.email ? 'email-error' : undefined"
         />
-      </Field>
-      <Field label="Subject" html-for="email-subject">
-        <Input
+      </ItField>
+      <ItField label="Subject" html-for="email-subject">
+        <ItInput
           id="email-subject"
           v-model="form.emailSubject"
           aria-label="Subject"
           placeholder="Optional subject"
         />
-      </Field>
-      <Field label="Message" html-for="email-body">
-        <Textarea
+      </ItField>
+      <ItField label="Message" html-for="email-body">
+        <ItTextarea
           id="email-body"
           v-model="form.emailBody"
           aria-label="Message"
           placeholder="Optional message"
         />
-      </Field>
+      </ItField>
     </template>
 
     <template v-else-if="type === 'vcard'">
       <div class="grid gap-3 sm:grid-cols-2">
-        <Field label="First name" html-for="vcard-first" :error="errors.vcardName">
-          <Input
+        <ItField label="First name" html-for="vcard-first" :error="errors.vcardName">
+          <ItInput
             id="vcard-first"
             v-model="form.vcard.firstName"
             aria-label="First name"
@@ -169,46 +169,46 @@ watch(
             :invalid="Boolean(errors.vcardName)"
             :describedby="errors.vcardName ? 'vcard-first-error' : undefined"
           />
-        </Field>
-        <Field label="Last name" html-for="vcard-last">
-          <Input
+        </ItField>
+        <ItField label="Last name" html-for="vcard-last">
+          <ItInput
             id="vcard-last"
             v-model="form.vcard.lastName"
             aria-label="Last name"
             placeholder="Lovelace"
           />
-        </Field>
+        </ItField>
       </div>
       <div class="grid gap-3 sm:grid-cols-2">
-        <Field label="Organization" html-for="vcard-org">
-          <Input
+        <ItField label="Organization" html-for="vcard-org">
+          <ItInput
             id="vcard-org"
             v-model="form.vcard.organization"
             aria-label="Organization"
             placeholder="Company"
           />
-        </Field>
-        <Field label="Job title" html-for="vcard-title">
-          <Input
+        </ItField>
+        <ItField label="Job title" html-for="vcard-title">
+          <ItInput
             id="vcard-title"
             v-model="form.vcard.title"
             aria-label="Job title"
             placeholder="Engineer"
           />
-        </Field>
+        </ItField>
       </div>
       <div class="grid gap-3 sm:grid-cols-2">
-        <Field label="Phone" html-for="vcard-phone">
-          <Input
+        <ItField label="Phone" html-for="vcard-phone">
+          <ItInput
             id="vcard-phone"
             v-model="form.vcard.phone"
             aria-label="Phone"
             type="tel"
             placeholder="+1 555 0100"
           />
-        </Field>
-        <Field label="Email" html-for="vcard-email" :error="errors.vcardEmail">
-          <Input
+        </ItField>
+        <ItField label="Email" html-for="vcard-email" :error="errors.vcardEmail">
+          <ItInput
             id="vcard-email"
             v-model="form.vcard.email"
             aria-label="Email"
@@ -217,29 +217,29 @@ watch(
             :invalid="Boolean(errors.vcardEmail)"
             :describedby="errors.vcardEmail ? 'vcard-email-error' : undefined"
           />
-        </Field>
+        </ItField>
       </div>
-      <Field label="Website" html-for="vcard-website">
-        <Input
+      <ItField label="Website" html-for="vcard-website">
+        <ItInput
           id="vcard-website"
           v-model="form.vcard.website"
           aria-label="Website"
           placeholder="https://example.com"
         />
-      </Field>
-      <Field label="Address" html-for="vcard-address">
-        <Input
+      </ItField>
+      <ItField label="Address" html-for="vcard-address">
+        <ItInput
           id="vcard-address"
           v-model="form.vcard.address"
           aria-label="Address"
           placeholder="Street, city, country"
         />
-      </Field>
+      </ItField>
     </template>
 
     <template v-else-if="type === 'sms'">
-      <Field label="Phone number" html-for="sms-number" :error="errors.smsNumber">
-        <Input
+      <ItField label="Phone number" html-for="sms-number" :error="errors.smsNumber">
+        <ItInput
           id="sms-number"
           v-model="form.smsNumber"
           aria-label="Phone number"
@@ -248,9 +248,9 @@ watch(
           :invalid="Boolean(errors.smsNumber)"
           :describedby="errors.smsNumber ? 'sms-number-error' : undefined"
         />
-      </Field>
-      <Field label="Message" html-for="sms-message" :error="errors.smsMessage">
-        <Textarea
+      </ItField>
+      <ItField label="Message" html-for="sms-message" :error="errors.smsMessage">
+        <ItTextarea
           id="sms-message"
           v-model="form.smsMessage"
           aria-label="Message"
@@ -258,12 +258,12 @@ watch(
           :invalid="Boolean(errors.smsMessage)"
           :describedby="errors.smsMessage ? 'sms-message-error' : undefined"
         />
-      </Field>
+      </ItField>
     </template>
 
     <template v-else-if="type === 'phone'">
-      <Field label="Phone number" html-for="phone" :error="errors.phone">
-        <Input
+      <ItField label="Phone number" html-for="phone" :error="errors.phone">
+        <ItInput
           id="phone"
           v-model="form.phone"
           aria-label="Phone number"
@@ -272,13 +272,13 @@ watch(
           :invalid="Boolean(errors.phone)"
           :describedby="errors.phone ? 'phone-error' : undefined"
         />
-      </Field>
+      </ItField>
     </template>
 
     <template v-else-if="type === 'geo'">
       <div class="grid gap-3 sm:grid-cols-2">
-        <Field label="Latitude" html-for="geo-lat" :error="errors.latitude">
-          <Input
+        <ItField label="Latitude" html-for="geo-lat" :error="errors.latitude">
+          <ItInput
             id="geo-lat"
             v-model="form.latitude"
             aria-label="Latitude"
@@ -288,9 +288,9 @@ watch(
             :invalid="Boolean(errors.latitude)"
             :describedby="errors.latitude ? 'geo-lat-error' : undefined"
           />
-        </Field>
-        <Field label="Longitude" html-for="geo-lng" :error="errors.longitude">
-          <Input
+        </ItField>
+        <ItField label="Longitude" html-for="geo-lng" :error="errors.longitude">
+          <ItInput
             id="geo-lng"
             v-model="form.longitude"
             aria-label="Longitude"
@@ -300,13 +300,13 @@ watch(
             :invalid="Boolean(errors.longitude)"
             :describedby="errors.longitude ? 'geo-lng-error' : undefined"
           />
-        </Field>
+        </ItField>
       </div>
     </template>
 
     <template v-else-if="type === 'event'">
-      <Field label="Title" html-for="event-title" :error="errors.eventTitle">
-        <Input
+      <ItField label="Title" html-for="event-title" :error="errors.eventTitle">
+        <ItInput
           id="event-title"
           v-model="form.eventTitle"
           aria-label="Title"
@@ -314,18 +314,18 @@ watch(
           :invalid="Boolean(errors.eventTitle)"
           :describedby="errors.eventTitle ? 'event-title-error' : undefined"
         />
-      </Field>
-      <Field label="Location" html-for="event-location">
-        <Input
+      </ItField>
+      <ItField label="Location" html-for="event-location">
+        <ItInput
           id="event-location"
           v-model="form.eventLocation"
           aria-label="Location"
           placeholder="Optional location"
         />
-      </Field>
+      </ItField>
       <div class="grid gap-3 sm:grid-cols-2">
-        <Field label="Starts" html-for="event-start" :error="errors.eventStart">
-          <Input
+        <ItField label="Starts" html-for="event-start" :error="errors.eventStart">
+          <ItInput
             id="event-start"
             v-model="form.eventStart"
             aria-label="Starts"
@@ -333,9 +333,9 @@ watch(
             :invalid="Boolean(errors.eventStart)"
             :describedby="errors.eventStart ? 'event-start-error' : undefined"
           />
-        </Field>
-        <Field label="Ends" html-for="event-end" :error="errors.eventEnd">
-          <Input
+        </ItField>
+        <ItField label="Ends" html-for="event-end" :error="errors.eventEnd">
+          <ItInput
             id="event-end"
             v-model="form.eventEnd"
             aria-label="Ends"
@@ -343,21 +343,21 @@ watch(
             :invalid="Boolean(errors.eventEnd)"
             :describedby="errors.eventEnd ? 'event-end-error' : undefined"
           />
-        </Field>
+        </ItField>
       </div>
-      <Field label="Description" html-for="event-description">
-        <Textarea
+      <ItField label="Description" html-for="event-description">
+        <ItTextarea
           id="event-description"
           v-model="form.eventDescription"
           aria-label="Description"
           placeholder="Optional description"
         />
-      </Field>
+      </ItField>
     </template>
 
     <template v-else-if="type === 'whatsapp'">
-      <Field label="Phone number" html-for="whatsapp-number" :error="errors.whatsappNumber">
-        <Input
+      <ItField label="Phone number" html-for="whatsapp-number" :error="errors.whatsappNumber">
+        <ItInput
           id="whatsapp-number"
           v-model="form.whatsappNumber"
           aria-label="Phone number"
@@ -366,15 +366,15 @@ watch(
           :invalid="Boolean(errors.whatsappNumber)"
           :describedby="errors.whatsappNumber ? 'whatsapp-number-error' : undefined"
         />
-      </Field>
-      <Field label="Message" html-for="whatsapp-message">
-        <Textarea
+      </ItField>
+      <ItField label="Message" html-for="whatsapp-message">
+        <ItTextarea
           id="whatsapp-message"
           v-model="form.whatsappMessage"
           aria-label="Message"
           placeholder="Optional message"
         />
-      </Field>
+      </ItField>
     </template>
   </div>
 </template>

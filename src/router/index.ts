@@ -14,6 +14,11 @@ const router = createRouter({
       component: () => import('@/views/LearnView.vue'),
     },
     {
+      path: '/styleguide',
+      name: 'styleguide',
+      component: () => import('@/views/StyleguideView.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: '/',
     },

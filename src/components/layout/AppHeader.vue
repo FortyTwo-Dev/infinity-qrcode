@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
 
 import { THEME_COLORS, type SiteThemeColor } from '@/types/theme'
@@ -10,52 +11,53 @@ interface Props {
 
 defineProps<Props>()
 
-defineEmits<{
+const emit = defineEmits<{
   'update:theme': [theme: SiteThemeColor]
   'toggle-mode': []
 }>()
+
+const themeDetails = useTemplateRef<HTMLDetailsElement>('themeDetails')
+
+function selectTheme(color: SiteThemeColor) {
+  emit('update:theme', color)
+  themeDetails.value?.removeAttribute('open')
+}
 </script>
 
 <template>
-  <header class="border-b border-secondary">
-    <div class="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-4 px-4 py-3">
-      <RouterLink to="/" class="mr-auto text-lg font-semibold hover:text-primary">
+  <header class="border-b border-border">
+    <div class="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-2 px-4 py-3">
+      <RouterLink to="/" class="it-btn it-btn-ghost mr-auto text-lg font-semibold">
         Infinity QRCode
       </RouterLink>
 
-      <nav aria-label="Main" class="flex items-center gap-1 text-sm">
+      <nav aria-label="Main" class="flex items-center gap-1">
         <RouterLink
           to="/"
-          class="rounded-sm px-2 py-1 hover:bg-secondary"
-          active-class="text-primary"
-          exact-active-class="text-primary"
+          class="it-btn it-btn-ghost it-btn-sm"
+          active-class="it-btn-primary"
+          exact-active-class="it-btn-primary"
         >
           Generate
         </RouterLink>
-        <RouterLink
-          to="/learn"
-          class="rounded-sm px-2 py-1 hover:bg-secondary"
-          active-class="text-primary"
-        >
+        <RouterLink to="/learn" class="it-btn it-btn-ghost it-btn-sm" active-class="it-btn-primary">
           Learn
         </RouterLink>
       </nav>
 
-      <details class="relative">
-        <summary class="cursor-pointer list-none rounded-sm px-2 py-1 text-sm hover:bg-secondary">
-          Theme
-        </summary>
+      <details ref="themeDetails" class="relative">
+        <summary class="it-btn it-btn-ghost it-btn-sm cursor-pointer list-none">Theme</summary>
         <div
-          class="absolute right-0 z-20 mt-2 flex w-44 flex-col gap-1 border border-secondary bg-background p-2 shadow-md"
+          class="absolute right-0 z-20 mt-2 flex w-44 flex-col gap-1 border border-border bg-background p-2 shadow-md"
         >
           <button
             v-for="color in THEME_COLORS"
             :key="color.value"
             type="button"
-            class="rounded-sm px-2 py-1 text-left text-sm hover:bg-secondary"
-            :class="{ 'text-primary': theme === color.value }"
+            class="it-btn it-btn-ghost it-btn-sm w-full justify-start"
+            :class="{ 'it-btn-primary': theme === color.value }"
             :aria-pressed="theme === color.value"
-            @click="$emit('update:theme', color.value)"
+            @click="selectTheme(color.value)"
           >
             {{ color.label }}
           </button>
@@ -64,7 +66,7 @@ defineEmits<{
 
       <button
         type="button"
-        class="rounded-sm px-2 py-1 hover:bg-secondary"
+        class="it-btn it-btn-ghost it-btn-sm"
         :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
         :aria-pressed="isDark"
         @click="$emit('toggle-mode')"

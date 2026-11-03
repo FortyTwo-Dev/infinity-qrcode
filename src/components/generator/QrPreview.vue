@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Button } from '@ui/index'
+import { ItButton } from '@components/theme'
 import QrCanvas from '@components/qr/QrCanvas.vue'
 import type { QrMatrixData, QrOptions } from '@/types/qr'
 
@@ -21,7 +21,7 @@ defineEmits<{ download: [] }>()
 <template>
   <section aria-labelledby="preview-heading" class="flex flex-col gap-4">
     <div class="flex flex-wrap items-end justify-between gap-2">
-      <h2 id="preview-heading" class="text-lg font-semibold">Preview</h2>
+      <h2 id="preview-heading" class="it-h5 text-lg font-semibold">Preview</h2>
       <p v-if="data" class="text-xs opacity-70">
         v{{ data.version }} · {{ data.size }}×{{ data.size }} · mask {{ data.mask }}
       </p>
@@ -41,7 +41,7 @@ defineEmits<{ download: [] }>()
 
     <div
       v-else-if="data"
-      class="flex min-h-64 items-center justify-center rounded-sm border border-secondary p-4"
+      class="flex min-h-64 items-center justify-center rounded-sm border border-border p-4"
     >
       <QrCanvas
         :matrix="data.matrix"
@@ -56,15 +56,15 @@ defineEmits<{ download: [] }>()
 
     <p
       v-else
-      class="flex min-h-64 items-center justify-center rounded-sm border border-dashed border-secondary p-4 text-center text-sm opacity-70"
+      class="flex min-h-64 items-center justify-center rounded-sm border border-dashed border-border p-4 text-center text-sm opacity-70"
     >
       Enter valid content to see the QR code.
     </p>
 
     <div class="flex flex-wrap items-center gap-2">
-      <Button :disabled="!data" @click="$emit('download')">
+      <ItButton :disabled="!data" @click="$emit('download')">
         Download {{ options.format.toUpperCase() }}
-      </Button>
+      </ItButton>
       <slot name="actions" />
     </div>
   </section>

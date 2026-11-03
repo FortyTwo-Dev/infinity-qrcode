@@ -231,7 +231,7 @@ function handleErrors(errors: Record<string, string>) {
 
     <div class="grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)_20rem]">
       <section
-        class="flex flex-col gap-6 rounded-sm border border-secondary p-4"
+        class="flex flex-col gap-6 rounded-sm border border-border p-4"
         aria-label="Trace content and options"
       >
         <ContentPicker v-model="type" />
@@ -282,7 +282,7 @@ function handleErrors(errors: Record<string, string>) {
       </section>
 
       <section
-        class="flex flex-col gap-6 rounded-sm border border-secondary p-4"
+        class="flex flex-col gap-6 rounded-sm border border-border p-4"
         aria-label="Phase and trace details"
       >
         <PhasePanel

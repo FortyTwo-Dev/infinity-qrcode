@@ -1,18 +1,21 @@
 <script setup lang="ts">
-const model = defineModel<number>({ required: true })
-
 interface Props {
   id?: string
   min?: number
   max?: number
   step?: number
+  disabled?: boolean
+  describedby?: string
 }
 
 withDefaults(defineProps<Props>(), {
   min: 0,
   max: 100,
   step: 1,
+  disabled: false,
 })
+
+const model = defineModel<number>({ required: true })
 </script>
 
 <template>
@@ -23,6 +26,8 @@ withDefaults(defineProps<Props>(), {
     :min="min"
     :max="max"
     :step="step"
-    class="w-full cursor-pointer accent-primary"
+    :disabled="disabled"
+    :aria-describedby="describedby"
+    class="it-range"
   />
 </template>

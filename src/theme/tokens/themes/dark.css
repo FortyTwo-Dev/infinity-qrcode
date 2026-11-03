@@ -1,0 +1,16 @@
+@layer it.tokens {
+  [data-theme='dark'] {
+    color-scheme: dark;
+
+    --it-bg: oklch(18% 0 0);
+    --it-fg: oklch(99% 0 0);
+    --it-surface: oklch(24% 0 0);
+    --it-surface-fg: var(--it-fg);
+    --it-muted: oklch(70% 0 0);
+    --it-border: oklch(35% 0 0);
+
+    --it-disabled-bg: oklch(30% 0 0);
+    --it-disabled-fg: oklch(60% 0 0);
+    --it-disabled-border: oklch(35% 0 0);
+  }
+}

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { Field, Input, Radio, Range } from '@ui/index'
+import { ItField, ItInput, ItRadio, ItRange } from '@components/theme'
 import type { ErrorCorrectionLevel, FormatType, QrOptions } from '@/types/qr'
 
 const model = defineModel<QrOptions>({ required: true })
@@ -43,31 +43,31 @@ const light = computed<string>({
 
 <template>
   <section aria-labelledby="options-heading" class="flex flex-col gap-5">
-    <h2 id="options-heading" class="text-lg font-semibold">Options</h2>
+    <h2 id="options-heading" class="it-h5 text-lg font-semibold">Options</h2>
 
-    <fieldset>
+    <fieldset class="it-fieldset-plain">
       <legend class="mb-2 text-sm font-medium">Error correction</legend>
       <div class="flex flex-wrap gap-2">
-        <Radio id="level-l" v-model="level" name="level" value="L" label="Low" />
-        <Radio id="level-m" v-model="level" name="level" value="M" label="Medium" />
-        <Radio id="level-q" v-model="level" name="level" value="Q" label="Quartile" />
-        <Radio id="level-h" v-model="level" name="level" value="H" label="High" />
+        <ItRadio id="level-l" v-model="level" name="level" value="L" label="Low" />
+        <ItRadio id="level-m" v-model="level" name="level" value="M" label="Medium" />
+        <ItRadio id="level-q" v-model="level" name="level" value="Q" label="Quartile" />
+        <ItRadio id="level-h" v-model="level" name="level" value="H" label="High" />
       </div>
     </fieldset>
 
-    <fieldset>
+    <fieldset class="it-fieldset-plain">
       <legend class="mb-2 text-sm font-medium">Format</legend>
       <div class="flex flex-wrap gap-2">
-        <Radio id="format-svg" v-model="format" name="format" value="svg" label="SVG" />
-        <Radio id="format-png" v-model="format" name="format" value="png" label="PNG" />
-        <Radio id="format-webp" v-model="format" name="format" value="webp" label="WebP" />
-        <Radio id="format-jpeg" v-model="format" name="format" value="jpeg" label="JPEG" />
+        <ItRadio id="format-svg" v-model="format" name="format" value="svg" label="SVG" />
+        <ItRadio id="format-png" v-model="format" name="format" value="png" label="PNG" />
+        <ItRadio id="format-webp" v-model="format" name="format" value="webp" label="WebP" />
+        <ItRadio id="format-jpeg" v-model="format" name="format" value="jpeg" label="JPEG" />
       </div>
     </fieldset>
 
-    <Field label="Module size" html-for="module-size" hint="Pixels per QR module.">
+    <ItField label="Module size" html-for="module-size" hint="Pixels per QR module.">
       <div class="flex items-center gap-3">
-        <Range
+        <ItRange
           id="module-size"
           v-model="moduleSize"
           aria-label="Module size"
@@ -76,7 +76,7 @@ const light = computed<string>({
           :step="1"
           class="flex-1"
         />
-        <Input
+        <ItInput
           v-model="moduleSize"
           type="number"
           aria-label="Module size value"
@@ -85,11 +85,11 @@ const light = computed<string>({
           class="w-20"
         />
       </div>
-    </Field>
+    </ItField>
 
-    <Field label="Quiet zone" html-for="quiet-zone" hint="Modules of margin around the code.">
+    <ItField label="Quiet zone" html-for="quiet-zone" hint="Modules of margin around the code.">
       <div class="flex items-center gap-3">
-        <Range
+        <ItRange
           id="quiet-zone"
           v-model="quietZone"
           aria-label="Quiet zone"
@@ -98,7 +98,7 @@ const light = computed<string>({
           :step="1"
           class="flex-1"
         />
-        <Input
+        <ItInput
           v-model="quietZone"
           type="number"
           aria-label="Quiet zone value"
@@ -107,27 +107,27 @@ const light = computed<string>({
           class="w-20"
         />
       </div>
-    </Field>
+    </ItField>
 
     <div class="grid grid-cols-2 gap-3">
-      <Field label="Dark colour" html-for="color-dark">
-        <Input
+      <ItField label="Dark colour" html-for="color-dark">
+        <ItInput
           id="color-dark"
           v-model="dark"
           aria-label="Dark colour"
           type="color"
           class="h-10 p-1"
         />
-      </Field>
-      <Field label="Light colour" html-for="color-light">
-        <Input
+      </ItField>
+      <ItField label="Light colour" html-for="color-light">
+        <ItInput
           id="color-light"
           v-model="light"
           aria-label="Light colour"
           type="color"
           class="h-10 p-1"
         />
-      </Field>
+      </ItField>
     </div>
   </section>
 </template>
