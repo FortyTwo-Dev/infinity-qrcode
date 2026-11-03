@@ -40,5 +40,13 @@ export default withVueTs(
       },
     },
   },
+  {
+    files: ['*.config.ts'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
   prettier,
 )

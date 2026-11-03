@@ -20,12 +20,16 @@ rewriting it. Keep the index in `docs/decisions/README.md` up to date.
 
 ## Project overview
 
-Infinity QRCode is a client-side Vue 3 application with two routes:
+Infinity QRCode is a client-side Vue 3 application with two product routes:
 
 - `/` (`src/views/GeneratorView.vue`): generate a QR code from one of ten
   payload types and export it as SVG, PNG, WebP or JPEG.
 - `/learn` (`src/views/LearnView.vue`): replay the construction of a QR code
   frame by frame with `iqrcode-learn-wasm`.
+
+The shell also exposes `/styleguide` (theme documentation), `/legal` (mentions
+légales) and `/privacy` (politique de confidentialité). The last two are written
+in French for the French legal notice.
 
 Generation uses `iqrcode-wasm`; tracing uses `iqrcode-learn-wasm`. Both are
 `wasm-bindgen` web-target packages loaded lazily per route. The two views share
@@ -58,8 +62,12 @@ See `docs/decisions/ADR-0001` (rebuild and routes), `ADR-0002` (toolchain),
 
 ## Testing
 
-- `bun test` runs the test suite; `bun run lint`, `bun run type-check` and
-  `bun run build` are the other gates.
+- `bun test` covers the domain logic; `bun run test:unit` runs the component
+  tests with Vitest and `happy-dom`; `bun run test:e2e` runs Playwright against
+  the built app.
+- `bun run lint`, `bun run type-check` and `bun run build` are the other gates.
+- `bun run check` runs lint, type-check, Bun tests and component tests.
+  `bun run check:all` adds the end-to-end suite.
 - Cover unit and feature behaviour, positive and negative cases, and the
   boundaries listed in `ibrain/rules/testing.md`.
 - Mandatory invariant: `LearnTrace.final.matrix()` equals `QrCodeWasm.matrix()`

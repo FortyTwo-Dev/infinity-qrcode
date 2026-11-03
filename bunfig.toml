@@ -1,0 +1,3 @@
+# Bun test runner: component specs are run by Vitest, not by Bun.
+[test]
+pathIgnorePatterns = ["**/*.spec.ts"]

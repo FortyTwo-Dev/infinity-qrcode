@@ -58,8 +58,11 @@ bun run preview
 | `bun run lint` | Run ESLint with zero warnings allowed |
 | `bun run lint:fix` | Apply ESLint fixes |
 | `bun run type-check` | Run `vue-tsc --noEmit` |
-| `bun test` | Run the Bun test suite |
-| `bun run check` | Lint, type-check and test |
+| `bun test` | Run the domain test suite |
+| `bun run test:unit` | Run the component tests with Vitest |
+| `bun run test:e2e` | Run the Playwright suite against the built app |
+| `bun run check` | Lint, type-check, domain and component tests |
+| `bun run check:all` | `check` plus the end-to-end suite |
 | `bun run format` | Format with Prettier |
 | `bun run governance:sync` | Refresh the ibrain materialized rules |
 | `bun run governance:check` | Check that the generated rules are current |
@@ -68,7 +71,7 @@ bun run preview
 
 ```
 src/
-├── views/                 # GeneratorView, LearnView, StyleguideView
+├── views/                 # Generator, Learn, Styleguide, Legal, Privacy
 ├── components/
 │   ├── generator/         # content picker, payload form, options, preview
 │   ├── learn/             # controls, stage, timeline, phase panel, stats
@@ -104,16 +107,20 @@ on `<html>`.
 ## Testing
 
 ```sh
-bun test
+bun test           # domain logic and WASM
+bun run test:unit  # components with Vitest and happy-dom
+bun run test:e2e   # Chromium against the built app
 ```
 
-The suite covers:
+Three layers:
 
-- every payload builder, including invalid and boundary input;
-- the mandatory invariant that the final learn matrix equals the generator
-  matrix for L, M, Q and H;
-- the structural phases of a trace;
-- SVG rendering.
+- **Domain**: every payload builder, invalid and boundary input, the mandatory
+  invariant that the final learn matrix equals the generator matrix for L, M, Q
+  and H, the structural phases of a trace, and SVG rendering.
+- **Components**: forms, choice groups, preview states and the theme menu.
+- **End to end**: generate, switch type, invalid then valid content, the download
+  state, the theme menu, dark mode, and no horizontal overflow at 360, 768 and
+  1440 px.
 
 A QR that renders is not necessarily a QR that scans. Scan one code per payload
 type with a phone before a release.
