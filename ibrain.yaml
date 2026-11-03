@@ -12,7 +12,7 @@ packs:
     path: "~/.iapp/ibrain/packs/github.com/FortyTwo-Dev/ibrain-packs/vue"
     priority: 100
   - source: git
-    url: "https://github.com/InfinityLib/iqrcode-ibrain-packs"
+    url: "https://github.com/InfinityLib/ibrain-packs"
     ref: "main"
     pack: "iqrcode-wasm"
   - source: path
