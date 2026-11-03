@@ -4,6 +4,8 @@ import { computed } from 'vue'
 import { ItField, ItOption, ItSelect } from '@components/theme'
 import { ERROR_CORRECTION_LEVELS, type ErrorCorrectionLevel } from '@/types/qr'
 
+import ErrorCorrectionHelp from './ErrorCorrectionHelp.vue'
+
 interface Props {
   level: ErrorCorrectionLevel
   version: number | null
@@ -46,7 +48,10 @@ const maskCandidates = computed<boolean>({
     <h2 id="trace-options-heading" class="it-h5 text-lg font-semibold">Trace</h2>
 
     <fieldset class="it-fieldset-plain">
-      <legend class="mb-2 text-sm font-medium">Error correction</legend>
+      <legend class="mb-2 flex items-center gap-2 text-sm font-medium">
+        Error correction
+        <ErrorCorrectionHelp />
+      </legend>
       <div class="it-choice-group it-choice-group-2">
         <label
           v-for="option in ERROR_CORRECTION_LEVELS"

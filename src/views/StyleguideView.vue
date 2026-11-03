@@ -119,6 +119,15 @@ const accent = 'blue'</code></pre>
           <button class="it-btn-primary it-btn-lg">Large</button>
         </div>
         <div class="row">
+          <button
+            type="button"
+            class="it-btn it-btn-secondary it-btn-sm it-btn-icon"
+            aria-label="Help"
+          >
+            ?
+          </button>
+        </div>
+        <div class="row">
           <ItButton variant="primary">ItButton primary</ItButton>
           <ItButton variant="secondary" size="lg">ItButton large</ItButton>
           <ItButton variant="danger" :loading="true">Loading</ItButton>

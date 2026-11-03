@@ -59,3 +59,11 @@
     width: 100%;
   }
 }
+
+@layer it.variants {
+  .it-btn-icon {
+    --it-button-padding: 0;
+    width: var(--it-button-height);
+    flex: none;
+  }
+}
