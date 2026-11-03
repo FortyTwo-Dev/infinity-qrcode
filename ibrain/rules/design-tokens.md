@@ -1,35 +1,59 @@
 ---
 paths:
+  - 'src/theme/**'
+  - 'src/components/theme/**'
   - 'src/css/**'
-  - 'src/components/ui/**'
   - 'src/**/*.vue'
 ---
 
 # Design tokens
 
-The visual identity of the current site is preserved. The rebuild changes the
-implementation, not the look.
+The application uses the in-repo Infinity Theme library. The visual identity is
+still the same: four accents, light/dark modes, square corners and the existing
+layout proportions.
 
 ## Themes
 
-- Four accent themes: `blue`, `red`, `pink`, `yellow`.
-- Two modes: `light` and `dark`, following `prefers-color-scheme` on first visit
-  and an explicit user choice afterwards.
-- The active combination is a class on `<html>`: `light-blue`, `dark-red`, etc.
-  Keep the class list and the token files in sync.
-- Persist the accent and the mode in `localStorage`. Do not reintroduce the
+- The theme is scoped by `.it-theme` on `<html>`.
+- The mode is `data-theme="light|dark"` on `<html>`.
+- The accent is `data-accent="blue|red|pink|yellow"` on `<html>`.
+- Persist the accent and the mode in `localStorage`.
+- Do not reintroduce the old `light-blue` / `dark-red` classes or the
   cookie-per-domain hack.
 
 ## Tokens
 
-- Use semantic utilities: `bg-background`, `text-foreground`, `bg-primary`,
-  `text-primary-foreground`, `border-secondary`, `text-destructive`.
-- Do not hard-code a colour that a token already names. A hexadecimal value in
-  a component is only acceptable as data (for example a QR colour preview).
-- Radius is a token (`--radius`), currently `0rem`. Do not introduce rounded
+- Library tokens use `--it-*`: `--it-bg`, `--it-fg`, `--it-surface`,
+  `--it-border`, `--it-accent`, `--it-accent-fg`, `--it-danger`.
+- Component tokens use `--it-button-*` and `--it-input-*`.
+- Tailwind is for layout only. Its semantic colours are mapped to `--it-*` in
+  `src/css/style.css`:
+  - `background` → `--it-bg`
+  - `foreground` → `--it-fg`
+  - `primary` → `--it-accent`
+  - `secondary` → `--it-surface`
+  - `border` → `--it-border`
+  - `destructive` → `--it-danger`
+- Use `border-border`, not `border-secondary`, for borders.
+- Do not hard-code a colour that a token already names. A hexadecimal value in a
+  component is only acceptable as data (for example a QR colour preview).
+- Radius is a token (`--it-radius`), currently `0px`. Do not introduce rounded
   corners in one component.
-- Typography follows the existing scale. Do not add a font dependency without a
-  design decision.
+
+## Components
+
+- Base HTML elements are styled by the library inside `.it-theme`.
+- Use `it-*` classes only for variants and sizes:
+  `it-btn-primary`, `it-btn-sm`, `it-input-lg`, `it-h5`, `it-p`, `it-img`.
+- Do not add a second component style in a Vue file. The CSS library is the
+  source of truth.
+- The Vue wrappers live in `src/components/theme/` and contain no `<style>`.
+
+## Verification
+
+- `/styleguide` is the living documentation. Update it when a token, a base
+  element or a variant changes.
+- Check light and dark modes, all four accents and the focus/disabled states.
 
 ## Layout
 

@@ -5,12 +5,14 @@ paths:
 
 # Architecture
 
-Infinity QRCode is a client-side Vue 3 application with two routes:
+Infinity QRCode is a client-side Vue 3 application with two product routes and
+a styleguide:
 
 | Route | View | Purpose |
 | --- | --- | --- |
 | `/` | `src/views/GeneratorView.vue` | Generate a QR code from a payload |
 | `/learn` | `src/views/LearnView.vue` | Replay the construction of a QR code step by step |
+| `/styleguide` | `src/views/StyleguideView.vue` | Living documentation for the theme library |
 
 ## Layers
 
@@ -18,14 +20,17 @@ Infinity QRCode is a client-side Vue 3 application with two routes:
 - `src/components/generator/`: content forms, options, preview, export.
 - `src/components/learn/`: controls, stage, timeline, phase panel, stats.
 - `src/components/qr/`: `QrCanvas`, the shared matrix renderer.
-- `src/components/layout/` and `src/components/ui/`: shell and primitives.
+- `src/components/theme/`: thin Vue wrappers for the theme library, no styles.
+- `src/components/layout/`: header, footer and PWA prompt.
+- `src/theme/`: design tokens, base HTML styles and `it-*` variants.
 - `src/composables/`: WASM loaders and shared UI state.
 - `src/lib/qrcode/`: payload builders, validation, matrix rendering, export.
 - `src/types/`: domain types.
 - `src/router/`: routes and guards.
 
 Dependencies point downward: views → components/composables → lib/types. A
-lower layer must not import a view or a component.
+lower layer must not import a view or a component. `src/theme` must not import
+Vue.
 
 ## Rules
 
