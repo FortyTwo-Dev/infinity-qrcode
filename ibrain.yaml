@@ -6,6 +6,9 @@ packs:
     path: "~/.iapp/ibrain/packs/github.com/FortyTwo-Dev/ibrain-packs/global"
     priority: 0
   - source: path
+    path: "~/.iapp/ibrain/packs/github.com/FortyTwo-Dev/ibrain-packs/containers"
+    priority: 20
+  - source: path
     path: "~/.iapp/ibrain/packs/github.com/FortyTwo-Dev/ibrain-packs/ci"
     priority: 40
   - source: path

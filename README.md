@@ -73,6 +73,45 @@ The version follows the Conventional Commits. A push on `main` opens a release
 pull request with the next version and the changelog. Merging it creates the tag
 and the GitHub release, and the footer reads the version from `package.json`.
 
+## Container
+
+The image builds the app with Bun and serves the static files with an
+unprivileged nginx on port 8080.
+
+```sh
+podman build --format docker -f container/Containerfile -t infinity-qrcode:local .
+podman run --rm -p 8080:8080 infinity-qrcode:local
+```
+
+A release publishes `ghcr.io/fortytwo-dev/infinity-qrcode` with the version tag
+(`vX.Y.Z`), `sha-<commit>` and `latest`. The `/healthz` endpoint answers for a
+health probe.
+
+Quadlet example:
+
+```ini
+[Container]
+Image=ghcr.io/fortytwo-dev/infinity-qrcode:latest
+ContainerName=infinity-qrcode
+AutoUpdate=registry
+PublishPort=8080:8080
+NoNewPrivileges=true
+DropCapability=ALL
+ReadOnly=true
+Tmpfs=/tmp:rw,mode=1777
+HealthCmd=wget -qO- http://127.0.0.1:8080/healthz
+HealthInterval=30s
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
+```
+
+`systemctl --user enable --now podman-auto-update.timer` follows the `latest`
+tag. Pin a version tag instead when a deployment must be reproducible.
+
 ## Architecture
 
 ```

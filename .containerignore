@@ -1,0 +1,15 @@
+node_modules
+dist
+.git
+.github
+.ai
+.agents
+.ibrain
+coverage
+playwright-report
+test-results
+tests
+e2e
+docs
+ibrain
+*.log
