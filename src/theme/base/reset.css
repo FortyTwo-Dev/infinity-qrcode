@@ -1,0 +1,50 @@
+@layer it.base {
+  :where(.it-theme) {
+    background-color: var(--it-bg);
+    color: var(--it-fg);
+    font-family: var(--it-font-sans);
+    font-size: var(--it-font-size-3);
+    line-height: var(--it-line-height-normal);
+  }
+
+  :where(.it-theme) *,
+  :where(.it-theme) *::before,
+  :where(.it-theme) *::after {
+    box-sizing: border-box;
+  }
+
+  :where(.it-theme) :where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd) {
+    margin: 0;
+  }
+
+  :where(.it-theme) :where(ul, ol) {
+    margin: 0;
+    padding-inline-start: 1.25em;
+  }
+
+  :where(.it-theme) :where(img, svg, video, canvas) {
+    display: block;
+    max-width: 100%;
+  }
+
+  :where(.it-theme) :where(button, input, select, textarea) {
+    font: inherit;
+    color: inherit;
+  }
+
+  :where(.it-theme) :where(button, [type='button'], [type='submit'], [type='reset']) {
+    appearance: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :where(.it-theme) {
+      --it-duration: 0.01ms;
+    }
+
+    :where(.it-theme) :where(*, *::before, *::after) {
+      animation-duration: 0.01ms;
+      animation-iteration-count: 1;
+      scroll-behavior: auto;
+    }
+  }
+}

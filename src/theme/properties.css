@@ -1,0 +1,133 @@
+/*
+ * Registered custom properties.
+ *
+ * Only values that benefit from typing, inheritance control or interpolation
+ * are registered. Registering every token adds noise and can hide invalid
+ * values behind the initial value.
+ */
+
+@property --it-bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(100% 0 0);
+}
+
+@property --it-fg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(18% 0 0);
+}
+
+@property --it-surface {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(97% 0 0);
+}
+
+@property --it-surface-fg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(18% 0 0);
+}
+
+@property --it-border {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(88% 0 0);
+}
+
+@property --it-accent {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(62% 0.19 260);
+}
+
+@property --it-accent-fg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(100% 0 0);
+}
+
+@property --it-danger {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(62% 0.2 25);
+}
+
+@property --it-focus-ring {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(62% 0.19 260);
+}
+
+@property --it-radius {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --it-control-height {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 2.5rem;
+}
+
+@property --it-duration {
+  syntax: '<time>';
+  inherits: true;
+  initial-value: 160ms;
+}
+
+@property --it-opacity {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 1;
+}
+
+@property --it-button-bg {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: transparent;
+}
+
+@property --it-button-fg {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: currentColor;
+}
+
+@property --it-button-border {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: transparent;
+}
+
+@property --it-button-height {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 2.5rem;
+}
+
+@property --it-input-bg {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: transparent;
+}
+
+@property --it-input-fg {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: currentColor;
+}
+
+@property --it-input-border {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: transparent;
+}
+
+@property --it-input-height {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 2.5rem;
+}

@@ -1,0 +1,38 @@
+@layer it.variants {
+  .it-lead {
+    font-size: var(--it-font-size-4);
+    line-height: var(--it-line-height-relaxed);
+    color: var(--it-muted);
+  }
+
+  .it-muted {
+    color: var(--it-muted);
+  }
+
+  .it-small {
+    font-size: var(--it-font-size-2);
+  }
+
+  .it-img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .it-img-fluid {
+    width: 100%;
+    height: auto;
+  }
+
+  .it-img-cover {
+    object-fit: cover;
+  }
+
+  .it-img-contain {
+    object-fit: contain;
+  }
+
+  .it-img-round {
+    border-radius: var(--it-radius-full);
+  }
+}
