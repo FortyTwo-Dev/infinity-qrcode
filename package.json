@@ -1,28 +1,52 @@
 {
   "name": "infinity-qrcode",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "private": true,
   "type": "module",
+  "packageManager": "bun@1.4.4",
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "bun": ">=1.4.4"
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "format": "prettier --write src/"
+    "type-check": "vue-tsc --noEmit",
+    "lint": "eslint . --max-warnings=0",
+    "lint:fix": "eslint . --fix",
+    "test": "bun test",
+    "check": "bun run lint && bun run type-check && bun test",
+    "format": "prettier --write src/ tests/ *.ts *.js",
+    "governance:sync": "ibrain sync",
+    "governance:check": "ibrain sync --check",
+    "governance:list": "ibrain list"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.12",
-    "qrcode": "^1.5.4",
-    "tailwindcss": "^4.1.12",
-    "vue": "^3.5.18"
+    "iqrcode-learn-wasm": "0.1.0",
+    "iqrcode-wasm": "0.1.0",
+    "vue": "3.5.44",
+    "vue-router": "5.4.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.1",
-    "prettier": "3.6.2",
-    "vite": "^7.0.6",
-    "vite-plugin-pwa": "^1.0.3",
-    "vite-plugin-vue-devtools": "^8.0.0"
+    "@eslint/js": "10.0.1",
+    "@tailwindcss/vite": "4.3.4",
+    "@types/bun": "1.4.4",
+    "@types/node": "26.6.6",
+    "@vitejs/plugin-vue": "6.0.10",
+    "@vue/eslint-config-typescript": "14.9.0",
+    "@vue/tsconfig": "0.9.1",
+    "eslint": "10.14.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-vue": "10.12.0",
+    "eslint-plugin-vuejs-accessibility": "2.6.3",
+    "globals": "17.14.0",
+    "prettier": "3.9.10",
+    "tailwindcss": "4.3.4",
+    "typescript": "6.0.3",
+    "vite": "8.3.5",
+    "vite-plugin-pwa": "2.0.0",
+    "vite-plugin-vue-devtools": "8.2.1",
+    "vue-eslint-parser": "10.4.1",
+    "vue-tsc": "3.3.14"
   }
 }

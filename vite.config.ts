@@ -1,14 +1,13 @@
 import { fileURLToPath, URL } from 'node:url'
 
-import packageJson from './package.json';
-
 import { defineConfig } from 'vite'
-import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue'
+import tailwindcss from '@tailwindcss/vite'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// https://vite.dev/config/
+import packageJson from './package.json' with { type: 'json' }
+
 export default defineConfig({
   plugins: [
     vue(),
@@ -16,16 +15,30 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'prompt',
+      injectRegister: false,
       workbox: {
-        globPatterns: ['**/*{js,css,html,ico,png,svg}'],
+        globPatterns: ['**/*{js,css,html,ico,png,svg,wasm}'],
       },
       manifest: {
         name: 'Infinity QRCode',
         short_name: 'IQRCode',
-        description: 'Create QR codes effortlessly with this free, simple, and open-source tool.',
+        description: 'Generate QR codes and learn how they are built.',
         theme_color: '#8ec5ff',
-        background_color: '#fbfbfe'
-      }
+        background_color: '#fbfbfe',
+        icons: [
+          {
+            src: '/img/qrcode.png',
+            sizes: '200x200',
+            type: 'image/png',
+            purpose: 'any',
+          },
+          {
+            src: '/favicon.ico',
+            sizes: 'any',
+            type: 'image/x-icon',
+          },
+        ],
+      },
     }),
   ],
   resolve: {
@@ -34,6 +47,9 @@ export default defineConfig({
       '@components': fileURLToPath(new URL('./src/components', import.meta.url)),
       '@ui': fileURLToPath(new URL('./src/components/ui', import.meta.url)),
     },
+  },
+  optimizeDeps: {
+    exclude: ['iqrcode-wasm', 'iqrcode-learn-wasm'],
   },
   define: {
     __APP_VERSION__: JSON.stringify(packageJson.version),
