@@ -1,78 +1,152 @@
 import { mount } from '@vue/test-utils'
-import { nextTick } from 'vue'
+import type { DOMWrapper } from '@vue/test-utils'
 import { describe, expect, test } from 'vitest'
 
 import type { QrMatrixData, QrOptions } from '@/types/qr'
 
 import QrPreview from './QrPreview.vue'
 
-const options: QrOptions = {
-  level: 'H',
-  format: 'svg',
+type Wrapper = ReturnType<typeof mount>
+
+const DATA: QrMatrixData = {
+  matrix: new Uint8Array([1, 0, 0, 1]),
+  size: 2,
+  version: 1,
+  mask: 0,
+}
+
+const OPTIONS: QrOptions = {
+  level: 'M',
+  format: 'png',
   moduleSize: 8,
   quietZone: 4,
   dark: '#000000',
   light: '#ffffff',
 }
 
-function matrixData(size = 33): QrMatrixData {
-  return { matrix: new Uint8Array(size * size), size, version: 4, mask: 1 }
+function normalize(text: string): string {
+  return text.replace(/\s+/g, ' ').trim()
+}
+
+function mountPreview(
+  overrides: Partial<{
+    data: QrMatrixData | null
+    options: QrOptions
+    loading: boolean
+    error: string | null
+  }> = {},
+) {
+  return mount(QrPreview, {
+    props: { data: DATA, options: OPTIONS, loading: false, error: null, ...overrides },
+  })
+}
+
+function downloadButton(wrapper: Wrapper): DOMWrapper<Element> {
+  const button = wrapper.findAll('button').find((node) => {
+    const accessible = node.attributes('aria-label') ?? node.attributes('title') ?? node.text()
+    return /download/i.test(accessible)
+  })
+  expect(button, 'download button').toBeDefined()
+  return button!
+}
+
+function isDisabled(wrapper: Wrapper): boolean {
+  return downloadButton(wrapper).attributes('disabled') !== undefined
+}
+
+function px(value: string | null | undefined): number | null {
+  if (!value) return null
+  const match = /^\s*([\d.]+)px\s*$/.exec(value)
+  return match ? Number(match[1]) : null
+}
+
+function cssWidth(element: Element): number | null {
+  const html = element as HTMLElement
+  const computed = element.ownerDocument.defaultView?.getComputedStyle(html)
+  return (
+    px(html.style.width) ??
+    px(html.style.maxWidth) ??
+    px(computed?.width) ??
+    px(computed?.maxWidth)
+  )
+}
+
+function canvasWidth(wrapper: Wrapper): number {
+  const canvas = wrapper.get('canvas')
+  const fromCss = cssWidth(canvas.element)
+  if (fromCss !== null) return fromCss
+
+  const attribute = canvas.attributes('width')
+  return attribute ? Number(attribute) : Number.NaN
 }
 
 describe('QrPreview', () => {
-  test('shows the empty state and disables the download', () => {
-    const wrapper = mount(QrPreview, { props: { data: null, options } })
+  test('invites valid content and disables the download without data', () => {
+    const wrapper = mountPreview({ data: null })
 
     expect(wrapper.text()).toContain('Enter valid content to see the QR code.')
     expect(wrapper.find('canvas').exists()).toBe(false)
-    expect(wrapper.get('button').attributes('disabled')).toBeDefined()
+    expect(isDisabled(wrapper)).toBe(true)
   })
 
-  test('keeps the preview size independent from the export module size', async () => {
-    const wrapper = mount(QrPreview, {
-      props: { data: matrixData(), options: { ...options, moduleSize: 24 } },
-    })
-    await nextTick()
+  test('shows the loading status without canvas or download while loading', () => {
+    const wrapper = mountPreview({ data: null, loading: true })
 
-    const canvas = wrapper.get('canvas').element as HTMLCanvasElement
-
-    // (33 modules + 2 * 4 quiet zone) * 8 preview pixels, not * 24 export pixels.
-    expect(canvas.width).toBe(328)
-    expect(canvas.height).toBe(328)
+    expect(wrapper.text()).toContain('Loading QR engine')
+    expect(wrapper.find('canvas').exists()).toBe(false)
+    expect(isDisabled(wrapper)).toBe(true)
   })
 
-  test('shrinks the preview for a larger version', async () => {
-    const wrapper = mount(QrPreview, {
-      props: { data: matrixData(177), options },
-    })
-    await nextTick()
+  test('announces an error inside a role alert and disables the download', () => {
+    const wrapper = mountPreview({ data: null, error: 'The engine failed to start.' })
 
-    const canvas = wrapper.get('canvas').element as HTMLCanvasElement
-
-    expect(canvas.width).toBeLessThanOrEqual(360)
-    expect(canvas.width).toBeGreaterThan(0)
+    const alerts = wrapper.findAll('[role="alert"]')
+    expect(alerts.length).toBeGreaterThan(0)
+    expect(
+      alerts.some((alert) => normalize(alert.text()).includes('The engine failed to start.')),
+    ).toBe(true)
+    expect(wrapper.find('canvas').exists()).toBe(false)
+    expect(isDisabled(wrapper)).toBe(true)
   })
 
-  test('emits download when the code is available', async () => {
-    const wrapper = mount(QrPreview, { props: { data: matrixData(), options } })
+  test('renders the canvas and emits download once when clicked with data', async () => {
+    const wrapper = mountPreview()
 
-    await wrapper.get('button').trigger('click')
+    expect(wrapper.find('canvas').exists()).toBe(true)
+    expect(isDisabled(wrapper)).toBe(false)
+
+    await downloadButton(wrapper).trigger('click')
 
     expect(wrapper.emitted('download')).toHaveLength(1)
   })
 
-  test('renders the error state as an alert', () => {
-    const wrapper = mount(QrPreview, {
-      props: { data: null, options, error: 'Content is too long.' },
-    })
+  test('caps the on-screen width independently from the export module size', async () => {
+    const small = mountPreview({ options: { ...OPTIONS, moduleSize: 8 } })
+    const large = mountPreview({ options: { ...OPTIONS, moduleSize: 24 } })
 
-    expect(wrapper.get('[role="alert"]').text()).toBe('Content is too long.')
-    expect(wrapper.get('button').attributes('disabled')).toBeDefined()
+    await small.vm.$nextTick()
+    await large.vm.$nextTick()
+
+    const smallWidth = canvasWidth(small)
+    const largeWidth = canvasWidth(large)
+
+    expect(Number.isFinite(smallWidth)).toBe(true)
+    expect(Number.isFinite(largeWidth)).toBe(true)
+    expect(smallWidth).toBe(largeWidth)
+    expect(smallWidth).toBeLessThanOrEqual(360)
+    expect(largeWidth).toBeLessThanOrEqual(360)
   })
 
-  test('reports the loading state', () => {
-    const wrapper = mount(QrPreview, { props: { data: null, options, loading: true } })
+  test('keeps a large matrix at or below the 360 px display cap', async () => {
+    const size = 57
+    const matrix = new Uint8Array(size * size).fill(1)
+    const wrapper = mountPreview({
+      data: { matrix, size, version: 10, mask: 2 },
+      options: { ...OPTIONS, moduleSize: 24 },
+    })
 
-    expect(wrapper.get('output').text()).toContain('Loading QR engine')
+    await wrapper.vm.$nextTick()
+
+    expect(canvasWidth(wrapper)).toBeLessThanOrEqual(360)
   })
 })

@@ -17,9 +17,9 @@ for (const route of routes) {
     page.on('pageerror', (error) => errors.push(error.message))
 
     await page.goto(route.path)
+    await page.waitForLoadState('networkidle')
 
     await expect(page.getByRole('heading', { level: 1, name: route.title })).toBeVisible()
-    await page.waitForTimeout(500)
     expect(errors).toEqual([])
   })
 }

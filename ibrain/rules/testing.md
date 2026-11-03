@@ -42,6 +42,8 @@ This project overrides the generic `vue/testing` rule.
 | Forms | component | A validation error appears after input, not before; it clears when valid; it resets on type change |
 | Choice groups | component | One radio per option, keyboard order, external model updates |
 | Preview | component | Empty, loading and error states; the displayed size ignores the export size |
+| Learn controls | component | Four correction levels, chosen level emitted, mask toggle emitted |
+| QR code stats | component | Unknown values shown as `?`, revealed at their phase, `data-state` marks the active one |
 | Shell | component | Theme menu closes on outside click, Escape and selection |
 | Flows | end to end | Generate, switch type, invalid then valid content, download enabled |
 | Layout | end to end | No horizontal overflow at 360, 768 and 1440 px; the code stays inside the preview |
