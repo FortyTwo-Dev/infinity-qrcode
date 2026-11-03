@@ -47,7 +47,7 @@ This project overrides the generic `vue/testing` rule.
 | Shell | component | Theme menu closes on outside click, Escape and selection |
 | Flows | end to end | Generate, switch type, invalid then valid content, download enabled |
 | Layout | end to end | No horizontal overflow at 360, 768 and 1440 px; the code stays inside the preview |
-| Routes | end to end | `/`, `/learn` and `/styleguide` render with no console error |
+| Routes | end to end | `/`, `/learn`, `/credits`, `/legal` and `/privacy` render with no console error |
 
 ## Invariants
 

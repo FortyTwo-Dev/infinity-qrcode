@@ -5,14 +5,14 @@ paths:
 
 # Architecture
 
-Infinity QRCode is a client-side Vue 3 application with two product routes, a
-styleguide and two legal pages:
+Infinity QRCode is a client-side Vue 3 application with two product routes and
+three secondary pages:
 
 | Route | View | Purpose |
 | --- | --- | --- |
 | `/` | `src/views/GeneratorView.vue` | Generate a QR code from a payload |
 | `/learn` | `src/views/LearnView.vue` | Replay the construction of a QR code step by step |
-| `/styleguide` | `src/views/StyleguideView.vue` | Living documentation for the theme library |
+| `/credits` | `src/views/CreditsView.vue` | Open-source and font credits |
 | `/legal` | `src/views/LegalView.vue` | Mentions légales, in French |
 | `/privacy` | `src/views/PrivacyView.vue` | Politique de confidentialité, in French |
 

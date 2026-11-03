@@ -21,7 +21,7 @@ const year = new Date().getFullYear()
         >
           GitHub
         </a>
-        <RouterLink to="/styleguide" class="hover:text-primary">Styleguide</RouterLink>
+        <RouterLink to="/credits" class="hover:text-primary">Credits</RouterLink>
         <RouterLink to="/legal" class="hover:text-primary">Mentions légales</RouterLink>
         <RouterLink to="/privacy" class="hover:text-primary">Confidentialité</RouterLink>
         <span class="opacity-70">v{{ version }}</span>

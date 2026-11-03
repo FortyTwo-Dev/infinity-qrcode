@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 const routes = [
   { path: '/', title: 'QR Code generator' },
   { path: '/learn', title: 'Learn QR codes' },
-  { path: '/styleguide', title: 'Infinity Theme' },
+  { path: '/credits', title: 'Credits' },
   { path: '/legal', title: 'Mentions légales' },
   { path: '/privacy', title: 'Politique de confidentialité' },
 ]

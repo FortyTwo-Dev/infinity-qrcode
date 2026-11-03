@@ -27,9 +27,9 @@ Infinity QRCode is a client-side Vue 3 application with two product routes:
 - `/learn` (`src/views/LearnView.vue`): replay the construction of a QR code
   frame by frame with `iqrcode-learn-wasm`.
 
-The shell also exposes `/styleguide` (theme documentation), `/legal` (mentions
-légales) and `/privacy` (politique de confidentialité). The last two are written
-in French for the French legal notice.
+The shell also exposes `/credits` (open-source and font credits), `/legal`
+(mentions légales) and `/privacy` (politique de confidentialité). The last two
+are written in French for the French legal notice.
 
 Generation uses `iqrcode-wasm`; tracing uses `iqrcode-learn-wasm`. Both are
 `wasm-bindgen` web-target packages loaded lazily per route. The two views share
@@ -39,7 +39,7 @@ Layers: `views` → `components/{generator,learn,qr,theme}` → `composables`/`l
 `types`. `App.vue` is the shell only. No QR business logic lives in a component;
 components use the adapters in `src/lib/qrcode/` and the WASM composables. The
 `src/theme` library owns tokens and base HTML styles; `src/components/theme`
-contains thin Vue wrappers without styles. `/styleguide` documents the library.
+contains thin Vue wrappers without styles.
 
 See `docs/decisions/ADR-0001` (rebuild and routes), `ADR-0002` (toolchain),
 `ADR-0003` (visual identity) and `ADR-0004` (theme library).
@@ -74,7 +74,7 @@ See `docs/decisions/ADR-0001` (rebuild and routes), `ADR-0002` (toolchain),
   for the same payload and level, on L/M/Q/H.
 - A QR that renders is not a QR that scans: scan one code per payload type with
   a phone before release.
-- Check `/styleguide` in light/dark and all four accents when a token or a base
+- Check the app in light/dark and all four accents when a token or a base
   element changes.
 - Tests are deterministic: no network, no real timers, no shared state.
 
