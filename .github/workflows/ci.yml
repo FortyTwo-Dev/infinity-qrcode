@@ -61,3 +61,22 @@ jobs:
 
       - name: End-to-end tests
         run: bun run test:e2e
+
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Build the image
+        run: podman build --format docker -f container/Containerfile -t infinity-qrcode:ci .
+
+      - name: Smoke test the image
+        run: |
+          podman run -d --name infinity-qrcode-ci -p 8080:8080 infinity-qrcode:ci
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8080/healthz; then break; fi
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:8080/ | grep -q "Infinity QRCode"
+          podman rm -f infinity-qrcode-ci
