@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 
 import { ItButton, ItOption, ItRange, ItSelect } from '@components/theme'
 import { PHASE_INFO } from '@/lib/learn/phases'
@@ -11,9 +11,31 @@ interface Props {
   phases: LearnPhase[]
   playing: boolean
   speed: number
+  reducedMotion?: boolean
+  shareUrl: string
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), { reducedMotion: false })
+
+const copied = ref(false)
+const copyError = ref(false)
+let copyTimer: ReturnType<typeof setTimeout> | undefined
+
+async function copyLink() {
+  clearTimeout(copyTimer)
+  copyError.value = false
+
+  try {
+    await navigator.clipboard.writeText(props.shareUrl)
+    copied.value = true
+    copyTimer = setTimeout(() => (copied.value = false), 2000)
+  } catch {
+    copyError.value = true
+    copyTimer = setTimeout(() => (copyError.value = false), 3000)
+  }
+}
+
+onBeforeUnmount(() => clearTimeout(copyTimer))
 
 const emit = defineEmits<{
   'update:frame-index': [index: number]
@@ -89,11 +111,59 @@ function phaseTitle(phase: LearnPhase): string {
 <template>
   <section aria-labelledby="timeline-heading" class="flex flex-col gap-3">
     <div class="flex items-center justify-between gap-2">
-      <h2 id="timeline-heading" class="it-h5 text-lg font-semibold">Timeline</h2>
-      <p class="text-xs opacity-70" aria-live="polite">
-        Frame {{ frameCount ? frameIndex + 1 : 0 }} / {{ frameCount }}
-      </p>
+      <h2 id="timeline-heading" class="it-h5 m-0 text-lg font-semibold">Timeline</h2>
+      <div class="flex items-center gap-2">
+        <p class="m-0 text-xs opacity-70" aria-live="polite">
+          Frame {{ frameCount ? frameIndex + 1 : 0 }} / {{ frameCount }}
+        </p>
+        <button
+          type="button"
+          class="it-btn it-btn-secondary it-btn-sm it-btn-icon"
+          :aria-label="copied ? 'Link copied' : 'Copy link to this frame'"
+          :title="copied ? 'Link copied' : 'Copy link to this frame'"
+          :disabled="frameCount === 0"
+          @click="copyLink"
+        >
+          <svg
+            v-if="!copied"
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="18" cy="5" r="3" />
+            <circle cx="6" cy="12" r="3" />
+            <circle cx="18" cy="19" r="3" />
+            <path d="m8.59 13.51 6.83 3.98M15.41 6.51 8.59 10.49" />
+          </svg>
+          <svg
+            v-else
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="m5 12 5 5L20 7" />
+          </svg>
+        </button>
+      </div>
     </div>
+
+    <p v-if="copyError" class="text-xs text-destructive" role="alert">
+      Could not copy the link. Copy the address bar instead.
+    </p>
 
     <div>
       <div role="group" aria-label="Construction phases" class="flex h-4 w-full bg-secondary">
@@ -187,8 +257,8 @@ function phaseTitle(phase: LearnPhase): string {
         class="it-btn-icon"
         size="sm"
         :aria-label="playing ? 'Pause' : 'Play'"
-        :title="playing ? 'Pause' : 'Play'"
-        :disabled="frameCount === 0"
+        :title="reducedMotion ? 'Autoplay is off with reduced motion' : playing ? 'Pause' : 'Play'"
+        :disabled="frameCount === 0 || reducedMotion"
         @click="emit('toggle')"
       >
         <svg
@@ -285,5 +355,9 @@ function phaseTitle(phase: LearnPhase): string {
         </ItSelect>
       </div>
     </div>
+
+    <p v-if="reducedMotion" class="text-xs opacity-70">
+      Autoplay is off because your system asks for reduced motion. Use the arrows to step through.
+    </p>
   </section>
 </template>

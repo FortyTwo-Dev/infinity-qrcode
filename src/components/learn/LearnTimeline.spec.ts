@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils'
-import { afterEach, describe, expect, test } from 'vitest'
+import { flushPromises, mount } from '@vue/test-utils'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import type { LearnPhase } from '@/types/learn'
 
@@ -17,6 +17,8 @@ const RUNS = [
 ] as const
 
 const TRANSPORT = ['First frame', 'Previous frame', 'Play', 'Next frame', 'Last frame'] as const
+
+const SHARE_URL = 'https://example.test/learn?level=H'
 
 let wrapper: Wrapper | undefined
 
@@ -42,6 +44,7 @@ function mountTimeline(overrides: Partial<Record<string, unknown>> = {}): Wrappe
       phases: PHASES,
       playing: false,
       speed: 1,
+      shareUrl: SHARE_URL,
       ...overrides,
     },
     attachTo: document.body,
@@ -72,9 +75,9 @@ function isDisabled(button: HTMLButtonElement): boolean {
 }
 
 function speedSelect(): ReturnType<Wrapper['find']> {
-  const select = wrapper!.findAll('select').find((node) =>
-    node.findAll('option').some((option) => normalize(option.text()).includes('×')),
-  )
+  const select = wrapper!
+    .findAll('select')
+    .find((node) => node.findAll('option').some((option) => normalize(option.text()).includes('×')))
   expect(select, 'speed select').toBeDefined()
   return select!
 }
@@ -219,5 +222,55 @@ describe('LearnTimeline', () => {
     expect(emitted).toHaveLength(1)
     expect(typeof emitted?.[0]).toBe('number')
     expect(emitted).toEqual([2])
+  })
+
+  test('disables autoplay when reduced motion is requested', () => {
+    const note =
+      'Autoplay is off because your system asks for reduced motion. Use the arrows to step through.'
+
+    mountTimeline({ reducedMotion: true })
+    expect(isDisabled(buttonByName('Play'))).toBe(true)
+    expect(text()).toContain(note)
+
+    wrapper!.unmount()
+    wrapper = undefined
+    document.body.innerHTML = ''
+
+    mountTimeline({ reducedMotion: false })
+    expect(isDisabled(buttonByName('Play'))).toBe(false)
+  })
+
+  describe('share button', () => {
+    const writeText = vi.fn<(text: string) => Promise<void>>()
+
+    beforeEach(() => {
+      writeText.mockReset()
+      writeText.mockResolvedValue(undefined)
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText },
+      })
+    })
+
+    afterEach(() => {
+      Reflect.deleteProperty(navigator, 'clipboard')
+    })
+
+    test('copies the share URL and confirms it', async () => {
+      mountTimeline({ frameCount: 5 })
+
+      buttonByName('Copy link to this frame').click()
+      await flushPromises()
+
+      expect(writeText).toHaveBeenCalledTimes(1)
+      expect(writeText).toHaveBeenCalledWith(SHARE_URL)
+      expect(buttonByName('Link copied')).toBeDefined()
+    })
+
+    test('disables the share button without frames', () => {
+      mountTimeline({ frameCount: 0, frameIndex: 0, phases: [] })
+
+      expect(isDisabled(buttonByName('Copy link to this frame'))).toBe(true)
+    })
   })
 })

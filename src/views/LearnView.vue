@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import type { LearnTrace } from 'iqrcode-learn-wasm'
 
@@ -16,10 +16,13 @@ import {
   readTraceMetadata,
   useLearnWasm,
 } from '@/composables/useLearnWasm'
+import { useReducedMotion } from '@/composables/useReducedMotion'
 import type { LearnFrameData, LearnPhase, TraceMetadata } from '@/types/learn'
 import type { ErrorCorrectionLevel, QrOptions } from '@/types/qr'
 
 const route = useRoute()
+const router = useRouter()
+const reducedMotion = useReducedMotion()
 
 function queryString(value: unknown): string {
   return typeof value === 'string' ? value : ''
@@ -30,6 +33,11 @@ function queryLevel(value: unknown): ErrorCorrectionLevel | null {
 }
 
 const initialText = queryString(route.query.data)
+const initialFrame = (() => {
+  const value = Number(route.query.frame)
+  return Number.isFinite(value) && value >= 1 ? Math.floor(value) - 1 : null
+})()
+let pendingFrame = initialFrame
 const payload = ref('')
 const fieldErrors = ref<Record<string, string>>({})
 const level = ref<ErrorCorrectionLevel>(queryLevel(route.query.level) ?? 'H')
@@ -109,6 +117,10 @@ function rebuildTrace() {
     frameCount.value = next.frame_count()
     phases.value = readPhases(next, frameCount.value)
     frameIndex.value = 0
+    if (pendingFrame !== null) {
+      frameIndex.value = Math.min(pendingFrame, frameCount.value - 1)
+      pendingFrame = null
+    }
   } catch (cause) {
     disposeTrace()
     frameCount.value = 0
@@ -171,8 +183,13 @@ function setFrame(index: number) {
 }
 
 function togglePlayback() {
+  if (reducedMotion.value) return
   playing.value = !playing.value
 }
+
+watch(reducedMotion, (value) => {
+  if (value) playing.value = false
+})
 
 function onKeyDown(event: KeyboardEvent) {
   const target = event.target as HTMLElement | null
@@ -202,8 +219,32 @@ function onKeyDown(event: KeyboardEvent) {
 
 onMounted(() => window.addEventListener('keydown', onKeyDown))
 
+let urlTimer: ReturnType<typeof setTimeout> | undefined
+
+const shareUrl = computed(() => {
+  const url = new URL(window.location.href)
+  url.search = ''
+  if (payload.value) url.searchParams.set('data', payload.value)
+  url.searchParams.set('level', level.value)
+  if (frameIndex.value > 0) url.searchParams.set('frame', String(frameIndex.value + 1))
+  return url.toString()
+})
+
+function syncQuery() {
+  const query: Record<string, string> = { level: level.value }
+  if (payload.value) query.data = payload.value
+  if (frameIndex.value > 0) query.frame = String(frameIndex.value + 1)
+  void router.replace({ query })
+}
+
+watch([payload, level, frameIndex], () => {
+  clearTimeout(urlTimer)
+  urlTimer = setTimeout(syncQuery, 300)
+})
+
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', onKeyDown)
+  clearTimeout(urlTimer)
   stopPlayback()
   disposeTrace()
 })
@@ -270,6 +311,8 @@ function handleErrors(errors: Record<string, string>) {
           :phases="phases"
           :playing="playing"
           :speed="speed"
+          :reduced-motion="reducedMotion"
+          :share-url="shareUrl"
           @update:frame-index="setFrame"
           @update:speed="speed = $event"
           @toggle="togglePlayback"
