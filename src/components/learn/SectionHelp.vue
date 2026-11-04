@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, useId, useTemplateRef } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface Props {
   label: string
@@ -85,7 +88,7 @@ onBeforeUnmount(() => {
         <button
           type="button"
           class="it-btn it-btn-secondary it-btn-sm it-btn-icon"
-          aria-label="Close"
+          :aria-label="t('learn.help.close')"
           @click="hide"
         >
           <svg

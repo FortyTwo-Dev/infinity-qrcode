@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { PHASE_INFO } from '@/lib/learn/phases'
 import type { LearnPhase } from '@/types/learn'
 
 import PhaseHelp from './PhaseHelp.vue'
+
+const { t } = useI18n()
 
 interface Props {
   phase: LearnPhase | null
@@ -21,30 +24,32 @@ const info = computed(() => (props.phase ? PHASE_INFO[props.phase] : null))
 <template>
   <section aria-labelledby="phase-heading" class="flex flex-col gap-3">
     <div class="flex items-center gap-2">
-      <h2 id="phase-heading" class="it-h5 m-0 text-lg font-semibold">Phase</h2>
+      <h2 id="phase-heading" class="it-h5 m-0 text-lg font-semibold">
+        {{ t('learn.panel.title') }}
+      </h2>
       <PhaseHelp :phase="phase" />
     </div>
 
     <div v-if="info" aria-live="polite">
-      <h3 class="it-h5 font-medium">{{ info.title }}</h3>
-      <p class="mt-1 text-sm opacity-80">{{ info.description }}</p>
+      <h3 class="it-h5 font-medium">{{ t(info.title) }}</h3>
+      <p class="mt-1 text-sm opacity-80">{{ t(info.description) }}</p>
 
       <dl class="mt-3 grid grid-cols-2 gap-2 text-sm">
         <template v-if="bitIndex !== undefined">
-          <dt class="opacity-70">Bit index</dt>
+          <dt class="opacity-70">{{ t('learn.panel.bitIndex') }}</dt>
           <dd>{{ bitIndex }}</dd>
         </template>
         <template v-if="mask !== undefined">
-          <dt class="opacity-70">Mask</dt>
+          <dt class="opacity-70">{{ t('learn.panel.mask') }}</dt>
           <dd>{{ mask }}</dd>
         </template>
         <template v-if="penalty !== undefined">
-          <dt class="opacity-70">Penalty</dt>
+          <dt class="opacity-70">{{ t('learn.panel.penalty') }}</dt>
           <dd>{{ penalty }}</dd>
         </template>
       </dl>
     </div>
 
-    <p v-else class="text-sm opacity-70">No frame selected.</p>
+    <p v-else class="text-sm opacity-70">{{ t('learn.panel.noFrame') }}</p>
   </section>
 </template>

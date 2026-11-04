@@ -1,6 +1,8 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, test } from 'vitest'
 
+import i18n from '@/i18n'
+
 import LearnControls from './LearnControls.vue'
 
 type Wrapper = ReturnType<typeof mount>
@@ -24,8 +26,10 @@ function mountControls(
     maskCandidates: boolean
   }> = {},
 ) {
+  i18n.global.locale.value = 'en'
   return mount(LearnControls, {
     props: { level: 'L', version: null, stride: 1, maskCandidates: false, ...overrides },
+    global: { plugins: [i18n] },
   })
 }
 

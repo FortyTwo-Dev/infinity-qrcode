@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { ItField, ItOption, ItSelect } from '@components/theme'
 import { ERROR_CORRECTION_LEVELS, type ErrorCorrectionLevel } from '@/types/qr'
@@ -7,6 +8,16 @@ import { ERROR_CORRECTION_LEVELS, type ErrorCorrectionLevel } from '@/types/qr'
 import DetailHelp from './DetailHelp.vue'
 import ErrorCorrectionHelp from './ErrorCorrectionHelp.vue'
 import VersionHelp from './VersionHelp.vue'
+
+const { t } = useI18n()
+
+/** Message keys for the error correction levels, indexed by level value. */
+const LEVEL_LABELS: Record<ErrorCorrectionLevel, string> = {
+  L: 'generator.levels.low',
+  M: 'generator.levels.medium',
+  Q: 'generator.levels.quartile',
+  H: 'generator.levels.high',
+}
 
 interface Props {
   level: ErrorCorrectionLevel
@@ -47,11 +58,11 @@ const maskCandidates = computed<boolean>({
 
 <template>
   <section aria-labelledby="trace-options-heading" class="flex flex-col gap-4">
-    <h2 id="trace-options-heading" class="it-h5 text-lg font-semibold">Trace</h2>
+    <h2 id="trace-options-heading" class="it-h5 text-lg font-semibold">{{ t('learn.controls.title') }}</h2>
 
     <fieldset class="it-fieldset-plain">
       <legend class="mb-2 flex items-center gap-2 text-sm font-medium">
-        Error correction
+        {{ t('learn.controls.errorCorrection') }}
         <ErrorCorrectionHelp />
       </legend>
       <div class="it-choice-group it-choice-group-2">
@@ -68,40 +79,52 @@ const maskCandidates = computed<boolean>({
             name="trace-level"
             :value="option.value"
           />
-          <span>{{ option.label }}</span>
+          <span>{{ t(LEVEL_LABELS[option.value]) }}</span>
         </label>
       </div>
     </fieldset>
 
     <ItField
-      label="Version"
+      :label="t('learn.controls.version')"
       html-for="trace-version"
-      hint="Auto picks the smallest version that fits."
+      :hint="t('learn.controls.versionHint')"
     >
       <template #help>
         <VersionHelp />
       </template>
-      <ItSelect id="trace-version" v-model="version" aria-label="Version">
-        <ItOption value="" text="Auto" />
+      <ItSelect
+        id="trace-version"
+        v-model="version"
+        :aria-label="t('learn.controls.version')"
+      >
+        <ItOption value="" :text="t('learn.controls.auto')" />
         <ItOption
           v-for="value in 40"
           :key="value"
           :value="String(value)"
-          :text="`Version ${value}`"
+          :text="t('learn.controls.versionOption', { version: value })"
         />
       </ItSelect>
     </ItField>
 
-    <ItField label="Detail" html-for="trace-stride" hint="Lower values create more frames.">
+    <ItField
+      :label="t('learn.controls.detail')"
+      html-for="trace-stride"
+      :hint="t('learn.controls.detailHint')"
+    >
       <template #help>
         <DetailHelp />
       </template>
-      <ItSelect id="trace-stride" v-model="stride" aria-label="Detail">
-        <ItOption value="1" text="Every data module" />
-        <ItOption value="5" text="Every 5 modules" />
-        <ItOption value="10" text="Every 10 modules" />
-        <ItOption value="20" text="Every 20 modules" />
-        <ItOption value="50" text="Every 50 modules" />
+      <ItSelect
+        id="trace-stride"
+        v-model="stride"
+        :aria-label="t('learn.controls.detail')"
+      >
+        <ItOption value="1" :text="t('learn.controls.everyModule')" />
+        <ItOption value="5" :text="t('learn.controls.everyModules', { count: 5 })" />
+        <ItOption value="10" :text="t('learn.controls.everyModules', { count: 10 })" />
+        <ItOption value="20" :text="t('learn.controls.everyModules', { count: 20 })" />
+        <ItOption value="50" :text="t('learn.controls.everyModules', { count: 50 })" />
       </ItSelect>
     </ItField>
 
@@ -112,7 +135,7 @@ const maskCandidates = computed<boolean>({
         type="checkbox"
         class="h-4 w-4 accent-primary"
       />
-      Show the eight mask candidates
+      {{ t('learn.controls.maskCandidates') }}
     </label>
   </section>
 </template>
