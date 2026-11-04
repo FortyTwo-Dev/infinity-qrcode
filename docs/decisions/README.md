@@ -10,3 +10,4 @@ Decisions taken in this repository, newest last. Each record follows
 | 0003 | Preserve the current visual identity | deprecated |
 | 0004 | Adopt the Infinity Theme token library | accepted |
 | 0005 | Adopt the logo yellow as the single accent | accepted |
+| 0006 | Add internationalization with vue-i18n | accepted |
