@@ -1,7 +1,17 @@
+<p align="center">
+  <img src="public/img/logo.png" width="128" alt="Infinity QRCode logo" />
+</p>
+
 # Infinity QRCode
 
 A client-side QR code generator and a step-by-step construction viewer, built on
 two WebAssembly packages from the same Rust core.
+
+[![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=FortyTwo-Dev_infinity-qrcode&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=FortyTwo-Dev_infinity-qrcode)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=FortyTwo-Dev_infinity-qrcode&metric=bugs)](https://sonarcloud.io/summary/new_code?id=FortyTwo-Dev_infinity-qrcode)
+[![Security hotspots](https://sonarcloud.io/api/project_badges/measure?project=FortyTwo-Dev_infinity-qrcode&metric=security_hotspots)](https://sonarcloud.io/summary/new_code?id=FortyTwo-Dev_infinity-qrcode)
+[![Code smells](https://sonarcloud.io/api/project_badges/measure?project=FortyTwo-Dev_infinity-qrcode&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=FortyTwo-Dev_infinity-qrcode)
+[![Duplicated lines](https://sonarcloud.io/api/project_badges/measure?project=FortyTwo-Dev_infinity-qrcode&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=FortyTwo-Dev_infinity-qrcode)
 
 - `/` generates a QR code for ten payload types and exports it as SVG, PNG,
   WebP or JPEG.
