@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { ItButton, ItOption, ItRange, ItSelect } from '@components/theme'
 import { PHASE_INFO } from '@/lib/learn/phases'
 import type { LearnPhase } from '@/types/learn'
+
+const { t } = useI18n()
 
 interface Props {
   frameCount: number
@@ -56,6 +59,7 @@ const speed = computed<string>({
 
 interface Family {
   id: string
+  /** Message catalog key of the family legend. */
   label: string
   phases: readonly LearnPhase[]
   swatch: string
@@ -64,14 +68,34 @@ interface Family {
 const FAMILIES: readonly Family[] = [
   {
     id: 'structure',
-    label: 'Structure',
+    label: 'learn.timeline.families.structure',
     phases: ['empty', 'finders', 'timing', 'alignment', 'version_info', 'format_reserved'],
     swatch: 'bg-secondary-foreground/25',
   },
-  { id: 'data', label: 'Data', phases: ['data_placement'], swatch: 'bg-primary' },
-  { id: 'masks', label: 'Masks', phases: ['mask_candidate', 'mask_chosen'], swatch: 'bg-warning' },
-  { id: 'format', label: 'Format', phases: ['format_info'], swatch: 'bg-info' },
-  { id: 'final', label: 'Final', phases: ['final'], swatch: 'bg-success' },
+  {
+    id: 'data',
+    label: 'learn.timeline.families.data',
+    phases: ['data_placement'],
+    swatch: 'bg-primary',
+  },
+  {
+    id: 'masks',
+    label: 'learn.timeline.families.masks',
+    phases: ['mask_candidate', 'mask_chosen'],
+    swatch: 'bg-warning',
+  },
+  {
+    id: 'format',
+    label: 'learn.timeline.families.format',
+    phases: ['format_info'],
+    swatch: 'bg-info',
+  },
+  {
+    id: 'final',
+    label: 'learn.timeline.families.final',
+    phases: ['final'],
+    swatch: 'bg-success',
+  },
 ]
 
 function familyOf(phase: LearnPhase): Family {
@@ -104,23 +128,30 @@ const currentStart = computed(() => {
 })
 
 function phaseTitle(phase: LearnPhase): string {
-  return PHASE_INFO[phase].title
+  return t(PHASE_INFO[phase].title)
 }
 </script>
 
 <template>
   <section aria-labelledby="timeline-heading" class="flex flex-col gap-3">
     <div class="flex items-center justify-between gap-2">
-      <h2 id="timeline-heading" class="it-h5 m-0 text-lg font-semibold">Timeline</h2>
+      <h2 id="timeline-heading" class="it-h5 m-0 text-lg font-semibold">
+        {{ t('learn.timeline.title') }}
+      </h2>
       <div class="flex items-center gap-2">
         <p class="m-0 text-xs opacity-70" aria-live="polite">
-          Frame {{ frameCount ? frameIndex + 1 : 0 }} / {{ frameCount }}
+          {{
+            t('learn.timeline.frameCounter', {
+              current: frameCount ? frameIndex + 1 : 0,
+              total: frameCount,
+            })
+          }}
         </p>
         <button
           type="button"
           class="it-btn it-btn-secondary it-btn-sm it-btn-icon"
-          :aria-label="copied ? 'Link copied' : 'Copy link to this frame'"
-          :title="copied ? 'Link copied' : 'Copy link to this frame'"
+          :aria-label="copied ? t('learn.timeline.linkCopied') : t('learn.timeline.copyLink')"
+          :title="copied ? t('learn.timeline.linkCopied') : t('learn.timeline.copyLink')"
           :disabled="frameCount === 0"
           @click="copyLink"
         >
@@ -162,12 +193,12 @@ function phaseTitle(phase: LearnPhase): string {
     </div>
 
     <p v-if="copyError" class="text-xs text-destructive" role="alert">
-      Could not copy the link. Copy the address bar instead.
+      {{ t('learn.timeline.copyFailed') }}
     </p>
 
     <div>
       <fieldset class="it-fieldset-plain flex h-4 w-full bg-secondary">
-        <legend class="sr-only">Construction phases</legend>
+        <legend class="sr-only">{{ t('learn.timeline.phasesLegend') }}</legend>
         <button
           v-for="run in runs"
           :key="run.start"
@@ -178,7 +209,7 @@ function phaseTitle(phase: LearnPhase): string {
             run.start === currentStart ? 'outline-2 outline-offset-1 outline-foreground' : '',
           ]"
           :style="{ flexGrow: run.length, flexBasis: 0 }"
-          :aria-label="`Jump to ${phaseTitle(run.phase)}`"
+          :aria-label="t('learn.timeline.jumpTo', { phase: phaseTitle(run.phase) })"
           :aria-current="run.start === currentStart ? 'step' : undefined"
           :title="phaseTitle(run.phase)"
           @click="emit('update:frame-index', run.start)"
@@ -188,7 +219,7 @@ function phaseTitle(phase: LearnPhase): string {
       <ul class="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
         <li v-for="family in FAMILIES" :key="family.id" class="flex items-center gap-1">
           <span class="inline-block h-2 w-2" :class="family.swatch" aria-hidden="true" />
-          {{ family.label }}
+          {{ t(family.label) }}
         </li>
       </ul>
     </div>
@@ -198,7 +229,7 @@ function phaseTitle(phase: LearnPhase): string {
       :min="0"
       :max="Math.max(0, frameCount - 1)"
       :step="1"
-      aria-label="Frame"
+      :aria-label="t('learn.timeline.frame')"
       :disabled="frameCount <= 1"
     />
 
@@ -207,8 +238,8 @@ function phaseTitle(phase: LearnPhase): string {
         class="it-btn-icon"
         variant="secondary"
         size="sm"
-        aria-label="First frame"
-        title="First frame"
+        :aria-label="t('learn.timeline.firstFrame')"
+        :title="t('learn.timeline.firstFrame')"
         :disabled="frameCount === 0 || frameIndex === 0"
         @click="emit('update:frame-index', 0)"
       >
@@ -233,8 +264,8 @@ function phaseTitle(phase: LearnPhase): string {
         class="it-btn-icon"
         variant="secondary"
         size="sm"
-        aria-label="Previous frame"
-        title="Previous frame"
+        :aria-label="t('learn.timeline.previousFrame')"
+        :title="t('learn.timeline.previousFrame')"
         :disabled="frameCount === 0 || frameIndex === 0"
         @click="emit('update:frame-index', frameIndex - 1)"
       >
@@ -257,8 +288,14 @@ function phaseTitle(phase: LearnPhase): string {
       <ItButton
         class="it-btn-icon"
         size="sm"
-        :aria-label="playing ? 'Pause' : 'Play'"
-        :title="reducedMotion ? 'Autoplay is off with reduced motion' : playing ? 'Pause' : 'Play'"
+        :aria-label="playing ? t('learn.timeline.pause') : t('learn.timeline.play')"
+        :title="
+          reducedMotion
+            ? t('learn.timeline.reducedMotionTitle')
+            : playing
+              ? t('learn.timeline.pause')
+              : t('learn.timeline.play')
+        "
         :disabled="frameCount === 0 || reducedMotion"
         @click="emit('toggle')"
       >
@@ -299,8 +336,8 @@ function phaseTitle(phase: LearnPhase): string {
         class="it-btn-icon"
         variant="secondary"
         size="sm"
-        aria-label="Next frame"
-        title="Next frame"
+        :aria-label="t('learn.timeline.nextFrame')"
+        :title="t('learn.timeline.nextFrame')"
         :disabled="frameCount === 0 || frameIndex >= frameCount - 1"
         @click="emit('update:frame-index', frameIndex + 1)"
       >
@@ -324,8 +361,8 @@ function phaseTitle(phase: LearnPhase): string {
         class="it-btn-icon"
         variant="secondary"
         size="sm"
-        aria-label="Last frame"
-        title="Last frame"
+        :aria-label="t('learn.timeline.lastFrame')"
+        :title="t('learn.timeline.lastFrame')"
         :disabled="frameCount === 0 || frameIndex >= frameCount - 1"
         @click="emit('update:frame-index', frameCount - 1)"
       >
@@ -347,8 +384,13 @@ function phaseTitle(phase: LearnPhase): string {
       </ItButton>
 
       <div class="ml-auto flex items-center gap-2 text-sm">
-        <span>Speed</span>
-        <ItSelect id="timeline-speed" v-model="speed" aria-label="Speed" class="w-24">
+        <span>{{ t('learn.timeline.speed') }}</span>
+        <ItSelect
+          id="timeline-speed"
+          v-model="speed"
+          :aria-label="t('learn.timeline.speed')"
+          class="w-24"
+        >
           <ItOption value="0.5" text="0.5×" />
           <ItOption value="1" text="1×" />
           <ItOption value="2" text="2×" />
@@ -358,7 +400,7 @@ function phaseTitle(phase: LearnPhase): string {
     </div>
 
     <p v-if="reducedMotion" class="text-xs opacity-70">
-      Autoplay is off because your system asks for reduced motion. Use the arrows to step through.
+      {{ t('learn.timeline.reducedMotionNote') }}
     </p>
   </section>
 </template>

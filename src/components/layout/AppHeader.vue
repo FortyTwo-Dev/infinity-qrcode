@@ -1,51 +1,24 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
-import { THEME_COLORS, type SiteThemeColor } from '@/types/theme'
+import type { Locale } from '@/i18n'
 
 interface Props {
-  theme: SiteThemeColor
   isDark: boolean
   dyslexia?: boolean
+  locale?: Locale
 }
 
-withDefaults(defineProps<Props>(), { dyslexia: false })
+withDefaults(defineProps<Props>(), { dyslexia: false, locale: 'en' })
 
-const emit = defineEmits<{
-  'update:theme': [theme: SiteThemeColor]
+defineEmits<{
   'toggle-mode': []
   'toggle-dyslexia': []
+  'toggle-locale': []
 }>()
 
-const themeDetails = useTemplateRef<HTMLDetailsElement>('themeDetails')
-
-function closeThemeMenu() {
-  themeDetails.value?.removeAttribute('open')
-}
-
-function selectTheme(color: SiteThemeColor) {
-  emit('update:theme', color)
-  closeThemeMenu()
-}
-
-function handlePointerDown(event: PointerEvent) {
-  const details = themeDetails.value
-  if (details?.open && !details.contains(event.target as Node)) closeThemeMenu()
-}
-
-function handleKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape' && themeDetails.value?.open) closeThemeMenu()
-}
-
-onMounted(() => {
-  document.addEventListener('pointerdown', handlePointerDown)
-  document.addEventListener('keydown', handleKeydown)
-})
-onBeforeUnmount(() => {
-  document.removeEventListener('pointerdown', handlePointerDown)
-  document.removeEventListener('keydown', handleKeydown)
-})
+const { t } = useI18n()
 </script>
 
 <template>
@@ -53,59 +26,33 @@ onBeforeUnmount(() => {
     <div class="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-2 px-4 py-3">
       <RouterLink
         to="/"
-        class="mr-auto text-lg font-semibold text-foreground no-underline hover:text-primary"
+        class="mr-auto flex items-center gap-2 text-lg font-semibold text-foreground no-underline it-link-accent"
       >
+        <img src="/img/logo.png" alt="" aria-hidden="true" class="h-7 w-7 rounded-sm" />
         Infinity QRCode
       </RouterLink>
 
-      <nav aria-label="Main" class="order-3 flex w-full items-center gap-1 sm:order-none sm:w-auto">
-        <RouterLink to="/" class="it-nav-link">Generate</RouterLink>
-        <RouterLink to="/learn" class="it-nav-link">Learn</RouterLink>
+      <nav :aria-label="t('header.nav')" class="order-3 flex w-full items-center gap-1 sm:order-none sm:w-auto">
+        <RouterLink to="/" class="it-nav-link">{{ t('header.generate') }}</RouterLink>
+        <RouterLink to="/learn" class="it-nav-link">{{ t('header.learn') }}</RouterLink>
       </nav>
 
-      <details ref="themeDetails" class="relative order-2 sm:order-none">
-        <summary class="it-nav-link">
-          Theme
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="m2 4 4 4 4-4" />
-          </svg>
-        </summary>
-        <div
-          class="absolute right-0 z-20 mt-2 flex w-44 flex-col gap-1 border border-border bg-background p-2 shadow-md"
-        >
-          <button
-            v-for="color in THEME_COLORS"
-            :key="color.value"
-            type="button"
-            class="it-nav-link w-full justify-start"
-            :class="{ 'text-primary font-semibold': theme === color.value }"
-            :aria-pressed="theme === color.value"
-            @click="selectTheme(color.value)"
-          >
-            <span class="w-4" aria-hidden="true">{{ theme === color.value ? '✓' : '' }}</span>
-            {{ color.label }}
-          </button>
-        </div>
-      </details>
+      <button
+        type="button"
+        class="it-btn it-btn-ghost it-btn-sm order-2 sm:order-none"
+        :aria-label="t('header.switchLanguage')"
+        @click="$emit('toggle-locale')"
+      >
+        <span aria-hidden="true" class="text-sm font-semibold">{{ locale === 'en' ? 'FR' : 'EN' }}</span>
+      </button>
 
       <button
         type="button"
         class="it-btn it-btn-sm it-btn-icon order-2 sm:order-none"
         :class="dyslexia ? 'it-btn-primary' : 'it-btn-secondary'"
-        :aria-label="dyslexia ? 'Disable dyslexia-friendly font' : 'Enable dyslexia-friendly font'"
+        :aria-label="dyslexia ? t('header.dyslexiaOff') : t('header.dyslexiaOn')"
         :aria-pressed="dyslexia"
-        :title="dyslexia ? 'Disable dyslexia-friendly font' : 'Enable dyslexia-friendly font'"
+        :title="dyslexia ? t('header.dyslexiaOff') : t('header.dyslexiaOn')"
         @click="$emit('toggle-dyslexia')"
       >
         <span aria-hidden="true" class="text-sm font-semibold">aA</span>
@@ -114,7 +61,7 @@ onBeforeUnmount(() => {
       <button
         type="button"
         class="it-btn it-btn-ghost it-btn-sm order-2 sm:order-none"
-        :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+        :aria-label="isDark ? t('header.switchToLight') : t('header.switchToDark')"
         :aria-pressed="isDark"
         @click="$emit('toggle-mode')"
       >

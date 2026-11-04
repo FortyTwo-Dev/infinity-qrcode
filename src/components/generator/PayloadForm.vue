@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { ItField, ItInput, ItOption, ItSelect, ItTextarea } from '@components/theme'
 import { buildPayload } from '@/lib/qrcode/payloads'
@@ -12,12 +13,20 @@ const emit = defineEmits<{
   'update:errors': [errors: Record<string, string>]
 }>()
 
+const { t } = useI18n()
+
 const form = ref<FormState>(createDefaultFormState())
 const touched = ref(false)
 
 const result = computed(() => buildPayload(props.type, form.value))
 const errors = computed(() => result.value.errors)
 const visibleErrors = computed(() => (touched.value ? errors.value : {}))
+
+/** Translates the catalog key of a field error; keep the raw record going up. */
+function fieldError(field: string): string | undefined {
+  const key = visibleErrors.value[field]
+  return key ? t(key) : undefined
+}
 
 const urlScheme = computed({
   get: () => form.value.urlScheme,
@@ -63,12 +72,12 @@ watch(
 <template>
   <div class="flex flex-col gap-3" @input="touched = true" @change="touched = true">
     <template v-if="type === 'text'">
-      <ItField label="Text" html-for="text" :error="visibleErrors.text">
+      <ItField :label="t('generator.fields.text')" html-for="text" :error="fieldError('text')">
         <ItInput
           id="text"
           v-model="form.text"
-          aria-label="Text"
-          placeholder="Hello world"
+          :aria-label="t('generator.fields.text')"
+          :placeholder="t('generator.placeholders.text')"
           :invalid="Boolean(visibleErrors.text)"
           :describedby="visibleErrors.text ? 'text-error' : undefined"
         />
@@ -76,17 +85,21 @@ watch(
     </template>
 
     <template v-else-if="type === 'url'">
-      <ItField label="URL" html-for="url" :error="visibleErrors.url">
+      <ItField :label="t('generator.fields.url')" html-for="url" :error="fieldError('url')">
         <div class="flex gap-2">
-          <ItSelect v-model="urlScheme" aria-label="Protocol" class="max-w-32">
+          <ItSelect
+            v-model="urlScheme"
+            :aria-label="t('generator.fields.protocol')"
+            class="max-w-32"
+          >
             <ItOption value="https://" text="https://" />
             <ItOption value="http://" text="http://" />
           </ItSelect>
           <ItInput
             id="url"
             v-model="form.url"
-            aria-label="URL"
-            placeholder="example.com"
+            :aria-label="t('generator.fields.url')"
+            :placeholder="t('generator.placeholders.url')"
             :invalid="Boolean(visibleErrors.url)"
             :describedby="visibleErrors.url ? 'url-error' : undefined"
           />
@@ -95,36 +108,44 @@ watch(
     </template>
 
     <template v-else-if="type === 'wi-fi'">
-      <ItField label="Network name (SSID)" html-for="wifi-ssid" :error="visibleErrors.wifiSsid">
+      <ItField
+        :label="t('generator.fields.ssid')"
+        html-for="wifi-ssid"
+        :error="fieldError('wifiSsid')"
+      >
         <ItInput
           id="wifi-ssid"
           v-model="form.wifiSsid"
-          aria-label="Network name (SSID)"
-          placeholder="My network"
+          :aria-label="t('generator.fields.ssid')"
+          :placeholder="t('generator.placeholders.ssid')"
           :invalid="Boolean(visibleErrors.wifiSsid)"
           :describedby="visibleErrors.wifiSsid ? 'wifi-ssid-error' : undefined"
         />
       </ItField>
-      <ItField label="Encryption" html-for="wifi-encryption">
-        <ItSelect id="wifi-encryption" v-model="wifiEncryption" aria-label="Encryption">
+      <ItField :label="t('generator.fields.encryption')" html-for="wifi-encryption">
+        <ItSelect
+          id="wifi-encryption"
+          v-model="wifiEncryption"
+          :aria-label="t('generator.fields.encryption')"
+        >
           <ItOption value="WPA" text="WPA/WPA2" />
           <ItOption value="WPA3" text="WPA3" />
           <ItOption value="WEP" text="WEP" />
-          <ItOption value="nopass" text="No password" />
+          <ItOption value="nopass" :text="t('generator.fields.noPassword')" />
         </ItSelect>
       </ItField>
       <ItField
         v-if="form.wifiEncryption !== 'nopass'"
-        label="Password"
+        :label="t('generator.fields.wifiPassword')"
         html-for="wifi-password"
-        :error="visibleErrors.wifiPassword"
+        :error="fieldError('wifiPassword')"
       >
         <ItInput
           id="wifi-password"
           v-model="form.wifiPassword"
-          aria-label="Password"
+          :aria-label="t('generator.fields.wifiPassword')"
           type="text"
-          placeholder="Network password"
+          :placeholder="t('generator.placeholders.wifiPassword')"
           :invalid="Boolean(visibleErrors.wifiPassword)"
           :describedby="visibleErrors.wifiPassword ? 'wifi-password-error' : undefined"
         />
@@ -132,132 +153,148 @@ watch(
     </template>
 
     <template v-else-if="type === 'email'">
-      <ItField label="Email address" html-for="email" :error="visibleErrors.email">
+      <ItField :label="t('generator.fields.email')" html-for="email" :error="fieldError('email')">
         <ItInput
           id="email"
           v-model="form.email"
-          aria-label="Email address"
+          :aria-label="t('generator.fields.email')"
           type="email"
-          placeholder="contact@example.com"
+          :placeholder="t('generator.placeholders.email')"
           :invalid="Boolean(visibleErrors.email)"
           :describedby="visibleErrors.email ? 'email-error' : undefined"
         />
       </ItField>
-      <ItField label="Subject" html-for="email-subject">
+      <ItField :label="t('generator.fields.subject')" html-for="email-subject">
         <ItInput
           id="email-subject"
           v-model="form.emailSubject"
-          aria-label="Subject"
-          placeholder="Optional subject"
+          :aria-label="t('generator.fields.subject')"
+          :placeholder="t('generator.placeholders.subject')"
         />
       </ItField>
-      <ItField label="Message" html-for="email-body">
+      <ItField :label="t('generator.fields.message')" html-for="email-body">
         <ItTextarea
           id="email-body"
           v-model="form.emailBody"
-          aria-label="Message"
-          placeholder="Optional message"
+          :aria-label="t('generator.fields.message')"
+          :placeholder="t('generator.placeholders.message')"
         />
       </ItField>
     </template>
 
     <template v-else-if="type === 'vcard'">
       <div class="grid gap-3 sm:grid-cols-2">
-        <ItField label="First name" html-for="vcard-first" :error="visibleErrors.vcardName">
+        <ItField
+          :label="t('generator.fields.firstName')"
+          html-for="vcard-first"
+          :error="fieldError('vcardName')"
+        >
           <ItInput
             id="vcard-first"
             v-model="form.vcard.firstName"
-            aria-label="First name"
-            placeholder="Ada"
+            :aria-label="t('generator.fields.firstName')"
+            :placeholder="t('generator.placeholders.firstName')"
             :invalid="Boolean(visibleErrors.vcardName)"
             :describedby="visibleErrors.vcardName ? 'vcard-first-error' : undefined"
           />
         </ItField>
-        <ItField label="Last name" html-for="vcard-last">
+        <ItField :label="t('generator.fields.lastName')" html-for="vcard-last">
           <ItInput
             id="vcard-last"
             v-model="form.vcard.lastName"
-            aria-label="Last name"
-            placeholder="Lovelace"
+            :aria-label="t('generator.fields.lastName')"
+            :placeholder="t('generator.placeholders.lastName')"
           />
         </ItField>
       </div>
       <div class="grid gap-3 sm:grid-cols-2">
-        <ItField label="Organization" html-for="vcard-org">
+        <ItField :label="t('generator.fields.organization')" html-for="vcard-org">
           <ItInput
             id="vcard-org"
             v-model="form.vcard.organization"
-            aria-label="Organization"
-            placeholder="Company"
+            :aria-label="t('generator.fields.organization')"
+            :placeholder="t('generator.placeholders.organization')"
           />
         </ItField>
-        <ItField label="Job title" html-for="vcard-title">
+        <ItField :label="t('generator.fields.jobTitle')" html-for="vcard-title">
           <ItInput
             id="vcard-title"
             v-model="form.vcard.title"
-            aria-label="Job title"
-            placeholder="Engineer"
+            :aria-label="t('generator.fields.jobTitle')"
+            :placeholder="t('generator.placeholders.jobTitle')"
           />
         </ItField>
       </div>
       <div class="grid gap-3 sm:grid-cols-2">
-        <ItField label="Phone" html-for="vcard-phone">
+        <ItField :label="t('generator.fields.phoneShort')" html-for="vcard-phone">
           <ItInput
             id="vcard-phone"
             v-model="form.vcard.phone"
-            aria-label="Phone"
+            :aria-label="t('generator.fields.phoneShort')"
             type="tel"
-            placeholder="+1 555 0100"
+            :placeholder="t('generator.placeholders.phone')"
           />
         </ItField>
-        <ItField label="Email" html-for="vcard-email" :error="visibleErrors.vcardEmail">
+        <ItField
+          :label="t('generator.fields.email')"
+          html-for="vcard-email"
+          :error="fieldError('vcardEmail')"
+        >
           <ItInput
             id="vcard-email"
             v-model="form.vcard.email"
-            aria-label="Email"
+            :aria-label="t('generator.fields.email')"
             type="email"
-            placeholder="ada@example.com"
+            :placeholder="t('generator.placeholders.vcardEmail')"
             :invalid="Boolean(visibleErrors.vcardEmail)"
             :describedby="visibleErrors.vcardEmail ? 'vcard-email-error' : undefined"
           />
         </ItField>
       </div>
-      <ItField label="Website" html-for="vcard-website">
+      <ItField :label="t('generator.fields.website')" html-for="vcard-website">
         <ItInput
           id="vcard-website"
           v-model="form.vcard.website"
-          aria-label="Website"
-          placeholder="https://example.com"
+          :aria-label="t('generator.fields.website')"
+          :placeholder="t('generator.placeholders.website')"
         />
       </ItField>
-      <ItField label="Address" html-for="vcard-address">
+      <ItField :label="t('generator.fields.address')" html-for="vcard-address">
         <ItInput
           id="vcard-address"
           v-model="form.vcard.address"
-          aria-label="Address"
-          placeholder="Street, city, country"
+          :aria-label="t('generator.fields.address')"
+          :placeholder="t('generator.placeholders.address')"
         />
       </ItField>
     </template>
 
     <template v-else-if="type === 'sms'">
-      <ItField label="Phone number" html-for="sms-number" :error="visibleErrors.smsNumber">
+      <ItField
+        :label="t('generator.fields.phone')"
+        html-for="sms-number"
+        :error="fieldError('smsNumber')"
+      >
         <ItInput
           id="sms-number"
           v-model="form.smsNumber"
-          aria-label="Phone number"
+          :aria-label="t('generator.fields.phone')"
           type="tel"
-          placeholder="+1 555 0100"
+          :placeholder="t('generator.placeholders.phone')"
           :invalid="Boolean(visibleErrors.smsNumber)"
           :describedby="visibleErrors.smsNumber ? 'sms-number-error' : undefined"
         />
       </ItField>
-      <ItField label="Message" html-for="sms-message" :error="visibleErrors.smsMessage">
+      <ItField
+        :label="t('generator.fields.message')"
+        html-for="sms-message"
+        :error="fieldError('smsMessage')"
+      >
         <ItTextarea
           id="sms-message"
           v-model="form.smsMessage"
-          aria-label="Message"
-          placeholder="Message"
+          :aria-label="t('generator.fields.message')"
+          :placeholder="t('generator.placeholders.smsMessage')"
           :invalid="Boolean(visibleErrors.smsMessage)"
           :describedby="visibleErrors.smsMessage ? 'sms-message-error' : undefined"
         />
@@ -265,13 +302,13 @@ watch(
     </template>
 
     <template v-else-if="type === 'phone'">
-      <ItField label="Phone number" html-for="phone" :error="visibleErrors.phone">
+      <ItField :label="t('generator.fields.phone')" html-for="phone" :error="fieldError('phone')">
         <ItInput
           id="phone"
           v-model="form.phone"
-          aria-label="Phone number"
+          :aria-label="t('generator.fields.phone')"
           type="tel"
-          placeholder="+1 555 0100"
+          :placeholder="t('generator.placeholders.phone')"
           :invalid="Boolean(visibleErrors.phone)"
           :describedby="visibleErrors.phone ? 'phone-error' : undefined"
         />
@@ -280,26 +317,34 @@ watch(
 
     <template v-else-if="type === 'geo'">
       <div class="grid gap-3 sm:grid-cols-2">
-        <ItField label="Latitude" html-for="geo-lat" :error="visibleErrors.latitude">
+        <ItField
+          :label="t('generator.fields.latitude')"
+          html-for="geo-lat"
+          :error="fieldError('latitude')"
+        >
           <ItInput
             id="geo-lat"
             v-model="form.latitude"
-            aria-label="Latitude"
+            :aria-label="t('generator.fields.latitude')"
             type="number"
             step="any"
-            placeholder="48.8566"
+            :placeholder="t('generator.placeholders.latitude')"
             :invalid="Boolean(visibleErrors.latitude)"
             :describedby="visibleErrors.latitude ? 'geo-lat-error' : undefined"
           />
         </ItField>
-        <ItField label="Longitude" html-for="geo-lng" :error="visibleErrors.longitude">
+        <ItField
+          :label="t('generator.fields.longitude')"
+          html-for="geo-lng"
+          :error="fieldError('longitude')"
+        >
           <ItInput
             id="geo-lng"
             v-model="form.longitude"
-            aria-label="Longitude"
+            :aria-label="t('generator.fields.longitude')"
             type="number"
             step="any"
-            placeholder="2.3522"
+            :placeholder="t('generator.placeholders.longitude')"
             :invalid="Boolean(visibleErrors.longitude)"
             :describedby="visibleErrors.longitude ? 'geo-lng-error' : undefined"
           />
@@ -308,78 +353,90 @@ watch(
     </template>
 
     <template v-else-if="type === 'event'">
-      <ItField label="Title" html-for="event-title" :error="visibleErrors.eventTitle">
+      <ItField
+        :label="t('generator.fields.title')"
+        html-for="event-title"
+        :error="fieldError('eventTitle')"
+      >
         <ItInput
           id="event-title"
           v-model="form.eventTitle"
-          aria-label="Title"
-          placeholder="Event title"
+          :aria-label="t('generator.fields.title')"
+          :placeholder="t('generator.placeholders.eventTitle')"
           :invalid="Boolean(visibleErrors.eventTitle)"
           :describedby="visibleErrors.eventTitle ? 'event-title-error' : undefined"
         />
       </ItField>
-      <ItField label="Location" html-for="event-location">
+      <ItField :label="t('generator.fields.location')" html-for="event-location">
         <ItInput
           id="event-location"
           v-model="form.eventLocation"
-          aria-label="Location"
-          placeholder="Optional location"
+          :aria-label="t('generator.fields.location')"
+          :placeholder="t('generator.placeholders.location')"
         />
       </ItField>
       <div class="grid gap-3 sm:grid-cols-2">
-        <ItField label="Starts" html-for="event-start" :error="visibleErrors.eventStart">
+        <ItField
+          :label="t('generator.fields.starts')"
+          html-for="event-start"
+          :error="fieldError('eventStart')"
+        >
           <ItInput
             id="event-start"
             v-model="form.eventStart"
-            aria-label="Starts"
+            :aria-label="t('generator.fields.starts')"
             type="datetime-local"
             :invalid="Boolean(visibleErrors.eventStart)"
             :describedby="visibleErrors.eventStart ? 'event-start-error' : undefined"
           />
         </ItField>
-        <ItField label="Ends" html-for="event-end" :error="visibleErrors.eventEnd">
+        <ItField
+          :label="t('generator.fields.ends')"
+          html-for="event-end"
+          :error="fieldError('eventEnd')"
+        >
           <ItInput
             id="event-end"
             v-model="form.eventEnd"
-            aria-label="Ends"
+            :aria-label="t('generator.fields.ends')"
             type="datetime-local"
             :invalid="Boolean(visibleErrors.eventEnd)"
             :describedby="visibleErrors.eventEnd ? 'event-end-error' : undefined"
           />
         </ItField>
       </div>
-      <ItField label="Description" html-for="event-description">
+      <ItField :label="t('generator.fields.description')" html-for="event-description">
         <ItTextarea
           id="event-description"
           v-model="form.eventDescription"
-          aria-label="Description"
-          placeholder="Optional description"
+          :aria-label="t('generator.fields.description')"
+          :placeholder="t('generator.placeholders.description')"
         />
       </ItField>
     </template>
 
     <template v-else-if="type === 'whatsapp'">
       <ItField
-        label="Phone number"
+        :label="t('generator.fields.phone')"
         html-for="whatsapp-number"
-        :error="visibleErrors.whatsappNumber"
+        :error="fieldError('whatsappNumber')"
       >
         <ItInput
           id="whatsapp-number"
           v-model="form.whatsappNumber"
-          aria-label="Phone number"
+          :aria-label="t('generator.fields.phone')"
           type="tel"
-          placeholder="+1 555 0100"
+          :placeholder="t('generator.placeholders.phone')"
           :invalid="Boolean(visibleErrors.whatsappNumber)"
           :describedby="visibleErrors.whatsappNumber ? 'whatsapp-number-error' : undefined"
         />
       </ItField>
-      <ItField label="Message" html-for="whatsapp-message">
+      <ItField :label="t('generator.fields.message')" html-for="whatsapp-message">
         <ItTextarea
           id="whatsapp-message"
           v-model="form.whatsappMessage"
-          aria-label="Message"
-          placeholder="Optional message"
+          :aria-label="t('generator.fields.message')"
+          :placeholder="t('generator.placeholders.whatsappMessage')"
         />
       </ItField>
     </template>

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { ItButton } from '@components/theme'
 import QrCanvas from '@components/qr/QrCanvas.vue'
 import type { LearnFrameData } from '@/types/learn'
 import type { QrOptions } from '@/types/qr'
+
+const { t } = useI18n()
 
 interface Props {
   frame: LearnFrameData | null
@@ -57,12 +60,12 @@ const moduleSize = computed(() => Math.max(1, Math.round(fitModuleSize.value * p
 <template>
   <section aria-labelledby="stage-heading" class="flex flex-col gap-3">
     <div class="flex flex-wrap items-center justify-between gap-2">
-      <h2 id="stage-heading" class="it-h5 text-lg font-semibold">Construction</h2>
+      <h2 id="stage-heading" class="it-h5 text-lg font-semibold">{{ t('learn.stage.title') }}</h2>
       <div class="flex items-center gap-2">
         <ItButton
           variant="secondary"
           :disabled="zoom <= 0.5"
-          aria-label="Zoom out"
+          :aria-label="t('learn.stage.zoomOut')"
           @click="emit('update:zoom', Math.max(0.5, zoom - 0.25))"
         >
           −
@@ -71,7 +74,7 @@ const moduleSize = computed(() => Math.max(1, Math.round(fitModuleSize.value * p
         <ItButton
           variant="secondary"
           :disabled="zoom >= 4"
-          aria-label="Zoom in"
+          :aria-label="t('learn.stage.zoomIn')"
           @click="emit('update:zoom', Math.min(4, zoom + 0.25))"
         >
           +
@@ -92,9 +95,15 @@ const moduleSize = computed(() => Math.max(1, Math.round(fitModuleSize.value * p
         :dark="options.dark"
         :light="options.light"
         :highlight="frame.highlight"
-        :label="`QR construction frame ${frameIndex + 1} of ${frameCount}, phase ${frame.phase}`"
+        :label="
+          t('learn.stage.canvasLabel', {
+            index: frameIndex + 1,
+            count: frameCount,
+            phase: frame.phase,
+          })
+        "
       />
-      <p v-else class="text-sm opacity-70">Enter valid content to start the construction.</p>
+      <p v-else class="text-sm opacity-70">{{ t('learn.stage.empty') }}</p>
     </div>
   </section>
 </template>

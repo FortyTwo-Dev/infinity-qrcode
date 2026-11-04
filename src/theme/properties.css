@@ -39,13 +39,13 @@
 @property --it-accent {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(62% 0.19 260);
+  initial-value: #ffdf00;
 }
 
 @property --it-accent-fg {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(100% 0 0);
+  initial-value: oklch(18% 0 0);
 }
 
 @property --it-danger {
@@ -57,7 +57,7 @@
 @property --it-focus-ring {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(62% 0.19 260);
+  initial-value: #ffdf00;
 }
 
 @property --it-radius {

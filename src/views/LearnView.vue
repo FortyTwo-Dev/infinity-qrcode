@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 
 import type { LearnTrace } from 'iqrcode-learn-wasm'
@@ -19,6 +20,8 @@ import {
 import { useReducedMotion } from '@/composables/useReducedMotion'
 import type { LearnFrameData, LearnPhase, TraceMetadata } from '@/types/learn'
 import type { ErrorCorrectionLevel, QrOptions } from '@/types/qr'
+
+const { t } = useI18n()
 
 const route = useRoute()
 const router = useRouter()
@@ -261,10 +264,9 @@ function handleErrors(errors: Record<string, string>) {
 <template>
   <div class="mx-auto w-full max-w-7xl px-4 py-8">
     <header class="mb-8 flex flex-col items-center gap-2 text-center">
-      <h1 class="text-4xl font-semibold">Learn QR codes</h1>
+      <h1 class="text-4xl font-semibold">{{ t('learn.title') }}</h1>
       <p class="max-w-2xl opacity-80">
-        Replay every step of a QR code construction: finder patterns, data placement, mask selection
-        and format information.
+        {{ t('learn.tagline') }}
       </p>
     </header>
 
@@ -272,7 +274,7 @@ function handleErrors(errors: Record<string, string>) {
       <section
         class="flex flex-col gap-6 rounded-sm border border-border p-4 lg:order-1"
         :class="valid ? 'order-2' : 'order-1'"
-        aria-label="Trace content and options"
+        :aria-label="t('learn.sections.content')"
       >
         <PayloadForm
           type="text"
@@ -295,7 +297,7 @@ function handleErrors(errors: Record<string, string>) {
       <section
         class="flex flex-col gap-6 lg:order-2"
         :class="valid ? 'order-1' : 'order-2'"
-        aria-label="Construction stage"
+        :aria-label="t('learn.sections.stage')"
       >
         <LearnStage
           :frame="frame"
@@ -328,7 +330,7 @@ function handleErrors(errors: Record<string, string>) {
 
       <section
         class="order-3 flex flex-col gap-6 rounded-sm border border-border p-4 lg:order-3"
-        aria-label="Phase and trace details"
+        :aria-label="t('learn.sections.details')"
       >
         <PhasePanel
           :phase="frame?.phase ?? null"

@@ -3,6 +3,8 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import type { LearnPhase } from '@/types/learn'
 
+import i18n from '@/i18n'
+
 import LearnTimeline from './LearnTimeline.vue'
 
 type Wrapper = ReturnType<typeof mount>
@@ -37,6 +39,7 @@ function accessibleName(node: Element): string {
 }
 
 function mountTimeline(overrides: Partial<Record<string, unknown>> = {}): Wrapper {
+  i18n.global.locale.value = 'en'
   wrapper = mount(LearnTimeline, {
     props: {
       frameCount: 5,
@@ -47,6 +50,7 @@ function mountTimeline(overrides: Partial<Record<string, unknown>> = {}): Wrappe
       shareUrl: SHARE_URL,
       ...overrides,
     },
+    global: { plugins: [i18n] },
     attachTo: document.body,
   })
   return wrapper

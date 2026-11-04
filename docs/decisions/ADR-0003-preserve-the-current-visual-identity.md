@@ -1,7 +1,9 @@
 # ADR-0003 : Preserve the current visual identity
 
-- **Status** : `accepted`
+- **Status** : `deprecated`
 - **Date** : 2026-11-03
+
+> Superseded by ADR-0005.
 
 ## Validation
 

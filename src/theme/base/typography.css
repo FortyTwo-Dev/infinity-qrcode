@@ -46,13 +46,16 @@
     line-height: var(--it-line-height-relaxed);
   }
 
+  /* Plain links stay in the foreground colour in both modes: the brand yellow
+     on small text reads poorly. The yellow only marks the hover underline. */
   :where(.it-theme) :where(a) {
-    color: var(--it-accent);
+    color: var(--it-fg);
     text-decoration: underline;
     text-underline-offset: 0.15em;
   }
 
   :where(.it-theme) :where(a:hover) {
+    text-decoration-color: var(--it-accent);
     text-decoration-thickness: 2px;
   }
 

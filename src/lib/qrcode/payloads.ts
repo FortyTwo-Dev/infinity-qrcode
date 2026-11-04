@@ -61,36 +61,36 @@ function ok(value: string): PayloadResult {
 
 function buildText(state: FormState): PayloadResult {
   const value = state.text.trim()
-  return value ? ok(state.text) : fail({ text: 'Enter some text.' })
+  return value ? ok(state.text) : fail({ text: 'generator.errors.textRequired' })
 }
 
 function buildUrl(state: FormState): PayloadResult {
   const raw = state.url.trim()
-  if (!raw) return fail({ url: 'Enter a URL.' })
+  if (!raw) return fail({ url: 'generator.errors.urlRequired' })
   // Browsers percent-encode spaces in a host, so `https://not a url` would
   // otherwise be accepted. Reject whitespace before parsing.
-  if (/\s/.test(raw)) return fail({ url: 'Enter a valid URL.' })
+  if (/\s/.test(raw)) return fail({ url: 'generator.errors.urlInvalid' })
 
   const candidate = /^[a-z][a-z0-9+.-]*:\/\//i.test(raw) ? raw : `${state.urlScheme}${raw}`
 
   try {
     const url = new URL(candidate)
     if (url.protocol !== 'http:' && url.protocol !== 'https:') {
-      return fail({ url: 'Only http and https URLs are supported.' })
+      return fail({ url: 'generator.errors.urlSchemeUnsupported' })
     }
-    if (!url.hostname) return fail({ url: 'Enter a valid host.' })
+    if (!url.hostname) return fail({ url: 'generator.errors.urlHostRequired' })
     return ok(url.toString())
   } catch {
-    return fail({ url: 'Enter a valid URL.' })
+    return fail({ url: 'generator.errors.urlInvalid' })
   }
 }
 
 function buildWifi(state: FormState): PayloadResult {
   const ssid = state.wifiSsid.trim()
-  if (!ssid) return fail({ wifiSsid: 'Enter the network name.' })
+  if (!ssid) return fail({ wifiSsid: 'generator.errors.wifiSsidRequired' })
 
   if (state.wifiEncryption !== 'nopass' && !state.wifiPassword) {
-    return fail({ wifiPassword: 'Enter the network password.' })
+    return fail({ wifiPassword: 'generator.errors.wifiPasswordRequired' })
   }
 
   const password = state.wifiEncryption === 'nopass' ? '' : state.wifiPassword
@@ -99,7 +99,7 @@ function buildWifi(state: FormState): PayloadResult {
 
 function buildEmail(state: FormState): PayloadResult {
   const email = state.email.trim()
-  if (!isValidEmail(email)) return fail({ email: 'Enter a valid email address.' })
+  if (!isValidEmail(email)) return fail({ email: 'generator.errors.emailInvalid' })
 
   const params = new URLSearchParams()
   if (state.emailSubject.trim()) params.set('subject', state.emailSubject.trim())
@@ -119,9 +119,9 @@ function buildVCard(state: FormState): PayloadResult {
     .join(' ')
   const displayName = fullName || organization.trim()
 
-  if (!displayName) return fail({ vcardName: 'Enter a name or an organization.' })
+  if (!displayName) return fail({ vcardName: 'generator.errors.vcardNameRequired' })
   if (email.trim() && !isValidEmail(email.trim())) {
-    return fail({ vcardEmail: 'Enter a valid email address.' })
+    return fail({ vcardEmail: 'generator.errors.emailInvalid' })
   }
 
   const lines = [
@@ -144,14 +144,14 @@ function buildVCard(state: FormState): PayloadResult {
 
 function buildSms(state: FormState): PayloadResult {
   const number = normalizePhone(state.smsNumber)
-  if (!number || number === '+') return fail({ smsNumber: 'Enter a phone number.' })
-  if (!state.smsMessage.trim()) return fail({ smsMessage: 'Enter a message.' })
+  if (!number || number === '+') return fail({ smsNumber: 'generator.errors.phoneRequired' })
+  if (!state.smsMessage.trim()) return fail({ smsMessage: 'generator.errors.smsMessageRequired' })
   return ok(`SMSTO:${number}:${state.smsMessage.trim()}`)
 }
 
 function buildPhone(state: FormState): PayloadResult {
   const number = normalizePhone(state.phone)
-  if (!number || number === '+') return fail({ phone: 'Enter a phone number.' })
+  if (!number || number === '+') return fail({ phone: 'generator.errors.phoneRequired' })
   return ok(`tel:${number}`)
 }
 
@@ -161,10 +161,10 @@ function buildGeo(state: FormState): PayloadResult {
   const errors: Record<string, string> = {}
 
   if (!state.latitude.trim() || Number.isNaN(latitude) || latitude < -90 || latitude > 90) {
-    errors.latitude = 'Latitude must be between -90 and 90.'
+    errors.latitude = 'generator.errors.latitudeRange'
   }
   if (!state.longitude.trim() || Number.isNaN(longitude) || longitude < -180 || longitude > 180) {
-    errors.longitude = 'Longitude must be between -180 and 180.'
+    errors.longitude = 'generator.errors.longitudeRange'
   }
   if (Object.keys(errors).length) return fail(errors)
 
@@ -173,15 +173,15 @@ function buildGeo(state: FormState): PayloadResult {
 
 function buildEvent(state: FormState): PayloadResult {
   const title = state.eventTitle.trim()
-  if (!title) return fail({ eventTitle: 'Enter an event title.' })
+  if (!title) return fail({ eventTitle: 'generator.errors.eventTitleRequired' })
 
   const start = toEventDate(state.eventStart)
-  if (!start) return fail({ eventStart: 'Enter a valid start date.' })
+  if (!start) return fail({ eventStart: 'generator.errors.eventStartInvalid' })
 
   const end = state.eventEnd.trim() ? toEventDate(state.eventEnd) : null
-  if (state.eventEnd.trim() && !end) return fail({ eventEnd: 'Enter a valid end date.' })
+  if (state.eventEnd.trim() && !end) return fail({ eventEnd: 'generator.errors.eventEndInvalid' })
   if (end && new Date(state.eventStart) >= new Date(state.eventEnd)) {
-    return fail({ eventEnd: 'The end must be after the start.' })
+    return fail({ eventEnd: 'generator.errors.eventEndAfterStart' })
   }
 
   const lines = ['BEGIN:VEVENT', `SUMMARY:${escapeVCard(title)}`, `DTSTART:${start}`]
@@ -196,7 +196,7 @@ function buildEvent(state: FormState): PayloadResult {
 
 function buildWhatsApp(state: FormState): PayloadResult {
   const number = normalizePhone(state.whatsappNumber).replace(/^\+/, '')
-  if (!number) return fail({ whatsappNumber: 'Enter a phone number with country code.' })
+  if (!number) return fail({ whatsappNumber: 'generator.errors.whatsappNumberRequired' })
 
   const message = state.whatsappMessage.trim()
   const suffix = message ? `?text=${encodeURIComponent(message)}` : ''

@@ -3,6 +3,8 @@ import { describe, expect, test } from 'vitest'
 
 import type { LearnPhase, TraceMetadata } from '@/types/learn'
 
+import i18n from '@/i18n'
+
 import TraceStats from './TraceStats.vue'
 
 type Wrapper = ReturnType<typeof mount>
@@ -66,8 +68,10 @@ function normalize(text: string): string {
 function mountStats(
   overrides: Partial<{ metadata: TraceMetadata | null; phase: LearnPhase | null }> = {},
 ) {
+  i18n.global.locale.value = 'en'
   return mount(TraceStats, {
     props: { metadata: METADATA, phase: 'final', ...overrides },
+    global: { plugins: [i18n] },
   })
 }
 

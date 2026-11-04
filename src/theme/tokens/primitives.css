@@ -6,10 +6,8 @@
     --it-color-white: oklch(100% 0 0);
     --it-color-black: oklch(18% 0 0);
 
-    --it-color-blue-500: oklch(62% 0.19 260);
     --it-color-red-500: oklch(62% 0.2 25);
-    --it-color-pink-500: oklch(65% 0.2 350);
-    --it-color-yellow-500: oklch(80% 0.16 90);
+    --it-color-yellow-500: #ffdf00;
     --it-color-green-500: oklch(62% 0.16 150);
     --it-color-amber-500: oklch(76% 0.16 80);
     --it-color-cyan-500: oklch(68% 0.14 220);
