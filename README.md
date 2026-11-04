@@ -1,8 +1,6 @@
-<p align="center">
-  <img src="public/img/logo.png" width="128" alt="Infinity QRCode logo" />
-</p>
-
 # Infinity QRCode
+
+<img src="public/img/logo.png" width="128" alt="Infinity QRCode logo" />
 
 A client-side QR code generator and a step-by-step construction viewer, built on
 two WebAssembly packages from the same Rust core.
