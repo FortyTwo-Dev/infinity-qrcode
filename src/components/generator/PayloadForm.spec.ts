@@ -73,6 +73,32 @@ function lastPayload(wrapper: Wrapper): string | undefined {
   return emitted.at(-1)?.[0] as string
 }
 
+function accessibleName(node: DOMWrapper<Element>): string {
+  const label = node.element.getAttribute('aria-label')
+  if (label) return normalize(label)
+  const title = node.element.getAttribute('title')
+  if (title) return normalize(title)
+  return normalize(node.text())
+}
+
+function findPasswordToggle(wrapper: Wrapper): DOMWrapper<Element> | undefined {
+  return wrapper
+    .findAll('button')
+    .find((node) => ['Show password', 'Hide password'].includes(accessibleName(node)))
+}
+
+function passwordToggle(wrapper: Wrapper): DOMWrapper<Element> {
+  const found = findPasswordToggle(wrapper)
+  expect(found, 'password visibility toggle').toBeDefined()
+  return found!
+}
+
+function wifiPasswordInput(wrapper: Wrapper): DOMWrapper<Element> {
+  const input = wrapper.find('#wifi-password')
+  expect(input.exists(), 'input "wifi-password"').toBe(true)
+  return input
+}
+
 describe('PayloadForm', () => {
   test('shows no validation message and marks no field invalid before any input', () => {
     for (const type of ['text', 'url', 'wi-fi', 'email'] as const) {
@@ -193,5 +219,63 @@ describe('PayloadForm', () => {
 
     expect(findControl(wrapper, 'Text')).toBeUndefined()
     expect((control(wrapper, 'URL').element as HTMLInputElement).value).toBe('')
+  })
+
+  test('masks the Wi-Fi password by default with a single resting toggle button', () => {
+    const wrapper = mountForm('wi-fi')
+
+    const input = wifiPasswordInput(wrapper)
+    expect(input.attributes('type')).toBe('password')
+
+    const toggles = wrapper
+      .findAll('button')
+      .filter((node) => ['Show password', 'Hide password'].includes(accessibleName(node)))
+    expect(toggles, 'exactly one password visibility toggle').toHaveLength(1)
+
+    expect(accessibleName(toggles[0])).toBe('Show password')
+    expect(toggles[0].attributes('type')).toBe('button')
+    expect(toggles[0].attributes('aria-pressed')).toBe('false')
+  })
+
+  test('reveals the Wi-Fi password while the toggle is pressed and masks it again', async () => {
+    const wrapper = mountForm('wi-fi')
+    const input = wifiPasswordInput(wrapper)
+
+    await passwordToggle(wrapper).trigger('click')
+
+    expect(input.attributes('type')).toBe('text')
+    expect(accessibleName(passwordToggle(wrapper))).toBe('Hide password')
+    expect(passwordToggle(wrapper).attributes('aria-pressed')).toBe('true')
+
+    await passwordToggle(wrapper).trigger('click')
+
+    expect(input.attributes('type')).toBe('password')
+    expect(accessibleName(passwordToggle(wrapper))).toBe('Show password')
+    expect(passwordToggle(wrapper).attributes('aria-pressed')).toBe('false')
+  })
+
+  test('toggling the Wi-Fi password visibility keeps the value and the emitted payload', async () => {
+    const wrapper = mountForm('wi-fi')
+
+    await control(wrapper, 'Network name (SSID)').setValue('MyNet')
+    await wifiPasswordInput(wrapper).setValue('secret-pass')
+
+    const payloadBefore = lastPayload(wrapper)
+    expect(payloadBefore).toBeDefined()
+
+    await passwordToggle(wrapper).trigger('click')
+    await passwordToggle(wrapper).trigger('click')
+
+    expect((wifiPasswordInput(wrapper).element as HTMLInputElement).value).toBe('secret-pass')
+    expect(lastPayload(wrapper)).toBe(payloadBefore)
+  })
+
+  test('removes the Wi-Fi password input and its toggle when encryption is "No password"', async () => {
+    const wrapper = mountForm('wi-fi')
+
+    await chooseOption(selectByName(wrapper, 'Encryption'), 'No password')
+
+    expect(wrapper.find('#wifi-password').exists()).toBe(false)
+    expect(findPasswordToggle(wrapper)).toBeUndefined()
   })
 })
