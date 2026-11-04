@@ -7,7 +7,7 @@ two WebAssembly packages from the same Rust core.
 
 [![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=FortyTwo-Dev_infinity-qrcode&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=FortyTwo-Dev_infinity-qrcode)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=FortyTwo-Dev_infinity-qrcode&metric=bugs)](https://sonarcloud.io/summary/new_code?id=FortyTwo-Dev_infinity-qrcode)
-[![Security hotspots](https://sonarcloud.io/api/project_badges/measure?project=FortyTwo-Dev_infinity-qrcode&metric=security_hotspots)](https://sonarcloud.io/summary/new_code?id=FortyTwo-Dev_infinity-qrcode)
+[![Security rating](https://sonarcloud.io/api/project_badges/measure?project=FortyTwo-Dev_infinity-qrcode&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=FortyTwo-Dev_infinity-qrcode)
 [![Code smells](https://sonarcloud.io/api/project_badges/measure?project=FortyTwo-Dev_infinity-qrcode&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=FortyTwo-Dev_infinity-qrcode)
 [![Duplicated lines](https://sonarcloud.io/api/project_badges/measure?project=FortyTwo-Dev_infinity-qrcode&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=FortyTwo-Dev_infinity-qrcode)
 
