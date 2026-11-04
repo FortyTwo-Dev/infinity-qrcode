@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.2.1](https://github.com/FortyTwo-Dev/infinity-qrcode/compare/v3.2.0...v3.2.1) (2026-11-04)
+
+
+### Bug Fixes
+
+* **ui:** mask the wi-fi password field ([424821e](https://github.com/FortyTwo-Dev/infinity-qrcode/commit/424821e8ea8a2eeaec8df7680316c332184d63a4))
+* **ui:** mask the wi-fi password field ([1d8d1d9](https://github.com/FortyTwo-Dev/infinity-qrcode/commit/1d8d1d9b408535ec9d374f2182f92dd3c8d5283d))
+
 ## [3.2.0](https://github.com/FortyTwo-Dev/infinity-qrcode/compare/v3.1.0...v3.2.0) (2026-11-04)
 
 
