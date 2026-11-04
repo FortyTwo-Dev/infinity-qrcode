@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.2.0](https://github.com/FortyTwo-Dev/infinity-qrcode/compare/v3.1.0...v3.2.0) (2026-11-04)
+
+
+### Features
+
+* **i18n:** add the i18n core with a header language toggle ([7f7506d](https://github.com/FortyTwo-Dev/infinity-qrcode/commit/7f7506da0676fe0abee7f6c9c8ff5a6022ff49d2))
+* **i18n:** translate the footer and the credits page ([49c6f23](https://github.com/FortyTwo-Dev/infinity-qrcode/commit/49c6f23f5e0035e667fda53472d283775824034d))
+* **i18n:** translate the generator ([9f5fea3](https://github.com/FortyTwo-Dev/infinity-qrcode/commit/9f5fea3cb171342010b20cdd4c3025dd994293d4))
+* **i18n:** translate the learn view ([fd4a9dd](https://github.com/FortyTwo-Dev/infinity-qrcode/commit/fd4a9ddeb4b7ee2fcf0fb50636e4688cd642ee59))
+* **pwa:** add a monochrome manifest icon ([5128b2f](https://github.com/FortyTwo-Dev/infinity-qrcode/commit/5128b2fd6d6a2879621c59ce768d6207b1a600a1))
+* **ui:** adopt the logo yellow as the single accent ([9a27299](https://github.com/FortyTwo-Dev/infinity-qrcode/commit/9a27299590b0862fdc2978178b37b2de8e32abe3))
+* **ui:** adopt the new brand logo ([9f74201](https://github.com/FortyTwo-Dev/infinity-qrcode/commit/9f74201bcee0557c532be853981c0325f63abdd5))
+* **ui:** keep plain link text in the foreground colour ([72bcf5e](https://github.com/FortyTwo-Dev/infinity-qrcode/commit/72bcf5e86c9815853dff10aa1b30b921eedecfa5))
+* **ui:** keep the accent decorative for light-mode text ([1176527](https://github.com/FortyTwo-Dev/infinity-qrcode/commit/11765272e78817f14af7375561defe4c6a95a670))
+* **ui:** underline credit links in the accent colour ([2c6c54d](https://github.com/FortyTwo-Dev/infinity-qrcode/commit/2c6c54d37d95a1bfe27d2c1dbf85c5442ffd2ed4))
+
 ## [3.1.0](https://github.com/FortyTwo-Dev/infinity-qrcode/compare/v3.0.0...v3.1.0) (2026-11-03)
 
 
