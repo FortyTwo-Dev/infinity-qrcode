@@ -1,6 +1,8 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, test } from 'vitest'
 
+import i18n from '@/i18n'
+
 import ContentPicker from './ContentPicker.vue'
 
 type Wrapper = ReturnType<typeof mount>
@@ -25,7 +27,11 @@ function normalize(text: string): string {
 }
 
 function mountPicker(modelValue: ContentValue = 'text') {
-  return mount(ContentPicker, { props: { modelValue } })
+  i18n.global.locale.value = 'en'
+  return mount(ContentPicker, {
+    props: { modelValue },
+    global: { plugins: [i18n] },
+  })
 }
 
 function radioFor(wrapper: Wrapper, labelText: string) {

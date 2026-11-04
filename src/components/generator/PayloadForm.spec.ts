@@ -4,6 +4,8 @@ import { describe, expect, test } from 'vitest'
 
 import type { QrcodeType } from '@/types/qr'
 
+import i18n from '@/i18n'
+
 import PayloadForm from './PayloadForm.vue'
 
 type Wrapper = ReturnType<typeof mount>
@@ -13,7 +15,8 @@ function normalize(text: string): string {
 }
 
 function mountForm(type: QrcodeType, initialText?: string) {
-  return mount(PayloadForm, { props: { type, initialText } })
+  i18n.global.locale.value = 'en'
+  return mount(PayloadForm, { props: { type, initialText }, global: { plugins: [i18n] } })
 }
 
 function findControl(wrapper: Wrapper, name: string): DOMWrapper<Element> | undefined {
@@ -116,6 +119,16 @@ describe('PayloadForm', () => {
     const payload = lastPayload(wrapper)
     expect(payload).toBeDefined()
     expect(payload!.startsWith('https://')).toBe(true)
+  })
+
+  test('emits the raw catalog key and displays the translated error', async () => {
+    const wrapper = mountForm('url')
+
+    await control(wrapper, 'URL').setValue('not a url')
+
+    const emitted = wrapper.emitted('update:errors')
+    expect(emitted?.at(-1)).toEqual([{ url: 'generator.errors.urlInvalid' }])
+    expect(wrapper.text()).toContain('Enter a valid URL.')
   })
 
   test('clears the displayed validation message when the type prop changes', async () => {

@@ -4,6 +4,8 @@ import { describe, expect, test } from 'vitest'
 
 import type { QrMatrixData, QrOptions } from '@/types/qr'
 
+import i18n from '@/i18n'
+
 import QrPreview from './QrPreview.vue'
 
 type Wrapper = ReturnType<typeof mount>
@@ -36,8 +38,10 @@ function mountPreview(
     error: string | null
   }> = {},
 ) {
+  i18n.global.locale.value = 'en'
   return mount(QrPreview, {
     props: { data: DATA, options: OPTIONS, loading: false, error: null, ...overrides },
+    global: { plugins: [i18n] },
   })
 }
 
