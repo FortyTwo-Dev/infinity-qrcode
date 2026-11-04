@@ -56,6 +56,16 @@
     text-decoration-thickness: 2px;
   }
 
+  /* The accent fails text contrast on light backgrounds: links keep the
+     foreground colour and the yellow only marks the hover underline. */
+  :where([data-theme='light']) :where(a) {
+    color: var(--it-fg);
+  }
+
+  :where([data-theme='light']) :where(a:hover) {
+    text-decoration-color: var(--it-accent);
+  }
+
   :where(.it-theme) :where(strong, b) {
     font-weight: var(--it-font-weight-semibold);
   }

@@ -57,7 +57,7 @@ const CREDITS: readonly Credit[] = [
           :href="href"
           target="_blank"
           rel="noopener noreferrer"
-          class="font-semibold no-underline hover:text-primary"
+          class="font-semibold no-underline it-link-accent"
         >
           {{ name }}
         </a>

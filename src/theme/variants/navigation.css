@@ -39,4 +39,25 @@
     background-color: transparent;
     color: var(--it-accent);
   }
+
+  .it-link-accent:hover {
+    color: var(--it-accent);
+  }
+
+  .it-link-accent:focus-visible {
+    outline: var(--it-focus-width) solid var(--it-focus-ring);
+    outline-offset: var(--it-focus-offset);
+  }
+
+  /* The bright accent fails text contrast on light backgrounds: the yellow
+     stays decorative (underline) and the text keeps the foreground colour. */
+  [data-theme='light'] .it-nav-link[aria-current='page'] {
+    color: var(--it-fg);
+  }
+
+  [data-theme='light'] .it-link-accent:hover {
+    color: var(--it-fg);
+    text-decoration-line: underline;
+    text-decoration-color: var(--it-accent);
+  }
 }
