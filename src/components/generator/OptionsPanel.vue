@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { ItField, ItInput, ItRange } from '@components/theme'
+import { LEVEL_LABELS } from '@/i18n/keys'
 import {
   ERROR_CORRECTION_LEVELS,
   type ErrorCorrectionLevel,
@@ -12,13 +13,6 @@ import {
 
 const { t } = useI18n()
 
-/** Message keys for the error correction levels, indexed by level value. */
-const LEVEL_LABELS: Record<ErrorCorrectionLevel, string> = {
-  L: 'generator.levels.low',
-  M: 'generator.levels.medium',
-  Q: 'generator.levels.quartile',
-  H: 'generator.levels.high',
-}
 
 const FORMATS = [
   { value: 'svg', label: 'SVG' },

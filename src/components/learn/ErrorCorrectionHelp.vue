@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 
 import QrCanvas from '@components/qr/QrCanvas.vue'
 import { generateQr, loadQrWasm } from '@/composables/useQrWasm'
+import { LEVEL_LABELS } from '@/i18n/keys'
 import { ERROR_CORRECTION_LEVELS, type ErrorCorrectionLevel, type QrMatrixData } from '@/types/qr'
 
 import SectionHelp from './SectionHelp.vue'
@@ -13,13 +14,6 @@ const { t } = useI18n()
 const SAMPLE = 'neljäkymmentäkaksi'
 const TARGET_SIZE = 96
 
-/** Message keys for the error correction levels, indexed by level value. */
-const LEVEL_LABELS: Record<ErrorCorrectionLevel, string> = {
-  L: 'generator.levels.low',
-  M: 'generator.levels.medium',
-  Q: 'generator.levels.quartile',
-  H: 'generator.levels.high',
-}
 
 interface Example {
   level: ErrorCorrectionLevel
