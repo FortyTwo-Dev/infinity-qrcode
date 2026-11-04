@@ -7,17 +7,15 @@ import PwaPrompt from '@components/layout/PwaPrompt.vue'
 import { useDyslexiaFont } from '@/composables/useDyslexiaFont'
 import { useTheme } from '@/composables/useTheme'
 
-const { theme, isDark, toggleMode, setThemeColor } = useTheme()
+const { isDark, toggleMode } = useTheme()
 const { dyslexia, toggleDyslexia } = useDyslexiaFont()
 </script>
 
 <template>
   <div class="flex min-h-screen flex-col bg-background text-foreground">
     <AppHeader
-      :theme="theme"
       :is-dark="isDark"
       :dyslexia="dyslexia"
-      @update:theme="setThemeColor"
       @toggle-mode="toggleMode"
       @toggle-dyslexia="toggleDyslexia"
     />

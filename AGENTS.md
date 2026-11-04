@@ -53,8 +53,9 @@ See `docs/decisions/ADR-0001` (rebuild and routes), `ADR-0002` (toolchain),
 - UI components and tokens come from `src/theme` and `src/components/theme`.
   Use `it-*` classes and `--it-*` tokens. Tailwind is for layout only; its
   semantic colours are mapped to `--it-*` in `src/css/style.css`.
-- Four accent themes (blue, red, pink, yellow) and light/dark mode, driven by
-  `data-accent` and `data-theme` on `<html>` and persisted in `localStorage`.
+- One accent, the logo yellow (`#ffdf00`), and light/dark mode, driven by
+  `data-accent="yellow"` and `data-theme` on `<html>`; only the mode is persisted
+  in `localStorage` (ADR-0005).
 - Components are presentational or feature blocks; stateful behaviour lives in
   a composable; pure logic lives in `src/lib/`.
 - Before editing a file, run `ibrain resolve <path> --list` and read the rules
@@ -74,8 +75,7 @@ See `docs/decisions/ADR-0001` (rebuild and routes), `ADR-0002` (toolchain),
   for the same payload and level, on L/M/Q/H.
 - A QR that renders is not a QR that scans: scan one code per payload type with
   a phone before release.
-- Check the app in light/dark and all four accents when a token or a base
-  element changes.
+- Check the app in light/dark mode when a token or a base element changes.
 - Tests are deterministic: no network, no real timers, no shared state.
 
 <!-- ibrain:begin -->

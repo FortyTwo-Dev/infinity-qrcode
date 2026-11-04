@@ -100,7 +100,7 @@ const rows = computed<Row[]>(() => {
         <dd
           :data-state="row.state"
           :class="{
-            'text-primary font-semibold': row.state === 'active',
+            'it-mark': row.state === 'active',
             'opacity-50': row.state === 'unknown',
           }"
         >

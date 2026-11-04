@@ -17,13 +17,13 @@ const year = new Date().getFullYear()
           href="https://github.com/FortyTwo-Dev/infinity-qrcode"
           target="_blank"
           rel="noopener noreferrer"
-          class="hover:text-primary"
+          class="it-link-accent"
         >
           GitHub
         </a>
-        <RouterLink to="/credits" class="hover:text-primary">Credits</RouterLink>
-        <RouterLink to="/legal" class="hover:text-primary">Mentions légales</RouterLink>
-        <RouterLink to="/privacy" class="hover:text-primary">Confidentialité</RouterLink>
+        <RouterLink to="/credits" class="it-link-accent">Credits</RouterLink>
+        <RouterLink to="/legal" class="it-link-accent">Mentions légales</RouterLink>
+        <RouterLink to="/privacy" class="it-link-accent">Confidentialité</RouterLink>
         <span class="opacity-70">v{{ version }}</span>
       </nav>
     </div>

@@ -2,18 +2,9 @@ import { RouterLinkStub, mount } from '@vue/test-utils'
 import type { DOMWrapper } from '@vue/test-utils'
 import { describe, expect, test } from 'vitest'
 
-import type { SiteThemeColor } from '@/types/theme'
-
 import AppHeader from './AppHeader.vue'
 
 type Wrapper = ReturnType<typeof mount>
-
-const THEMES = [
-  { value: 'blue', label: 'Blue' },
-  { value: 'red', label: 'Red' },
-  { value: 'pink', label: 'Pink' },
-  { value: 'yellow', label: 'Yellow' },
-] as const
 
 function normalize(text: string): string {
   return text.replace(/\s+/g, ' ').trim()
@@ -26,13 +17,21 @@ function accessibleText(node: { element: Element }): string {
   return normalize(clone.textContent ?? '')
 }
 
-function mountHeader(
-  overrides: Partial<{ theme: SiteThemeColor; isDark: boolean; dyslexia: boolean }> = {},
-) {
+function mountHeader(overrides: Partial<{ isDark: boolean; dyslexia: boolean }> = {}) {
   return mount(AppHeader, {
-    props: { theme: 'blue', isDark: false, ...overrides },
+    props: { isDark: false, ...overrides },
     global: { stubs: { RouterLink: RouterLinkStub } },
   })
+}
+
+/** Finds a link by its router destination and its accessible text. */
+function linkNamed(wrapper: Wrapper, to: string, name: string) {
+  const link = wrapper
+    .findAllComponents(RouterLinkStub)
+    .filter((node) => node.props('to') === to)
+    .find((node) => accessibleText(node) === name)
+  expect(link, `link "${to}" named "${name}"`).toBeDefined()
+  return link!
 }
 
 function buttonNamed(wrapper: Wrapper, name: string): DOMWrapper<Element> {
@@ -44,135 +43,100 @@ function buttonNamed(wrapper: Wrapper, name: string): DOMWrapper<Element> {
   return button!
 }
 
-function themeDetails(wrapper: Wrapper): DOMWrapper<Element> {
-  const details = wrapper.find('details')
-  expect(details.exists(), 'theme menu').toBe(true)
-  return details
-}
-
-function isThemeMenuOpen(wrapper: Wrapper): boolean {
-  return (themeDetails(wrapper).element as HTMLDetailsElement).open
-}
-
-function themeItems(wrapper: Wrapper): DOMWrapper<Element>[] {
-  const labels: string[] = THEMES.map((theme) => theme.label)
-  return wrapper.findAll('button').filter((node) => labels.includes(accessibleText(node)))
-}
-
-function themeItem(wrapper: Wrapper, label: string): DOMWrapper<Element> {
-  const item = themeItems(wrapper).find((node) => accessibleText(node) === label)
-  expect(item, `theme item "${label}"`).toBeDefined()
-  return item!
-}
-
-async function openThemeMenu(wrapper: Wrapper) {
-  // The browser opens a details through its summary; happy-dom does not, so set
-  // the open state the same way the user action would.
-  ;(themeDetails(wrapper).element as HTMLDetailsElement).open = true
-  await wrapper.vm.$nextTick()
-  expect(isThemeMenuOpen(wrapper)).toBe(true)
-}
-
 describe('AppHeader', () => {
-  test('renders the brand and the Generate and Learn links', () => {
+  test('renders exactly one brand link to the home page', () => {
     const wrapper = mountHeader()
 
-    expect(wrapper.text()).toMatch(/infinity/i)
-
-    const links = wrapper.findAllComponents(RouterLinkStub)
-    const destinations = links.map((link) => link.props('to'))
-    expect(destinations).toContain('/')
-    expect(destinations).toContain('/learn')
-
-    expect(links.some((link) => normalize(link.text()) === 'Generate')).toBe(true)
-    expect(links.some((link) => normalize(link.text()) === 'Learn')).toBe(true)
+    const brands = wrapper.findAllComponents(RouterLinkStub).filter((node) => {
+      return node.props('to') === '/' && accessibleText(node) === 'Infinity QRCode'
+    })
+    expect(brands).toHaveLength(1)
   })
 
-  test('offers the four theme choices in the Theme menu', async () => {
+  test('renders the brand logo as a decorative image', () => {
     const wrapper = mountHeader()
 
-    expect(isThemeMenuOpen(wrapper)).toBe(false)
-    expect(accessibleText(wrapper.get('summary'))).toBe('Theme')
+    const brand = linkNamed(wrapper, '/', 'Infinity QRCode')
+    const images = brand.findAll('img')
+    expect(images).toHaveLength(1)
 
-    await openThemeMenu(wrapper)
+    const logo = images[0]
+    expect(logo.attributes('src')).toBe('/img/logo.png')
+    expect(logo.attributes('alt')).toBe('')
+    expect(logo.attributes('aria-hidden')).toBe('true')
 
-    expect(themeItems(wrapper).map((node) => accessibleText(node))).toEqual([
-      'Blue',
-      'Red',
-      'Pink',
-      'Yellow',
-    ])
+    // The decorative logo must not leak into the accessible text.
+    expect(accessibleText(brand)).toBe('Infinity QRCode')
+    expect(normalize(brand.element.textContent ?? '')).not.toContain('logo')
   })
 
-  test('names the mode button after the mode it switches to', () => {
+  test('renders the Main navigation with the Generate and Learn links', () => {
+    const wrapper = mountHeader()
+
+    const nav = wrapper.find('nav[aria-label="Main"]')
+    expect(nav.exists(), 'nav labelled "Main"').toBe(true)
+
+    const generate = linkNamed(wrapper, '/', 'Generate')
+    const learn = linkNamed(wrapper, '/learn', 'Learn')
+    expect(nav.element.contains(generate.element)).toBe(true)
+    expect(nav.element.contains(learn.element)).toBe(true)
+
+    const navLinks = nav.findAllComponents(RouterLinkStub)
+    expect(navLinks).toHaveLength(2)
+  })
+
+  test('does not render a theme menu', () => {
+    const wrapper = mountHeader({ isDark: true, dyslexia: true })
+
+    expect(wrapper.find('details').exists()).toBe(false)
+    expect(wrapper.find('summary').exists()).toBe(false)
+    expect(wrapper.find('menu').exists()).toBe(false)
+
+    // The only buttons are the mode and dyslexia buttons: nothing for accent colours.
+    const buttons = wrapper.findAll('button')
+    expect(buttons).toHaveLength(2)
+    for (const button of buttons) {
+      const label = normalize(button.attributes('aria-label') ?? accessibleText(button))
+      const known = [
+        'Switch to dark mode',
+        'Switch to light mode',
+        'Enable dyslexia-friendly font',
+        'Disable dyslexia-friendly font',
+      ]
+      expect(known, `unexpected button "${label}"`).toContain(label)
+    }
+  })
+
+  test('names and marks the mode button after the mode it switches to', () => {
     const light = mountHeader({ isDark: false })
-    const dark = mountHeader({ isDark: true })
+    const toDark = buttonNamed(light, 'Switch to dark mode')
+    expect(toDark.attributes('type')).toBe('button')
+    expect(toDark.attributes('aria-pressed')).toBe('false')
 
-    expect(buttonNamed(light, 'Switch to dark mode')).toBeDefined()
-    expect(buttonNamed(dark, 'Switch to light mode')).toBeDefined()
+    const dark = mountHeader({ isDark: true })
+    const toLight = buttonNamed(dark, 'Switch to light mode')
+    expect(toLight.attributes('type')).toBe('button')
+    expect(toLight.attributes('aria-pressed')).toBe('true')
   })
 
-  test('emits toggle-mode when the mode button is clicked', async () => {
+  test('emits toggle-mode with no payload when the mode button is clicked', async () => {
     const wrapper = mountHeader({ isDark: false })
 
     await buttonNamed(wrapper, 'Switch to dark mode').trigger('click')
 
+    expect(wrapper.emitted('toggle-mode')).toEqual([[]])
     expect(wrapper.emitted('toggle-mode')).toHaveLength(1)
   })
 
-  test('emits update:theme with the chosen colour and closes the menu', async () => {
-    const wrapper = mountHeader()
-
-    await openThemeMenu(wrapper)
-    await themeItem(wrapper, 'Red').trigger('click')
-    await wrapper.vm.$nextTick()
-
-    expect(wrapper.emitted('update:theme')?.at(-1)).toEqual(['red'])
-    expect(isThemeMenuOpen(wrapper)).toBe(false)
-  })
-
-  test('closes the theme menu on an outside pointer down', async () => {
-    const wrapper = mountHeader()
-
-    await openThemeMenu(wrapper)
-
-    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
-    await wrapper.vm.$nextTick()
-
-    expect(isThemeMenuOpen(wrapper)).toBe(false)
-  })
-
-  test('keeps the theme menu open on a pointer down inside it', async () => {
-    const wrapper = mountHeader()
-
-    await openThemeMenu(wrapper)
-
-    themeItem(wrapper, 'Pink').element.dispatchEvent(new Event('pointerdown', { bubbles: true }))
-    await wrapper.vm.$nextTick()
-
-    expect(isThemeMenuOpen(wrapper)).toBe(true)
-  })
-
-  test('closes the theme menu on Escape', async () => {
-    const wrapper = mountHeader()
-
-    await openThemeMenu(wrapper)
-
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
-    await wrapper.vm.$nextTick()
-
-    expect(isThemeMenuOpen(wrapper)).toBe(false)
-  })
-
-  test('offers to enable the dyslexia-friendly font when it is off', async () => {
-    const wrapper = mountHeader({ dyslexia: false })
-
-    const button = buttonNamed(wrapper, 'Enable dyslexia-friendly font')
+  test('offers to enable the dyslexia-friendly font when it is off', () => {
+    const explicit = mountHeader({ dyslexia: false })
+    const button = buttonNamed(explicit, 'Enable dyslexia-friendly font')
     expect(button.attributes('aria-pressed')).toBe('false')
+    expect(button.attributes('class') ?? '').not.toContain('primary')
 
-    await button.trigger('click')
-
-    expect(wrapper.emitted('toggle-dyslexia')).toHaveLength(1)
+    // The dyslexia prop is optional and defaults to off.
+    const defaulted = mountHeader()
+    expect(buttonNamed(defaulted, 'Enable dyslexia-friendly font')).toBeDefined()
   })
 
   test('offers to disable the dyslexia-friendly font when it is on', () => {
@@ -180,5 +144,32 @@ describe('AppHeader', () => {
 
     const button = buttonNamed(wrapper, 'Disable dyslexia-friendly font')
     expect(button.attributes('aria-pressed')).toBe('true')
+    expect(button.attributes('class') ?? '').toContain('primary')
+  })
+
+  test('emits toggle-dyslexia with no payload when the dyslexia button is clicked', async () => {
+    const off = mountHeader({ dyslexia: false })
+    await buttonNamed(off, 'Enable dyslexia-friendly font').trigger('click')
+    expect(off.emitted('toggle-dyslexia')).toEqual([[]])
+
+    const on = mountHeader({ dyslexia: true })
+    await buttonNamed(on, 'Disable dyslexia-friendly font').trigger('click')
+    expect(on.emitted('toggle-dyslexia')).toEqual([[]])
+  })
+
+  test('emits only toggle-mode and toggle-dyslexia', async () => {
+    const wrapper = mountHeader()
+
+    await buttonNamed(wrapper, 'Switch to dark mode').trigger('click')
+    await buttonNamed(wrapper, 'Enable dyslexia-friendly font').trigger('click')
+
+    const emitted = Object.keys(wrapper.emitted())
+    expect(emitted).toContain('toggle-mode')
+    expect(emitted).toContain('toggle-dyslexia')
+    expect(emitted.filter((name) => name.startsWith('toggle'))).toEqual([
+      'toggle-mode',
+      'toggle-dyslexia',
+    ])
+    expect(emitted.filter((name) => name.startsWith('update:'))).toEqual([])
   })
 })

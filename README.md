@@ -19,7 +19,7 @@ Everything runs in the browser. No payload is sent to a server.
 - Export as SVG, PNG, WebP or JPEG.
 - Pedagogical trace with timeline, phase explanations, mask penalties and
   trace metadata.
-- Four accent themes (blue, red, pink, yellow) and light/dark mode.
+- The logo yellow (`#ffdf00`) as the single accent, and light/dark mode.
 - Installable PWA with the WASM assets precached for offline use.
 
 ## Stack
@@ -145,8 +145,8 @@ The UI uses the in-repo Infinity Theme library:
 - `src/components/theme` contains thin Vue wrappers without styles.
 
 Tailwind is used for layout only. Its semantic colours map to `--it-*` in
-`src/css/style.css`. The active theme is set with `data-theme` and `data-accent`
-on `<html>`.
+`src/css/style.css`. The theme is set with `data-theme` on `<html>`; the accent
+is always `data-accent="yellow"`.
 
 ## Fonts
 

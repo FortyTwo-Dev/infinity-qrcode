@@ -5,9 +5,6 @@
 @import './tokens/semantic.css';
 @import './tokens/themes/light.css';
 @import './tokens/themes/dark.css';
-@import './tokens/themes/accents/blue.css';
-@import './tokens/themes/accents/red.css';
-@import './tokens/themes/accents/pink.css';
 @import './tokens/themes/accents/yellow.css';
 @import './base/reset.css';
 @import './base/fonts.css';

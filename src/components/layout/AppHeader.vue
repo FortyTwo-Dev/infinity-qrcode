@@ -1,51 +1,17 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
 
-import { THEME_COLORS, type SiteThemeColor } from '@/types/theme'
-
 interface Props {
-  theme: SiteThemeColor
   isDark: boolean
   dyslexia?: boolean
 }
 
 withDefaults(defineProps<Props>(), { dyslexia: false })
 
-const emit = defineEmits<{
-  'update:theme': [theme: SiteThemeColor]
+defineEmits<{
   'toggle-mode': []
   'toggle-dyslexia': []
 }>()
-
-const themeDetails = useTemplateRef<HTMLDetailsElement>('themeDetails')
-
-function closeThemeMenu() {
-  themeDetails.value?.removeAttribute('open')
-}
-
-function selectTheme(color: SiteThemeColor) {
-  emit('update:theme', color)
-  closeThemeMenu()
-}
-
-function handlePointerDown(event: PointerEvent) {
-  const details = themeDetails.value
-  if (details?.open && !details.contains(event.target as Node)) closeThemeMenu()
-}
-
-function handleKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape' && themeDetails.value?.open) closeThemeMenu()
-}
-
-onMounted(() => {
-  document.addEventListener('pointerdown', handlePointerDown)
-  document.addEventListener('keydown', handleKeydown)
-})
-onBeforeUnmount(() => {
-  document.removeEventListener('pointerdown', handlePointerDown)
-  document.removeEventListener('keydown', handleKeydown)
-})
 </script>
 
 <template>
@@ -53,8 +19,9 @@ onBeforeUnmount(() => {
     <div class="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-2 px-4 py-3">
       <RouterLink
         to="/"
-        class="mr-auto text-lg font-semibold text-foreground no-underline hover:text-primary"
+        class="mr-auto flex items-center gap-2 text-lg font-semibold text-foreground no-underline it-link-accent"
       >
+        <img src="/img/logo.png" alt="" aria-hidden="true" class="h-7 w-7 rounded-sm" />
         Infinity QRCode
       </RouterLink>
 
@@ -62,42 +29,6 @@ onBeforeUnmount(() => {
         <RouterLink to="/" class="it-nav-link">Generate</RouterLink>
         <RouterLink to="/learn" class="it-nav-link">Learn</RouterLink>
       </nav>
-
-      <details ref="themeDetails" class="relative order-2 sm:order-none">
-        <summary class="it-nav-link">
-          Theme
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="m2 4 4 4 4-4" />
-          </svg>
-        </summary>
-        <div
-          class="absolute right-0 z-20 mt-2 flex w-44 flex-col gap-1 border border-border bg-background p-2 shadow-md"
-        >
-          <button
-            v-for="color in THEME_COLORS"
-            :key="color.value"
-            type="button"
-            class="it-nav-link w-full justify-start"
-            :class="{ 'text-primary font-semibold': theme === color.value }"
-            :aria-pressed="theme === color.value"
-            @click="selectTheme(color.value)"
-          >
-            <span class="w-4" aria-hidden="true">{{ theme === color.value ? '✓' : '' }}</span>
-            {{ color.label }}
-          </button>
-        </div>
-      </details>
 
       <button
         type="button"

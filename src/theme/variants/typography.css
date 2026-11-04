@@ -9,6 +9,21 @@
     color: var(--it-muted);
   }
 
+  .it-mark {
+    color: var(--it-accent);
+    font-weight: var(--it-font-weight-semibold);
+  }
+
+  /* In light mode the accent is decorative only: the value keeps the
+     foreground colour and the yellow marks it with an underline. */
+  [data-theme='light'] .it-mark {
+    color: inherit;
+    text-decoration-line: underline;
+    text-decoration-color: var(--it-accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+  }
+
   .it-small {
     font-size: var(--it-font-size-2);
   }
