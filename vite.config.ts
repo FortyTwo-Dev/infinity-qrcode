@@ -33,6 +33,12 @@ export default defineConfig({
             purpose: 'any maskable',
           },
           {
+            src: '/img/logo-mono.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'monochrome',
+          },
+          {
             src: '/favicon.ico',
             sizes: 'any',
             type: 'image/x-icon',
