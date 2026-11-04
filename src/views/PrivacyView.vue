@@ -20,10 +20,12 @@ import { LEGAL } from '@/lib/legal'
     <section class="mt-8">
       <h2 class="it-h5 text-lg font-semibold">Données stockées sur l'appareil</h2>
       <p class="mt-3 text-sm">
-        Une valeur est enregistrée dans le stockage local du navigateur :
+        Trois valeurs sont enregistrées dans le stockage local du navigateur :
       </p>
       <ul class="mt-2 list-disc pl-5 text-sm">
-        <li><code>theme</code> : le mode clair ou sombre.</li>
+        <li><code>theme</code> : le mode clair ou sombre ;</li>
+        <li><code>locale</code> : la langue de l'interface ;</li>
+        <li><code>readingFont</code> : la police adaptée à la dyslexie.</li>
       </ul>
       <p class="mt-3 text-sm">
         Elles servent uniquement à retrouver vos préférences d'affichage. Elles ne sont transmises à
