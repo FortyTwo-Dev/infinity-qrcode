@@ -27,10 +27,10 @@ export default defineConfig({
         background_color: '#fbfbfe',
         icons: [
           {
-            src: '/img/qrcode.png',
-            sizes: '200x200',
+            src: '/img/logo.png',
+            sizes: '512x512',
             type: 'image/png',
-            purpose: 'any',
+            purpose: 'any maskable',
           },
           {
             src: '/favicon.ico',

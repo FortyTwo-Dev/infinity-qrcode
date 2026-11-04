@@ -53,8 +53,9 @@ onBeforeUnmount(() => {
     <div class="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-2 px-4 py-3">
       <RouterLink
         to="/"
-        class="mr-auto text-lg font-semibold text-foreground no-underline hover:text-primary"
+        class="mr-auto flex items-center gap-2 text-lg font-semibold text-foreground no-underline hover:text-primary"
       >
+        <img src="/img/logo.png" alt="" aria-hidden="true" class="h-7 w-7 rounded-sm" />
         Infinity QRCode
       </RouterLink>
 
