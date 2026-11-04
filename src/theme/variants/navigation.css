@@ -41,7 +41,8 @@
   }
 
   .it-link-accent:hover {
-    color: var(--it-accent);
+    text-decoration-line: underline;
+    text-decoration-color: var(--it-accent);
   }
 
   .it-link-accent:focus-visible {
@@ -53,11 +54,5 @@
      stays decorative (underline) and the text keeps the foreground colour. */
   [data-theme='light'] .it-nav-link[aria-current='page'] {
     color: var(--it-fg);
-  }
-
-  [data-theme='light'] .it-link-accent:hover {
-    color: var(--it-fg);
-    text-decoration-line: underline;
-    text-decoration-color: var(--it-accent);
   }
 }
