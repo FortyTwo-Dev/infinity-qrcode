@@ -7,8 +7,8 @@
     --it-muted: oklch(55% 0 0);
     --it-border: oklch(88% 0 0);
 
-    --it-accent: var(--it-color-blue-500);
-    --it-accent-fg: var(--it-color-white);
+    --it-accent: var(--it-color-yellow-500);
+    --it-accent-fg: var(--it-color-black);
     --it-danger: var(--it-color-red-500);
     --it-danger-fg: var(--it-color-white);
     --it-success: var(--it-color-green-500);

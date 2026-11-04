@@ -9,15 +9,16 @@ paths:
 # Design tokens
 
 The application uses the in-repo Infinity Theme library. The visual identity is
-still the same: four accents, light/dark modes, square corners and the existing
-layout proportions.
+the logo yellow as the single accent, light/dark modes, square corners and the
+existing layout proportions (ADR-0005).
 
 ## Themes
 
 - The theme is scoped by `.it-theme` on `<html>`.
 - The mode is `data-theme="light|dark"` on `<html>`.
-- The accent is `data-accent="blue|red|pink|yellow"` on `<html>`.
-- Persist the accent and the mode in `localStorage`.
+- The accent is always `data-accent="yellow"` on `<html>`; the library keeps the
+  accent mechanism, but the application ships no other accent.
+- Persist the mode in `localStorage`. The accent is not stored.
 - Do not reintroduce the old `light-blue` / `dark-red` classes or the
   cookie-per-domain hack.
 
@@ -92,7 +93,7 @@ theme, base, it.tokens, it.base, it.variants, components, utilities, it.override
 
 - There is no styleguide page. Check a token, a base element or a variant on
   the app itself.
-- Check light and dark modes, all four accents and the focus/disabled states.
+- Check light and dark modes and the focus/disabled states.
 
 ## Layout
 

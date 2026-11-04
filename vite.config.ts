@@ -23,7 +23,7 @@ export default defineConfig({
         name: 'Infinity QRCode',
         short_name: 'IQRCode',
         description: 'Generate QR codes and learn how they are built.',
-        theme_color: '#8ec5ff',
+        theme_color: '#ffdf00',
         background_color: '#fbfbfe',
         icons: [
           {

@@ -54,15 +54,6 @@ test('keeps the preview bounded when the export size grows', async ({ page }) =>
   expect(overflow).toBe(false)
 })
 
-test('closes the theme menu on an outside click', async ({ page }) => {
-  await page.getByText('Theme', { exact: true }).click()
-  await expect(page.locator('details[open]')).toHaveCount(1)
-
-  await page.getByRole('heading', { level: 1 }).click()
-
-  await expect(page.locator('details[open]')).toHaveCount(0)
-})
-
 test('toggles dark mode', async ({ page }) => {
   await page.getByRole('button', { name: 'Switch to dark mode' }).click()
 

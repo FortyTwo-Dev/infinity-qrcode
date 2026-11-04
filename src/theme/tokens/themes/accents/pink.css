@@ -1,7 +1,0 @@
-@layer it.tokens {
-  [data-accent='pink'] {
-    --it-accent: var(--it-color-pink-500);
-    --it-accent-fg: var(--it-color-white);
-    --it-focus-ring: var(--it-accent);
-  }
-}
