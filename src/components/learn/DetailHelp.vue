@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { createLearnTrace, loadLearnWasm } from '@/composables/useLearnWasm'
 
 import SectionHelp from './SectionHelp.vue'
 
+const { t } = useI18n()
+
 const SAMPLE = '42'
-const STRIDES = [
-  { stride: 50, label: 'Every 50 modules' },
-  { stride: 10, label: 'Every 10 modules' },
-  { stride: 1, label: 'Every data module' },
-]
+const STRIDES = [50, 10, 1] as const
 
 interface Row {
-  label: string
+  /** Message catalog key of the stride label. */
+  key: string
+  stride: number
   frames: number
 }
 
@@ -37,7 +38,11 @@ async function loadCounts() {
   loading.value = true
   try {
     await loadLearnWasm()
-    rows.value = STRIDES.map(({ stride, label }) => ({ label, frames: count(stride) }))
+    rows.value = STRIDES.map((stride) => ({
+      key: stride === 1 ? 'learn.controls.everyModule' : 'learn.controls.everyModules',
+      stride,
+      frames: count(stride),
+    }))
     loaded = true
   } catch (cause) {
     error.value = cause instanceof Error ? cause.message : String(cause)
@@ -48,21 +53,24 @@ async function loadCounts() {
 </script>
 
 <template>
-  <SectionHelp label="About the detail level" title="Detail" @open="loadCounts">
-    <p class="text-sm">
-      Detail changes how many frames the replay contains, not the final code. A lower value shows
-      more intermediate steps, so the construction is slower but more detailed.
-    </p>
+  <SectionHelp
+    :label="t('learn.controls.detailHelpLabel')"
+    :title="t('learn.controls.detail')"
+    @open="loadCounts"
+  >
+    <p class="text-sm">{{ t('learn.controls.detailIntro') }}</p>
 
-    <p v-if="loading" class="text-sm opacity-70">Counting frames…</p>
+    <p v-if="loading" class="text-sm opacity-70">{{ t('learn.controls.countingFrames') }}</p>
     <p v-else-if="error" class="text-sm text-destructive" role="alert">{{ error }}</p>
     <dl v-else class="grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 text-sm">
-      <template v-for="row in rows" :key="row.label">
-        <dt>{{ row.label }}</dt>
-        <dd class="text-right font-medium">{{ row.frames }} frames</dd>
+      <template v-for="row in rows" :key="row.stride">
+        <dt>{{ t(row.key, { count: row.stride }) }}</dt>
+        <dd class="text-right font-medium">
+          {{ t('learn.controls.frameCount', { count: row.frames }) }}
+        </dd>
       </template>
     </dl>
 
-    <p class="text-xs opacity-70">Same content for the three counts: {{ SAMPLE }}.</p>
+    <p class="text-xs opacity-70">{{ t('learn.controls.sameContentThree', { sample: SAMPLE }) }}</p>
   </SectionHelp>
 </template>

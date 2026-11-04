@@ -2,6 +2,8 @@ import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, test } from 'vitest'
 import { nextTick } from 'vue'
 
+import i18n from '@/i18n'
+
 import SectionHelp from './SectionHelp.vue'
 
 type Wrapper = ReturnType<typeof mount>
@@ -23,9 +25,11 @@ function normalize(text: string): string {
 }
 
 function mountSectionHelp(): Wrapper {
+  i18n.global.locale.value = 'en'
   wrapper = mount(SectionHelp, {
     props: { label: LABEL, title: TITLE },
     slots: { default: `<p>${SLOT_TEXT}</p>` },
+    global: { plugins: [i18n] },
     attachTo: document.body,
   })
   return wrapper

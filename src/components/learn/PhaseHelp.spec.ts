@@ -4,6 +4,8 @@ import { nextTick } from 'vue'
 
 import type { LearnPhase } from '@/types/learn'
 
+import i18n from '@/i18n'
+
 import PhaseHelp from './PhaseHelp.vue'
 
 type Wrapper = ReturnType<typeof mount>
@@ -27,8 +29,10 @@ function accessibleName(node: Element): string {
 }
 
 function mountHelp(phase: LearnPhase | null): Wrapper {
+  i18n.global.locale.value = 'en'
   wrapper = mount(PhaseHelp, {
     props: { phase },
+    global: { plugins: [i18n] },
     attachTo: document.body,
   })
   return wrapper

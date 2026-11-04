@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 const version = __APP_VERSION__
 const year = new Date().getFullYear()
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -12,7 +15,7 @@ const year = new Date().getFullYear()
     >
       <p class="m-0 font-semibold leading-5">© {{ year }} Infinity QRCode</p>
 
-      <nav aria-label="Footer" class="flex flex-wrap items-center gap-x-3 gap-y-1">
+      <nav :aria-label="t('footer.nav')" class="flex flex-wrap items-center gap-x-3 gap-y-1">
         <a
           href="https://github.com/FortyTwo-Dev/infinity-qrcode"
           target="_blank"
@@ -21,9 +24,9 @@ const year = new Date().getFullYear()
         >
           GitHub
         </a>
-        <RouterLink to="/credits" class="it-link-accent">Credits</RouterLink>
-        <RouterLink to="/legal" class="it-link-accent">Mentions légales</RouterLink>
-        <RouterLink to="/privacy" class="it-link-accent">Confidentialité</RouterLink>
+        <RouterLink to="/credits" class="it-link-accent">{{ t('footer.credits') }}</RouterLink>
+        <RouterLink to="/legal" class="it-link-accent">{{ t('footer.legal') }}</RouterLink>
+        <RouterLink to="/privacy" class="it-link-accent">{{ t('footer.privacy') }}</RouterLink>
         <span class="opacity-70">v{{ version }}</span>
       </nav>
     </div>

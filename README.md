@@ -1,7 +1,15 @@
 # Infinity QRCode
 
+<img src="public/img/logo.png" width="128" alt="Infinity QRCode logo" />
+
 A client-side QR code generator and a step-by-step construction viewer, built on
 two WebAssembly packages from the same Rust core.
+
+[![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=FortyTwo-Dev_infinity-qrcode&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=FortyTwo-Dev_infinity-qrcode)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=FortyTwo-Dev_infinity-qrcode&metric=bugs)](https://sonarcloud.io/summary/new_code?id=FortyTwo-Dev_infinity-qrcode)
+[![Security rating](https://sonarcloud.io/api/project_badges/measure?project=FortyTwo-Dev_infinity-qrcode&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=FortyTwo-Dev_infinity-qrcode)
+[![Code smells](https://sonarcloud.io/api/project_badges/measure?project=FortyTwo-Dev_infinity-qrcode&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=FortyTwo-Dev_infinity-qrcode)
+[![Duplicated lines](https://sonarcloud.io/api/project_badges/measure?project=FortyTwo-Dev_infinity-qrcode&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=FortyTwo-Dev_infinity-qrcode)
 
 - `/` generates a QR code for ten payload types and exports it as SVG, PNG,
   WebP or JPEG.
@@ -20,6 +28,8 @@ Everything runs in the browser. No payload is sent to a server.
 - Pedagogical trace with timeline, phase explanations, mask penalties and
   trace metadata.
 - The logo yellow (`#ffdf00`) as the single accent, and light/dark mode.
+- Interface in English and French, switchable from the header; the legal
+  notices stay in French.
 - Installable PWA with the WASM assets precached for offline use.
 
 ## Stack
@@ -147,6 +157,17 @@ The UI uses the in-repo Infinity Theme library:
 Tailwind is used for layout only. Its semantic colours map to `--it-*` in
 `src/css/style.css`. The theme is set with `data-theme` on `<html>`; the accent
 is always `data-accent="yellow"`.
+
+## Internationalization
+
+The interface is localized with `vue-i18n`:
+
+- `src/i18n` owns the locale engine (fallback English, browser detection,
+  persistence under `localStorage.locale`); `src/locales` holds the catalogs.
+- Keys are the shared contract: lib layers emit catalog keys and the UI
+  translates them (ADR-0006).
+- `/legal` and `/privacy` stay in French at every locale: they are the French
+  legal reference.
 
 ## Fonts
 

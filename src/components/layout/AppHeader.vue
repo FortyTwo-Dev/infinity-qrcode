@@ -1,17 +1,24 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+import type { Locale } from '@/i18n'
 
 interface Props {
   isDark: boolean
   dyslexia?: boolean
+  locale?: Locale
 }
 
-withDefaults(defineProps<Props>(), { dyslexia: false })
+withDefaults(defineProps<Props>(), { dyslexia: false, locale: 'en' })
 
 defineEmits<{
   'toggle-mode': []
   'toggle-dyslexia': []
+  'toggle-locale': []
 }>()
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -25,18 +32,27 @@ defineEmits<{
         Infinity QRCode
       </RouterLink>
 
-      <nav aria-label="Main" class="order-3 flex w-full items-center gap-1 sm:order-none sm:w-auto">
-        <RouterLink to="/" class="it-nav-link">Generate</RouterLink>
-        <RouterLink to="/learn" class="it-nav-link">Learn</RouterLink>
+      <nav :aria-label="t('header.nav')" class="order-3 flex w-full items-center gap-1 sm:order-none sm:w-auto">
+        <RouterLink to="/" class="it-nav-link">{{ t('header.generate') }}</RouterLink>
+        <RouterLink to="/learn" class="it-nav-link">{{ t('header.learn') }}</RouterLink>
       </nav>
+
+      <button
+        type="button"
+        class="it-btn it-btn-ghost it-btn-sm order-2 sm:order-none"
+        :aria-label="t('header.switchLanguage')"
+        @click="$emit('toggle-locale')"
+      >
+        <span aria-hidden="true" class="text-sm font-semibold">{{ locale === 'en' ? 'FR' : 'EN' }}</span>
+      </button>
 
       <button
         type="button"
         class="it-btn it-btn-sm it-btn-icon order-2 sm:order-none"
         :class="dyslexia ? 'it-btn-primary' : 'it-btn-secondary'"
-        :aria-label="dyslexia ? 'Disable dyslexia-friendly font' : 'Enable dyslexia-friendly font'"
+        :aria-label="dyslexia ? t('header.dyslexiaOff') : t('header.dyslexiaOn')"
         :aria-pressed="dyslexia"
-        :title="dyslexia ? 'Disable dyslexia-friendly font' : 'Enable dyslexia-friendly font'"
+        :title="dyslexia ? t('header.dyslexiaOff') : t('header.dyslexiaOn')"
         @click="$emit('toggle-dyslexia')"
       >
         <span aria-hidden="true" class="text-sm font-semibold">aA</span>
@@ -45,7 +61,7 @@ defineEmits<{
       <button
         type="button"
         class="it-btn it-btn-ghost it-btn-sm order-2 sm:order-none"
-        :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+        :aria-label="isDark ? t('header.switchToLight') : t('header.switchToDark')"
         :aria-pressed="isDark"
         @click="$emit('toggle-mode')"
       >

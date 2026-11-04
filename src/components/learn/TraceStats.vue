@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import type { LearnPhase, TraceMetadata } from '@/types/learn'
+
+const { t } = useI18n()
 
 interface Props {
   metadata: TraceMetadata | null
@@ -32,6 +35,7 @@ function state(revealed: boolean, active: boolean): RowState {
 }
 
 interface Row {
+  /** Message catalog key of the term. */
   label: string
   value: string | number
   state: RowState
@@ -52,37 +56,45 @@ const rows = computed<Row[]>(() => {
   const levelActive = props.phase === 'format_info'
 
   return [
-    { label: 'Version', value: metadata.version, state: 'normal' },
-    { label: 'Size', value: `${metadata.size}×${metadata.size}`, state: 'normal' },
-    { label: 'Level', value: metadata.level, state: levelActive ? 'active' : 'normal' },
-    { label: 'Segments', value: metadata.segments, state: 'normal' },
+    { label: 'learn.stats.terms.version', value: metadata.version, state: 'normal' },
     {
-      label: 'Blocks',
+      label: 'learn.stats.terms.size',
+      value: `${metadata.size}×${metadata.size}`,
+      state: 'normal',
+    },
+    {
+      label: 'learn.stats.terms.level',
+      value: metadata.level,
+      state: levelActive ? 'active' : 'normal',
+    },
+    { label: 'learn.stats.terms.segments', value: metadata.segments, state: 'normal' },
+    {
+      label: 'learn.stats.terms.blocks',
       value: codewordsRevealed ? metadata.blocks : '?',
       state: state(codewordsRevealed, codewordsActive),
     },
     {
-      label: 'Data codewords',
+      label: 'learn.stats.terms.dataCodewords',
       value: codewordsRevealed ? metadata.dataCodewords : '?',
       state: state(codewordsRevealed, codewordsActive),
     },
     {
-      label: 'ECC per block',
+      label: 'learn.stats.terms.eccPerBlock',
       value: codewordsRevealed ? metadata.eccPerBlock : '?',
       state: state(codewordsRevealed, codewordsActive),
     },
     {
-      label: 'Total codewords',
+      label: 'learn.stats.terms.totalCodewords',
       value: codewordsRevealed ? metadata.totalCodewords : '?',
       state: state(codewordsRevealed, codewordsActive),
     },
     {
-      label: 'Data modules',
+      label: 'learn.stats.terms.dataModules',
       value: codewordsRevealed ? metadata.dataModules : '?',
       state: state(codewordsRevealed, codewordsActive),
     },
     {
-      label: 'Mask',
+      label: 'learn.stats.terms.mask',
       value: maskRevealed ? metadata.mask : '?',
       state: state(maskRevealed, maskActive),
     },
@@ -92,11 +104,11 @@ const rows = computed<Row[]>(() => {
 
 <template>
   <section aria-labelledby="stats-heading" class="flex flex-col gap-3">
-    <h2 id="stats-heading" class="it-h5 text-lg font-semibold">QR code</h2>
+    <h2 id="stats-heading" class="it-h5 text-lg font-semibold">{{ t('learn.stats.title') }}</h2>
 
     <dl v-if="metadata" class="grid grid-cols-2 gap-x-3 gap-y-1 text-sm">
       <template v-for="row in rows" :key="row.label">
-        <dt class="opacity-70">{{ row.label }}</dt>
+        <dt class="opacity-70">{{ t(row.label) }}</dt>
         <dd
           :data-state="row.state"
           :class="{
@@ -109,6 +121,6 @@ const rows = computed<Row[]>(() => {
       </template>
     </dl>
 
-    <p v-else class="text-sm opacity-70">Build a trace to see its metadata.</p>
+    <p v-else class="text-sm opacity-70">{{ t('learn.stats.empty') }}</p>
   </section>
 </template>

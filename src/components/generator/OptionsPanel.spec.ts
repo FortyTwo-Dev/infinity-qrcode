@@ -3,6 +3,8 @@ import { afterEach, describe, expect, test } from 'vitest'
 
 import type { QrOptions } from '@/types/qr'
 
+import i18n from '@/i18n'
+
 import OptionsPanel from './OptionsPanel.vue'
 
 type Wrapper = ReturnType<typeof mount>
@@ -38,8 +40,10 @@ function mountOptions(
   overrides: Partial<QrOptions> = {},
   moduleCount: number | null = 33,
 ): Wrapper {
+  i18n.global.locale.value = 'en'
   const wrapper = mount(OptionsPanel, {
     props: { modelValue: { ...OPTIONS, ...overrides }, moduleCount },
+    global: { plugins: [i18n] },
   })
   wrappers.push(wrapper)
   return wrapper

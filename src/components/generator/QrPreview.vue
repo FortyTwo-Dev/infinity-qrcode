@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { ItButton } from '@components/theme'
 import QrCanvas from '@components/qr/QrCanvas.vue'
 import type { QrMatrixData, QrOptions } from '@/types/qr'
+
+const { t } = useI18n()
 
 /** Upper bound for the on-screen code, in CSS pixels. */
 const PREVIEW_MAX_SIZE = 360
@@ -39,15 +42,19 @@ const displayModuleSize = computed(() => {
     class="flex flex-col gap-4 rounded-sm border border-border p-4"
   >
     <div class="flex flex-wrap items-end justify-between gap-2">
-      <h2 id="preview-heading" class="it-h5 text-lg font-semibold">Preview</h2>
+      <h2 id="preview-heading" class="it-h5 text-lg font-semibold">
+        {{ t('generator.sections.preview') }}
+      </h2>
       <p v-if="data" class="text-xs opacity-70">
-        v{{ data.version }} · {{ data.size }}×{{ data.size }} · mask {{ data.mask }}
+        {{
+          t('generator.preview.meta', { version: data.version, size: data.size, mask: data.mask })
+        }}
       </p>
     </div>
 
     <div class="flex min-h-96 items-center justify-center bg-secondary p-4">
-      <output v-if="loading" class="text-sm" aria-label="QR engine status">
-        Loading QR engine…
+      <output v-if="loading" class="text-sm" :aria-label="t('generator.preview.status')">
+        {{ t('generator.preview.loading') }}
       </output>
 
       <p
@@ -66,15 +73,15 @@ const displayModuleSize = computed(() => {
         :quiet-zone="options.quietZone"
         :dark="options.dark"
         :light="options.light"
-        label="Generated QR code"
+        :label="t('generator.preview.canvasLabel')"
       />
 
-      <p v-else class="text-center text-sm opacity-70">Enter valid content to see the QR code.</p>
+      <p v-else class="text-center text-sm opacity-70">{{ t('generator.preview.empty') }}</p>
     </div>
 
     <div class="flex flex-wrap items-center gap-2">
       <ItButton :disabled="!data" @click="$emit('download')">
-        Download {{ options.format.toUpperCase() }}
+        {{ t('generator.preview.download', { format: options.format.toUpperCase() }) }}
       </ItButton>
     </div>
   </section>

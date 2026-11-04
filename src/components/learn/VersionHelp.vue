@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import QrCanvas from '@components/qr/QrCanvas.vue'
 import { createLearnTrace, loadLearnWasm, readLearnFrame } from '@/composables/useLearnWasm'
@@ -7,13 +8,22 @@ import type { QrMatrixData } from '@/types/qr'
 
 import SectionHelp from './SectionHelp.vue'
 
+const { t } = useI18n()
+
 const SAMPLE = '42'
 const MODULE_SIZE = 2
 
 interface Example {
-  label: string
+  version: number | null
   caption: string
   data: QrMatrixData
+}
+
+/** Display label of an example: Auto for a version chosen by the encoder. */
+function labelOf(version: number | null): string {
+  return version === null
+    ? t('learn.controls.auto')
+    : t('learn.controls.versionOption', { version })
 }
 
 const examples = ref<Example[]>([])
@@ -26,7 +36,7 @@ function build(version: number | null): Example {
   try {
     const frame = readLearnFrame(trace, trace.frame_count() - 1)
     return {
-      label: version === null ? 'Auto' : `Version ${version}`,
+      version,
       caption: `v${trace.version()} · ${frame.size}×${frame.size}`,
       data: {
         matrix: frame.matrix,
@@ -57,20 +67,22 @@ async function loadExamples() {
 </script>
 
 <template>
-  <SectionHelp label="About the version" title="Version" @open="loadExamples">
-    <p class="text-sm">
-      The version sets the number of modules, from 21×21 for version 1 to 177×177 for version 40.
-      Auto picks the smallest version that fits the content.
-    </p>
-    <p class="text-sm">
-      Forcing a larger version keeps the same content but fills the extra capacity with padding. The
-      code gets bigger, not more reliable.
-    </p>
+  <SectionHelp
+    :label="t('learn.controls.versionHelpLabel')"
+    :title="t('learn.controls.version')"
+    @open="loadExamples"
+  >
+    <p class="text-sm">{{ t('learn.controls.versionIntro') }}</p>
+    <p class="text-sm">{{ t('learn.controls.versionPadding') }}</p>
 
-    <p v-if="loading" class="text-sm opacity-70">Generating examples…</p>
+    <p v-if="loading" class="text-sm opacity-70">{{ t('learn.controls.generatingExamples') }}</p>
     <p v-else-if="error" class="text-sm text-destructive" role="alert">{{ error }}</p>
     <ul v-else class="grid grid-cols-2 gap-4">
-      <li v-for="example in examples" :key="example.label" class="flex flex-col items-center gap-1">
+      <li
+        v-for="example in examples"
+        :key="example.data.version"
+        class="flex flex-col items-center gap-1"
+      >
         <div class="flex min-h-36 w-full items-center justify-center bg-secondary p-2">
           <QrCanvas
             :matrix="example.data.matrix"
@@ -79,14 +91,14 @@ async function loadExamples() {
             :quiet-zone="4"
             dark="#000000"
             light="#ffffff"
-            :label="`QR code ${example.label}`"
+            :label="t('learn.controls.exampleAria', { label: labelOf(example.version) })"
           />
         </div>
-        <span class="text-xs font-medium">{{ example.label }}</span>
+        <span class="text-xs font-medium">{{ labelOf(example.version) }}</span>
         <span class="text-xs opacity-70">{{ example.caption }}</span>
       </li>
     </ul>
 
-    <p class="text-xs opacity-70">Same content for both codes: {{ SAMPLE }}.</p>
+    <p class="text-xs opacity-70">{{ t('learn.controls.sameContentBoth', { sample: SAMPLE }) }}</p>
   </SectionHelp>
 </template>

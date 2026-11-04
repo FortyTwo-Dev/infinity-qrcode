@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import QrCanvas from '@components/qr/QrCanvas.vue'
 import { generateQr, loadQrWasm } from '@/composables/useQrWasm'
+import { LEVEL_LABELS } from '@/i18n/keys'
 import { ERROR_CORRECTION_LEVELS, type ErrorCorrectionLevel, type QrMatrixData } from '@/types/qr'
 
 import SectionHelp from './SectionHelp.vue'
 
+const { t } = useI18n()
+
 const SAMPLE = 'neljäkymmentäkaksi'
 const TARGET_SIZE = 96
 
+
 interface Example {
   level: ErrorCorrectionLevel
-  label: string
   data: QrMatrixData
 }
 
@@ -27,9 +31,8 @@ async function loadExamples() {
   loading.value = true
   try {
     await loadQrWasm()
-    examples.value = ERROR_CORRECTION_LEVELS.map(({ value, label }) => ({
+    examples.value = ERROR_CORRECTION_LEVELS.map(({ value }) => ({
       level: value,
-      label,
       data: generateQr(SAMPLE, value),
     }))
     loaded = true
@@ -46,13 +49,14 @@ function previewModuleSize(data: QrMatrixData): number {
 </script>
 
 <template>
-  <SectionHelp label="About error correction" title="Error correction" @open="loadExamples">
-    <p class="text-sm">
-      Error correction adds redundant modules so a damaged code can still be read. A higher level
-      survives more damage, but the same content needs more modules.
-    </p>
+  <SectionHelp
+    :label="t('learn.controls.errorCorrectionHelpLabel')"
+    :title="t('learn.controls.errorCorrection')"
+    @open="loadExamples"
+  >
+    <p class="text-sm">{{ t('learn.controls.errorCorrectionIntro') }}</p>
 
-    <p v-if="loading" class="text-sm opacity-70">Generating examples…</p>
+    <p v-if="loading" class="text-sm opacity-70">{{ t('learn.controls.generatingExamples') }}</p>
     <p v-else-if="error" class="text-sm text-destructive" role="alert">{{ error }}</p>
     <ul v-else class="grid grid-cols-2 gap-4 sm:grid-cols-4">
       <li v-for="example in examples" :key="example.level" class="flex flex-col items-center gap-1">
@@ -64,16 +68,16 @@ function previewModuleSize(data: QrMatrixData): number {
             :quiet-zone="4"
             dark="#000000"
             light="#ffffff"
-            :label="`QR code at level ${example.level}`"
+            :label="t('learn.controls.exampleLabel', { level: example.level })"
           />
         </div>
-        <span class="text-xs font-medium">{{ example.label }}</span>
+        <span class="text-xs font-medium">{{ t(LEVEL_LABELS[example.level]) }}</span>
         <span class="text-xs opacity-70">
           v{{ example.data.version }} · {{ example.data.size }}×{{ example.data.size }}
         </span>
       </li>
     </ul>
 
-    <p class="text-xs opacity-70">Same content for the four codes: {{ SAMPLE }}.</p>
+    <p class="text-xs opacity-70">{{ t('learn.controls.sameContentFour', { sample: SAMPLE }) }}</p>
   </SectionHelp>
 </template>

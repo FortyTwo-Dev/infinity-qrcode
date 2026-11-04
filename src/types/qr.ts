@@ -10,15 +10,12 @@ export type QrcodeType =
 /** Error correction levels supported by the QR specification. */
 export type ErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H'
 
-/** Labels for the error correction levels, shared by the generator and the trace. */
-export const ERROR_CORRECTION_LEVELS: ReadonlyArray<{
-  value: ErrorCorrectionLevel
-  label: string
-}> = [
-  { value: 'L', label: 'Low (L)' },
-  { value: 'M', label: 'Medium (M)' },
-  { value: 'Q', label: 'Quartile (Q)' },
-  { value: 'H', label: 'High (H)' },
+/** Error correction levels, shared by the generator and the trace. Labels come from the i18n catalog. */
+export const ERROR_CORRECTION_LEVELS: ReadonlyArray<{ value: ErrorCorrectionLevel }> = [
+  { value: 'L' },
+  { value: 'M' },
+  { value: 'Q' },
+  { value: 'H' },
 ]
 
 /** Export formats offered by the generator. */
@@ -45,7 +42,11 @@ export interface QrOptions {
   light: string
 }
 
-/** The result of building a payload: a value or field errors. */
+/**
+ * The result of building a payload: a value, or field errors. Error values are
+ * message catalog keys (like `generator.errors.urlInvalid`), translated by the
+ * UI layer; they are not display text.
+ */
 export interface PayloadResult {
   value: string
   errors: Record<string, string>
@@ -89,18 +90,18 @@ export interface FormState {
   whatsappMessage: string
 }
 
-/** Content picker entries, in display order. */
-export const CONTENT_TYPES: ReadonlyArray<{ value: QrcodeType; label: string }> = [
-  { value: 'text', label: 'Text' },
-  { value: 'url', label: 'URL' },
-  { value: 'wi-fi', label: 'Wi-Fi' },
-  { value: 'email', label: 'Email' },
-  { value: 'vcard', label: 'vCard' },
-  { value: 'sms', label: 'SMS' },
-  { value: 'phone', label: 'Phone' },
-  { value: 'geo', label: 'Location' },
-  { value: 'event', label: 'Event' },
-  { value: 'whatsapp', label: 'WhatsApp' },
+/** Content picker entries, in display order. Labels come from the i18n catalog. */
+export const CONTENT_TYPES: ReadonlyArray<{ value: QrcodeType }> = [
+  { value: 'text' },
+  { value: 'url' },
+  { value: 'wi-fi' },
+  { value: 'email' },
+  { value: 'vcard' },
+  { value: 'sms' },
+  { value: 'phone' },
+  { value: 'geo' },
+  { value: 'event' },
+  { value: 'whatsapp' },
 ]
 
 /** Empty form state used when a type is selected for the first time. */

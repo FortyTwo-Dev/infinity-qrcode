@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { ItField, ItInput, ItRange } from '@components/theme'
+import { LEVEL_LABELS } from '@/i18n/keys'
 import {
   ERROR_CORRECTION_LEVELS,
   type ErrorCorrectionLevel,
   type FormatType,
   type QrOptions,
 } from '@/types/qr'
+
+const { t } = useI18n()
+
 
 const FORMATS = [
   { value: 'svg', label: 'SVG' },
@@ -85,17 +90,19 @@ const exportSize = computed(() => {
 
 const moduleHint = computed(() =>
   exportSize.value === null
-    ? 'Export resolution, in pixels per module.'
-    : `Export resolution. Current file: ${exportSize.value} × ${exportSize.value} px.`,
+    ? t('generator.options.moduleHintIdle')
+    : t('generator.options.moduleHintCurrent', { size: exportSize.value }),
 )
 </script>
 
 <template>
   <section aria-labelledby="options-heading" class="flex flex-col gap-5">
-    <h2 id="options-heading" class="it-h5 text-lg font-semibold">Options</h2>
+    <h2 id="options-heading" class="it-h5 text-lg font-semibold">
+      {{ t('generator.sections.options') }}
+    </h2>
 
     <fieldset class="it-fieldset-plain">
-      <legend class="mb-2 text-sm font-medium">Error correction</legend>
+      <legend class="mb-2 text-sm font-medium">{{ t('generator.options.errorCorrection') }}</legend>
       <div class="it-choice-group it-choice-group-2">
         <label
           v-for="option in ERROR_CORRECTION_LEVELS"
@@ -110,13 +117,13 @@ const moduleHint = computed(() =>
             name="level"
             :value="option.value"
           />
-          <span>{{ option.label }}</span>
+          <span>{{ t(LEVEL_LABELS[option.value]) }}</span>
         </label>
       </div>
     </fieldset>
 
     <fieldset class="it-fieldset-plain">
-      <legend class="mb-2 text-sm font-medium">Format</legend>
+      <legend class="mb-2 text-sm font-medium">{{ t('generator.options.format') }}</legend>
       <div class="it-choice-group it-choice-group-4">
         <label
           v-for="option in FORMATS"
@@ -136,12 +143,12 @@ const moduleHint = computed(() =>
       </div>
     </fieldset>
 
-    <ItField label="Module size" html-for="module-size" :hint="moduleHint">
+    <ItField :label="t('generator.options.moduleSize')" html-for="module-size" :hint="moduleHint">
       <div class="flex items-center gap-3">
         <ItRange
           id="module-size"
           v-model="moduleSize"
-          aria-label="Module size"
+          :aria-label="t('generator.options.moduleSize')"
           :min="2"
           :max="24"
           :step="1"
@@ -150,7 +157,7 @@ const moduleHint = computed(() =>
         <ItInput
           v-model="moduleSize"
           type="number"
-          aria-label="Module size value"
+          :aria-label="t('generator.options.moduleSizeValue')"
           :min="2"
           :max="24"
           class="w-20"
@@ -159,12 +166,16 @@ const moduleHint = computed(() =>
     </ItField>
 
     <div class="flex flex-col gap-1">
-      <ItField label="Quiet zone" html-for="quiet-zone" hint="Modules of margin around the code.">
+      <ItField
+        :label="t('generator.options.quietZone')"
+        html-for="quiet-zone"
+        :hint="t('generator.options.quietZoneHint')"
+      >
         <div class="flex items-center gap-3">
           <ItRange
             id="quiet-zone"
             v-model="quietZone"
-            aria-label="Quiet zone"
+            :aria-label="t('generator.options.quietZone')"
             :min="0"
             :max="12"
             :step="1"
@@ -173,7 +184,7 @@ const moduleHint = computed(() =>
           <ItInput
             v-model="quietZone"
             type="number"
-            aria-label="Quiet zone value"
+            :aria-label="t('generator.options.quietZoneValue')"
             :min="0"
             :max="12"
             class="w-20"
@@ -181,26 +192,25 @@ const moduleHint = computed(() =>
         </div>
       </ItField>
       <p v-if="quietZone < 1" class="border-l-2 border-warning bg-secondary p-2 text-xs">
-        No quiet zone. Many scanners need some margin: add at least 1 module or leave room in the
-        layout.
+        {{ t('generator.options.quietZoneWarning') }}
       </p>
     </div>
 
     <div class="grid grid-cols-2 gap-3">
-      <ItField label="Dark colour" html-for="color-dark">
+      <ItField :label="t('generator.options.darkColour')" html-for="color-dark">
         <ItInput
           id="color-dark"
           v-model="dark"
-          aria-label="Dark colour"
+          :aria-label="t('generator.options.darkColour')"
           type="color"
           class="h-10 p-1"
         />
       </ItField>
-      <ItField label="Light colour" html-for="color-light">
+      <ItField :label="t('generator.options.lightColour')" html-for="color-light">
         <ItInput
           id="color-light"
           v-model="light"
-          aria-label="Light colour"
+          :aria-label="t('generator.options.lightColour')"
           type="color"
           class="h-10 p-1"
         />
@@ -208,11 +218,10 @@ const moduleHint = computed(() =>
     </div>
 
     <p v-if="inverted" class="border-l-2 border-destructive bg-secondary p-2 text-xs">
-      The dark colour is lighter than the light one. Most scanners expect a dark code on a light
-      background.
+      {{ t('generator.options.invertedWarning') }}
     </p>
     <p v-else-if="lowContrast" class="border-l-2 border-warning bg-secondary p-2 text-xs">
-      Low contrast ({{ contrastRatio.toFixed(1) }}:1). Some scanners may fail to read this code.
+      {{ t('generator.options.lowContrast', { ratio: contrastRatio.toFixed(1) }) }}
     </p>
   </section>
 </template>

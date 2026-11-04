@@ -2,6 +2,8 @@ import { RouterLinkStub, mount } from '@vue/test-utils'
 import type { DOMWrapper } from '@vue/test-utils'
 import { describe, expect, test } from 'vitest'
 
+import i18n from '@/i18n'
+
 import AppHeader from './AppHeader.vue'
 
 type Wrapper = ReturnType<typeof mount>
@@ -17,10 +19,26 @@ function accessibleText(node: { element: Element }): string {
   return normalize(clone.textContent ?? '')
 }
 
-function mountHeader(overrides: Partial<{ isDark: boolean; dyslexia: boolean }> = {}) {
+type HeaderProps = { isDark: boolean; dyslexia: boolean; locale: 'en' | 'fr' }
+
+function mountHeader(overrides: Partial<HeaderProps> = {}) {
+  const props: HeaderProps = {
+    isDark: false,
+    dyslexia: false,
+    locale: 'en',
+    ...overrides,
+  }
+
+  // Labels come from the global i18n instance: pin it to English so the
+  // assertions below stay deterministic regardless of the locale prop.
+  i18n.global.locale.value = 'en'
+
   return mount(AppHeader, {
-    props: { isDark: false, ...overrides },
-    global: { stubs: { RouterLink: RouterLinkStub } },
+    props,
+    global: {
+      plugins: [i18n],
+      stubs: { RouterLink: RouterLinkStub },
+    },
   })
 }
 
@@ -41,6 +59,10 @@ function buttonNamed(wrapper: Wrapper, name: string): DOMWrapper<Element> {
   })
   expect(button, `button named "${name}"`).toBeDefined()
   return button!
+}
+
+function languageButton(wrapper: Wrapper): DOMWrapper<Element> {
+  return buttonNamed(wrapper, 'Switch language')
 }
 
 describe('AppHeader', () => {
@@ -65,9 +87,8 @@ describe('AppHeader', () => {
     expect(logo.attributes('alt')).toBe('')
     expect(logo.attributes('aria-hidden')).toBe('true')
 
-    // The decorative logo must not leak into the accessible text.
+    // The decorative logo must never leak into the accessible text.
     expect(accessibleText(brand)).toBe('Infinity QRCode')
-    expect(normalize(brand.element.textContent ?? '')).not.toContain('logo')
   })
 
   test('renders the Main navigation with the Generate and Learn links', () => {
@@ -85,19 +106,21 @@ describe('AppHeader', () => {
     expect(navLinks).toHaveLength(2)
   })
 
-  test('does not render a theme menu', () => {
+  test('does not render a theme menu, only the three control buttons', () => {
     const wrapper = mountHeader({ isDark: true, dyslexia: true })
 
     expect(wrapper.find('details').exists()).toBe(false)
     expect(wrapper.find('summary').exists()).toBe(false)
     expect(wrapper.find('menu').exists()).toBe(false)
 
-    // The only buttons are the mode and dyslexia buttons: nothing for accent colours.
     const buttons = wrapper.findAll('button')
-    expect(buttons).toHaveLength(2)
+    expect(buttons).toHaveLength(3)
+
     for (const button of buttons) {
+      expect(button.attributes('type'), 'button type').toBe('button')
       const label = normalize(button.attributes('aria-label') ?? accessibleText(button))
       const known = [
+        'Switch language',
         'Switch to dark mode',
         'Switch to light mode',
         'Enable dyslexia-friendly font',
@@ -110,22 +133,23 @@ describe('AppHeader', () => {
   test('names and marks the mode button after the mode it switches to', () => {
     const light = mountHeader({ isDark: false })
     const toDark = buttonNamed(light, 'Switch to dark mode')
-    expect(toDark.attributes('type')).toBe('button')
     expect(toDark.attributes('aria-pressed')).toBe('false')
+    expect(light.find('button[aria-label="Switch to light mode"]').exists()).toBe(false)
 
     const dark = mountHeader({ isDark: true })
     const toLight = buttonNamed(dark, 'Switch to light mode')
-    expect(toLight.attributes('type')).toBe('button')
     expect(toLight.attributes('aria-pressed')).toBe('true')
+    expect(dark.find('button[aria-label="Switch to dark mode"]').exists()).toBe(false)
   })
 
   test('emits toggle-mode with no payload when the mode button is clicked', async () => {
-    const wrapper = mountHeader({ isDark: false })
+    const light = mountHeader({ isDark: false })
+    await buttonNamed(light, 'Switch to dark mode').trigger('click')
+    expect(light.emitted('toggle-mode')).toEqual([[]])
 
-    await buttonNamed(wrapper, 'Switch to dark mode').trigger('click')
-
-    expect(wrapper.emitted('toggle-mode')).toEqual([[]])
-    expect(wrapper.emitted('toggle-mode')).toHaveLength(1)
+    const dark = mountHeader({ isDark: true })
+    await buttonNamed(dark, 'Switch to light mode').trigger('click')
+    expect(dark.emitted('toggle-mode')).toEqual([[]])
   })
 
   test('offers to enable the dyslexia-friendly font when it is off', () => {
@@ -133,6 +157,9 @@ describe('AppHeader', () => {
     const button = buttonNamed(explicit, 'Enable dyslexia-friendly font')
     expect(button.attributes('aria-pressed')).toBe('false')
     expect(button.attributes('class') ?? '').not.toContain('primary')
+    expect(
+      explicit.find('button[aria-label="Disable dyslexia-friendly font"]').exists(),
+    ).toBe(false)
 
     // The dyslexia prop is optional and defaults to off.
     const defaulted = mountHeader()
@@ -145,6 +172,9 @@ describe('AppHeader', () => {
     const button = buttonNamed(wrapper, 'Disable dyslexia-friendly font')
     expect(button.attributes('aria-pressed')).toBe('true')
     expect(button.attributes('class') ?? '').toContain('primary')
+    expect(
+      wrapper.find('button[aria-label="Enable dyslexia-friendly font"]').exists(),
+    ).toBe(false)
   })
 
   test('emits toggle-dyslexia with no payload when the dyslexia button is clicked', async () => {
@@ -157,19 +187,63 @@ describe('AppHeader', () => {
     expect(on.emitted('toggle-dyslexia')).toEqual([[]])
   })
 
-  test('emits only toggle-mode and toggle-dyslexia', async () => {
+  test('labels the language button and shows the other locale as visible text', () => {
+    const english = mountHeader({ locale: 'en' })
+
+    const enButton = languageButton(english)
+    expect(enButton.attributes('type')).toBe('button')
+
+    const enSpan = enButton.find('span')
+    expect(enSpan.exists(), 'a span inside the language button').toBe(true)
+    expect(enSpan.attributes('aria-hidden')).toBe('true')
+    expect(normalize(enSpan.text())).toBe('FR')
+
+    // The locale prop is optional and defaults to "en".
+    const defaulted = mountHeader()
+    expect(normalize(languageButton(defaulted).find('span').text())).toBe('FR')
+
+    // The visible text tracks the locale prop, not the i18n plugin.
+    const french = mountHeader({ locale: 'fr' })
+    const frButton = languageButton(french)
+    expect(normalize(frButton.find('span').text())).toBe('EN')
+  })
+
+  test('emits toggle-locale with no payload when the language button is clicked', async () => {
+    const wrapper = mountHeader()
+
+    await languageButton(wrapper).trigger('click')
+
+    expect(wrapper.emitted('toggle-locale')).toEqual([[]])
+    expect(wrapper.emitted('toggle-locale')).toHaveLength(1)
+  })
+
+  test('emits only toggle-mode, toggle-dyslexia and toggle-locale, all without payload', async () => {
     const wrapper = mountHeader()
 
     await buttonNamed(wrapper, 'Switch to dark mode').trigger('click')
     await buttonNamed(wrapper, 'Enable dyslexia-friendly font').trigger('click')
+    await languageButton(wrapper).trigger('click')
 
-    const emitted = Object.keys(wrapper.emitted())
-    expect(emitted).toContain('toggle-mode')
-    expect(emitted).toContain('toggle-dyslexia')
-    expect(emitted.filter((name) => name.startsWith('toggle'))).toEqual([
-      'toggle-mode',
+    const emitted = wrapper.emitted()
+
+    // No other toggle event exists besides the agreed three.
+    expect(Object.keys(emitted).filter((name) => name.startsWith('toggle')).sort()).toEqual([
       'toggle-dyslexia',
+      'toggle-locale',
+      'toggle-mode',
     ])
-    expect(emitted.filter((name) => name.startsWith('update:'))).toEqual([])
+
+    // Each of the three fires exactly once, without payload.
+    for (const event of ['toggle-mode', 'toggle-dyslexia', 'toggle-locale'] as const) {
+      expect(emitted[event], `payload of "${event}"`).toEqual([[]])
+    }
+
+    // No model updates leak out of the header either.
+    expect(Object.keys(emitted).filter((name) => name.startsWith('update:'))).toEqual([])
+  })
+
+  test('emits nothing before any interaction, in any state', () => {
+    const wrapper = mountHeader({ isDark: true, dyslexia: true, locale: 'fr' })
+    expect(Object.keys(wrapper.emitted())).toEqual([])
   })
 })
