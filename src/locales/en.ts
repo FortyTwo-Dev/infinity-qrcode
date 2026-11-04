@@ -45,6 +45,8 @@ export default {
       encryption: 'Encryption',
       wifiPassword: 'Password',
       noPassword: 'No password',
+      showPassword: 'Show password',
+      hidePassword: 'Hide password',
       email: 'Email address',
       subject: 'Subject',
       message: 'Message',

@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { ItField, ItInput, ItOption, ItSelect, ItTextarea } from '@components/theme'
+import { ItButton, ItField, ItInput, ItOption, ItSelect, ItTextarea } from '@components/theme'
 import { buildPayload } from '@/lib/qrcode/payloads'
 import { createDefaultFormState, type FormState, type QrcodeType } from '@/types/qr'
 
@@ -17,6 +17,7 @@ const { t } = useI18n()
 
 const form = ref<FormState>(createDefaultFormState())
 const touched = ref(false)
+const showWifiPassword = ref(false)
 
 const result = computed(() => buildPayload(props.type, form.value))
 const errors = computed(() => result.value.errors)
@@ -140,15 +141,64 @@ watch(
         html-for="wifi-password"
         :error="fieldError('wifiPassword')"
       >
-        <ItInput
-          id="wifi-password"
-          v-model="form.wifiPassword"
-          :aria-label="t('generator.fields.wifiPassword')"
-          type="text"
-          :placeholder="t('generator.placeholders.wifiPassword')"
-          :invalid="Boolean(visibleErrors.wifiPassword)"
-          :describedby="visibleErrors.wifiPassword ? 'wifi-password-error' : undefined"
-        />
+        <div class="flex gap-2">
+          <ItInput
+            id="wifi-password"
+            v-model="form.wifiPassword"
+            :aria-label="t('generator.fields.wifiPassword')"
+            :type="showWifiPassword ? 'text' : 'password'"
+            autocomplete="off"
+            :placeholder="t('generator.placeholders.wifiPassword')"
+            :invalid="Boolean(visibleErrors.wifiPassword)"
+            :describedby="visibleErrors.wifiPassword ? 'wifi-password-error' : undefined"
+          />
+          <ItButton
+            variant="ghost"
+            :aria-label="showWifiPassword ? t('generator.fields.hidePassword') : t('generator.fields.showPassword')"
+            :aria-pressed="showWifiPassword"
+            @click="showWifiPassword = !showWifiPassword"
+          >
+            <svg
+              v-if="showWifiPassword"
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M10.733 5.076a10.744 10.744 0 0 1 11.216 6.148 10.545 10.545 0 0 1-2.133 3.23m-6.566-.793a3 3 0 1 1-3.988-3.851M14 10.5V10m-6.634 8.36a10.63 10.63 0 0 1-6.15-4.136 10.545 10.545 0 0 1 1.13-2.485M9.9 9.9a3 3 0 0 1-3.9 3.9"
+              />
+              <path
+                d="M2 2l20 20"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            <svg
+              v-else
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </ItButton>
+        </div>
       </ItField>
     </template>
 

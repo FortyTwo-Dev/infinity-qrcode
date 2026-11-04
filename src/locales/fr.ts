@@ -45,6 +45,8 @@ export default {
       encryption: 'Chiffrement',
       wifiPassword: 'Mot de passe',
       noPassword: 'Sans mot de passe',
+      showPassword: 'Afficher le mot de passe',
+      hidePassword: 'Masquer le mot de passe',
       email: 'Adresse e-mail',
       subject: 'Objet',
       message: 'Message',
