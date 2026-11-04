@@ -335,4 +335,26 @@ export default {
     reload: 'Recharger',
     close: 'Fermer',
   },
+  footer: {
+    nav: 'Pied de page',
+    credits: 'Crédits',
+    legal: 'Mentions légales',
+    privacy: 'Confidentialité',
+  },
+  credits: {
+    title: 'Crédits',
+    intro:
+      'Infinity QRCode s\u2019appuie sur ces projets open-source et ces polices. Leurs licences sont conservées dans le dépôt.',
+    roles: {
+      iqrcode: 'Encodage QR, correction d\u2019erreur et trace de construction.',
+      vue: 'Framework de l\u2019application.',
+      vueRouter: 'Routage côté client.',
+      vite: 'Outil de build et serveur de développement.',
+      tailwind: 'Utilitaires de mise en page.',
+      vitePwa: 'Génération du service worker et invite d\u2019installation.',
+      workbox: 'Runtime du service worker, généré par vite-plugin-pwa.',
+      spaceGrotesk: 'Police de base.',
+      openDyslexic: 'Police optionnelle adaptée à la dyslexie.',
+    },
+  },
 }
