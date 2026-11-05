@@ -18,6 +18,7 @@ packs:
     url: "https://github.com/InfinityLib/ibrain-packs"
     ref: "main"
     pack: "iqrcode-wasm"
-  - source: path
-    path: ibrain
-    layer: project
+  - source: git
+    url: "https://github.com/FortyTwo-Dev/iproject-ibrain-packs"
+    ref: "main"
+    pack: "infinity-qrcode"

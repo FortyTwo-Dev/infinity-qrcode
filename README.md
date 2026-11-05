@@ -202,8 +202,11 @@ type with a phone before a release.
 
 The repository uses [ibrain](https://github.com/FortyTwo-Dev/infinity-brain) for
 AI governance knowledge. The Vue standards live in the `vue` pack; the project
-rules live in `ibrain/`. The generated `.ai/` and `.agents/` trees are ignored
-and recreated by `ibrain sync`.
+rules live in the `infinity-qrcode` pack of
+[iproject-ibrain-packs](https://github.com/FortyTwo-Dev/iproject-ibrain-packs),
+pinned in `ibrain.lock.yaml`. The generated `.ai/` and `.agents/` trees are
+ignored and recreated by `ibrain sync`; update the rules through
+`ibrain edit infinity-qrcode`, then `ibrain push` and `ibrain sync`.
 
 ## Notes
 

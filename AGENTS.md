@@ -596,6 +596,18 @@ A change is not done because it looks done. It is done when it has been run.
   non-zero exit, a skipped check: report it, with its output.
 - Present a hypothesis as a fact: mark it, and name how to confirm it.
 
+### infinity-qrcode/writing-style
+
+# Writing style
+
+- Do not use em dashes (U+2014). Replace them with a colon, comma, semicolon,
+  parentheses or a full stop, whichever the sentence needs.
+- Use a hyphen only in compound words. Write ranges with "to" in prose when it
+  reads better.
+- Prefer short sentences. One idea per sentence.
+- Keep the same rule for code comments, documentation, commit messages and
+  pull request descriptions.
+
 ### vue/engineering-standards
 
 # Vue engineering standards
@@ -697,17 +709,5 @@ Normative summary for Vue 3 applications. Detailed rationale lives in the
   `unsafe-eval` and broad `unsafe-inline` where the stack allows it.
 - A service worker must not cache authenticated or user-specific responses
   unless the cache is explicitly scoped and cleared.
-
-### writing-style (from project:infinity-qrcode)
-
-# Writing style
-
-- Do not use em dashes (U+2014). Replace them with a colon, comma, semicolon,
-  parentheses or a full stop, whichever the sentence needs.
-- Use a hyphen only in compound words. Write ranges with "to" in prose when it
-  reads better.
-- Prefer short sentences. One idea per sentence.
-- Keep the same rule for code comments, documentation, commit messages and
-  pull request descriptions.
 
 <!-- ibrain:end -->
