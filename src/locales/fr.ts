@@ -352,7 +352,7 @@ export default {
       vue: 'Framework de l\u2019application.',
       vueRouter: 'Routage côté client.',
       vite: 'Outil de build et serveur de développement.',
-      tailwind: 'Utilitaires de mise en page.',
+      infinityTheme: 'Jetons de design, styles de base et variantes de composants.',
       vitePwa: 'Génération du service worker et invite d\u2019installation.',
       workbox: 'Runtime du service worker, généré par vite-plugin-pwa.',
       spaceGrotesk: 'Police de base.',
