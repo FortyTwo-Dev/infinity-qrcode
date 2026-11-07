@@ -42,15 +42,19 @@ Generation uses `iqrcode-wasm`; tracing uses `iqrcode-learn-wasm`. Both are
 
 Layers: `views` → `components/{generator,learn,qr,theme}` → `composables`/`lib` →
 `types`. `App.vue` is the shell only. No QR business logic lives in a component;
-components use the adapters in `src/lib/qrcode/` and the WASM composables. The
-`src/theme` library owns tokens and base HTML styles; `src/components/theme`
-contains thin Vue wrappers without styles. `src/i18n` owns the locale engine
+components use the adapters in `src/lib/qrcode/` and the WASM composables. Tokens
+and base styles come from the `@infinitylib/infinity-theme` package (ADR-0007);
+`src/components/theme` contains thin Vue wrappers without styles. The brand layer
+(accent, typefaces and accent behaviours) lives in `src/css/brand.css`, the page
+arrangement in `src/css/layout.css` as application classes on the structural
+tokens (ADR-0008). `src/i18n` owns the locale engine
 and `src/locales` the message catalogs; `src/lib` layers return catalog keys
 and never display text (ADR-0006).
 
 See `docs/decisions/ADR-0001` (rebuild and routes), `ADR-0002` (toolchain),
 `ADR-0003` (visual identity, deprecated), `ADR-0004` (theme library),
-`ADR-0005` (single yellow accent) and `ADR-0006` (internationalization).
+`ADR-0005` (single yellow accent), `ADR-0006` (internationalization),
+`ADR-0007` (theme package extraction) and `ADR-0008` (tailwind removal).
 
 ## Code conventions
 
@@ -58,9 +62,11 @@ See `docs/decisions/ADR-0001` (rebuild and routes), `ADR-0002` (toolchain),
   new code. TypeScript strict; no `any`.
 - Bun is the package manager and runner: `bun install`, `bun run dev`,
   `bun run build`. Do not add an npm/yarn/pnpm lockfile.
-- UI components and tokens come from `src/theme` and `src/components/theme`.
-  Use `it-*` classes and `--it-*` tokens. Tailwind is for layout only; its
-  semantic colours are mapped to `--it-*` in `src/css/style.css`.
+- Tokens, base styles and `it-*` classes come from `@infinitylib/infinity-theme`;
+  no utility framework is installed. The application brand lives in
+  `src/css/brand.css`, the page arrangement in `src/css/layout.css` as named
+  classes on the theme tokens; `src/css/style.css` only declares the cascade
+  order. Before inventing a new layout class, read the existing vocabulary.
 - One accent, the logo yellow (`#ffdf00`), and light/dark mode, driven by
   `data-accent="yellow"` and `data-theme` on `<html>`; only the mode is persisted
   in `localStorage` (ADR-0005).
