@@ -137,3 +137,239 @@
     margin-right: auto;
   }
 }
+
+/* ---------------------------------------------------------------- *
+ * Generator route.
+ *
+ * Literal values below carry the exact tailwind norms the layout had:
+ * 1.875rem and 2.25rem title steps, 1.125rem panel titles, 1.25rem
+ * option column gap, 24rem preview stage, 5rem and 8rem field widths,
+ * 16rem/18rem grid columns. No theme token names them; if they survive
+ * the next design pass, promote them to tokens.
+ * ---------------------------------------------------------------- */
+@layer components {
+  .generator-page {
+    padding-block: var(--it-space-6);
+  }
+
+  .generator-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--it-space-2);
+    margin-block-end: var(--it-space-6);
+    text-align: center;
+  }
+
+  .generator-title {
+    font-size: 1.875rem;
+  }
+
+  @media (min-width: 40rem) {
+    .generator-title {
+      font-size: 2.25rem;
+    }
+  }
+
+  .generator-tagline {
+    max-width: 42rem;
+  }
+
+  /* Three columns on desktop: types, content, options. */
+  .generator-columns {
+    display: grid;
+    gap: var(--it-space-5);
+  }
+
+  @media (min-width: 64rem) {
+    .generator-columns {
+      grid-template-columns: 16rem minmax(0, 1fr) 18rem;
+    }
+  }
+
+  .generator-middle {
+    display: flex;
+    flex-direction: column;
+    gap: var(--it-space-5);
+  }
+
+  /* Below desktop the form comes before the preview, so the fields stay
+     reachable without scrolling past an empty preview. */
+  .generator-preview-order {
+    order: 2;
+  }
+
+  .generator-content-order {
+    order: 1;
+  }
+
+  @media (min-width: 64rem) {
+    .generator-preview-order {
+      order: 1;
+    }
+
+    .generator-content-order {
+      order: 2;
+    }
+  }
+
+  .generator-panel {
+    border: var(--it-border-width) solid var(--it-border);
+    border-radius: var(--it-radius-sm);
+    padding: var(--it-space-4);
+  }
+
+  /* Section headings: it-h5 carries the weight, these carry the size and
+     the spacing. */
+  .panel-title {
+    font-size: 1.125rem;
+  }
+
+  .panel-title-gap {
+    margin-block-end: var(--it-space-3);
+  }
+
+  /* Content picker: two columns, one in the desktop side panel. */
+  .generator-choices {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 64rem) {
+    .generator-choices {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Options panel */
+  .options-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .option-legend {
+    margin-block-end: var(--it-space-2);
+    font-weight: var(--it-font-weight-medium);
+  }
+
+  .option-row {
+    display: flex;
+    align-items: center;
+    gap: var(--it-space-3);
+  }
+
+  .option-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--it-space-3);
+  }
+
+  .column-tight {
+    display: flex;
+    flex-direction: column;
+    gap: var(--it-space-1);
+  }
+
+  .control-fill {
+    flex: 1 1 0%;
+  }
+
+  .control-value {
+    width: 5rem;
+  }
+
+  .control-colour {
+    height: var(--it-control-height-md);
+    padding: var(--it-space-1);
+  }
+
+  /* Inline warning and danger notes. */
+  .notice {
+    border-inline-start: 2px solid;
+    background-color: var(--it-surface);
+    padding: var(--it-space-2);
+    font-size: var(--it-font-size-1);
+  }
+
+  .notice-warning {
+    border-inline-start-color: var(--it-warning);
+  }
+
+  .notice-danger {
+    border-inline-start-color: var(--it-danger);
+  }
+
+  /* Payload form */
+  .payload-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--it-space-3);
+  }
+
+  .payload-row {
+    display: flex;
+    gap: var(--it-space-2);
+  }
+
+  .field-narrow {
+    max-width: 8rem;
+  }
+
+  .payload-grid {
+    display: grid;
+    gap: var(--it-space-3);
+  }
+
+  @media (min-width: 40rem) {
+    .payload-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* Preview */
+  .preview-shell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--it-space-4);
+  }
+
+  .preview-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--it-space-2);
+  }
+
+  .preview-stage {
+    display: flex;
+    min-height: 24rem;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--it-surface);
+    padding: var(--it-space-4);
+  }
+
+  .preview-meta {
+    font-size: var(--it-font-size-1);
+  }
+
+  .preview-error {
+    max-width: 100%;
+    border: var(--it-border-width) solid var(--it-danger);
+    border-radius: var(--it-radius-sm);
+    padding: var(--it-space-3);
+    color: var(--it-danger);
+  }
+
+  .preview-empty {
+    text-align: center;
+  }
+
+  .preview-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--it-space-2);
+  }
+}
