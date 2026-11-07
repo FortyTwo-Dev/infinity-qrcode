@@ -19,10 +19,10 @@ function close() {
     v-if="offlineReady || needRefresh"
     :aria-label="t('pwa.status')"
     aria-live="polite"
-    class="block border-b border-border bg-secondary text-secondary-foreground"
+    class="pwa-banner"
   >
-    <div class="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-2 px-4 py-2 it-small">
-      <span class="mr-auto">
+    <div class="app-container pwa-inner it-small">
+      <span class="pwa-message">
         {{ offlineReady ? t('pwa.offlineReady') : t('pwa.needRefresh') }}
       </span>
       <ItButton v-if="needRefresh" size="sm" @click="updateServiceWorker()">
