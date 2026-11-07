@@ -36,7 +36,7 @@ Everything runs in the browser. No payload is sent to a server.
 
 - Vue 3.5 with the Composition API and `<script setup lang="ts">`.
 - TypeScript 6, pinned because `vue-tsc` 3.3 does not support TypeScript 7.
-- Vite 8, Vue Router 5 and Tailwind CSS 4.
+- Vite 8 and Vue Router 5, with the `@infinitylib/infinity-theme` design system.
 - Bun 1.4 as package manager and test runner.
 - `iqrcode-wasm` for generation and `iqrcode-learn-wasm` for the trace.
 - ESLint 10 with `eslint-plugin-vue`, `typescript-eslint` and
@@ -149,14 +149,15 @@ that needs them.
 
 ## Theme library
 
-The UI uses the in-repo Infinity Theme library:
+The UI consumes the published `@infinitylib/infinity-theme` package:
 
-- `src/theme` owns design tokens, base HTML styles and `it-*` variants.
-- `src/components/theme` contains thin Vue wrappers without styles.
-
-Tailwind is used for layout only. Its semantic colours map to `--it-*` in
-`src/css/style.css`. The theme is set with `data-theme` on `<html>`; the accent
-is always `data-accent="yellow"`.
+- Design tokens, base HTML styles and `it-*` variants ship from the package.
+- The application brand (the yellow accent, the typefaces, the bright-accent
+  behaviours) lives in `src/css/brand.css`.
+- The page arrangement lives in `src/css/layout/` as application classes on
+  the structural tokens; `src/css/style.css` declares the cascade order.
+- The mode is set with `data-theme` on `<html>`; the accent is always
+  `data-accent="yellow"` (ADR-0005, ADR-0007, ADR-0008).
 
 ## Internationalization
 

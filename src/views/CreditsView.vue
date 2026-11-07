@@ -8,7 +8,12 @@ const CREDITS: readonly Credit[] = [
   ['Vue.js', 'credits.roles.vue', 'MIT', 'https://vuejs.org'],
   ['Vue Router', 'credits.roles.vueRouter', 'MIT', 'https://router.vuejs.org'],
   ['Vite', 'credits.roles.vite', 'MIT', 'https://vite.dev'],
-  ['Tailwind CSS', 'credits.roles.tailwind', 'MIT', 'https://tailwindcss.com'],
+  [
+    'Infinity Theme',
+    'credits.roles.infinityTheme',
+    'MIT',
+    'https://github.com/InfinityLib/infinity-theme',
+  ],
   ['vite-plugin-pwa', 'credits.roles.vitePwa', 'MIT', 'https://vite-pwa-org.netlify.app'],
   ['Workbox', 'credits.roles.workbox', 'MIT', 'https://developer.chrome.com/docs/workbox'],
   [

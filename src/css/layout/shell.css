@@ -51,8 +51,8 @@
     border-radius: var(--it-radius-sm);
   }
 
-  /* Below the small breakpoint the nav wraps to its own row and the header
-     controls keep the row order they had with the tailwind order utilities. */
+  /* Below the small breakpoint the nav wraps to its own row below the
+     brand, and the theme controls follow it in row order. */
   .header-nav {
     display: flex;
     align-items: center;
