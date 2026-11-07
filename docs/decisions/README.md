@@ -12,3 +12,4 @@ Decisions taken in this repository, newest last. Each record follows
 | 0005 | Adopt the logo yellow as the single accent | accepted |
 | 0006 | Add internationalization with vue-i18n | accepted |
 | 0007 | Extract the theme into the @infinitylib/infinity-theme package | accepted |
+| 0008 | Remove tailwindcss in favour of application classes | accepted |

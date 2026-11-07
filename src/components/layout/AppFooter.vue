@@ -9,13 +9,13 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <footer class="border-t border-border">
+  <footer class="app-footer">
     <div
-      class="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-4 text-sm leading-5"
+      class="app-container footer-inner it-small"
     >
-      <p class="m-0 font-semibold leading-5">© {{ year }} Infinity QRCode</p>
+      <p class="footer-credit">© {{ year }} Infinity QRCode</p>
 
-      <nav :aria-label="t('footer.nav')" class="flex flex-wrap items-center gap-x-3 gap-y-1">
+      <nav :aria-label="t('footer.nav')" class="footer-nav">
         <a
           href="https://github.com/FortyTwo-Dev/infinity-qrcode"
           target="_blank"
@@ -27,7 +27,7 @@ const { t } = useI18n()
         <RouterLink to="/credits" class="it-link-accent">{{ t('footer.credits') }}</RouterLink>
         <RouterLink to="/legal" class="it-link-accent">{{ t('footer.legal') }}</RouterLink>
         <RouterLink to="/privacy" class="it-link-accent">{{ t('footer.privacy') }}</RouterLink>
-        <span class="opacity-70">v{{ version }}</span>
+        <span class="it-muted">v{{ version }}</span>
       </nav>
     </div>
   </footer>

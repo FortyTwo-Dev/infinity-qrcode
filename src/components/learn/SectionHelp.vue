@@ -78,13 +78,13 @@ onBeforeUnmount(() => {
 
   <dialog
     ref="dialog"
-    class="m-auto w-[min(92vw,34rem)] border border-border bg-background p-0 text-foreground backdrop:bg-black/50"
+    class="help-dialog"
     :aria-labelledby="titleId"
     @close="onClose"
   >
-    <div class="flex max-h-[85vh] flex-col gap-4 overflow-auto p-5">
-      <div class="flex items-start justify-between gap-4">
-        <h2 :id="titleId" class="it-h4 m-0">{{ title }}</h2>
+    <div class="help-body">
+      <div class="help-header">
+        <h2 :id="titleId" class="it-h4 flush">{{ title }}</h2>
         <button
           type="button"
           class="it-btn it-btn-secondary it-btn-sm it-btn-icon"

@@ -103,17 +103,17 @@ const rows = computed<Row[]>(() => {
 </script>
 
 <template>
-  <section aria-labelledby="stats-heading" class="flex flex-col gap-3">
-    <h2 id="stats-heading" class="it-h5 text-lg font-semibold">{{ t('learn.stats.title') }}</h2>
+  <section aria-labelledby="stats-heading" class="stack">
+    <h2 id="stats-heading" class="it-h5 panel-title">{{ t('learn.stats.title') }}</h2>
 
-    <dl v-if="metadata" class="grid grid-cols-2 gap-x-3 gap-y-1 text-sm">
+    <dl v-if="metadata" class="trace-facts it-small">
       <template v-for="row in rows" :key="row.label">
-        <dt class="opacity-70">{{ t(row.label) }}</dt>
+        <dt class="it-muted">{{ t(row.label) }}</dt>
         <dd
           :data-state="row.state"
           :class="{
             'it-mark': row.state === 'active',
-            'opacity-50': row.state === 'unknown',
+            'stat-unknown': row.state === 'unknown',
           }"
         >
           {{ row.value }}
@@ -121,6 +121,6 @@ const rows = computed<Row[]>(() => {
       </template>
     </dl>
 
-    <p v-else class="text-sm opacity-70">{{ t('learn.stats.empty') }}</p>
+    <p v-else class="it-small it-muted">{{ t('learn.stats.empty') }}</p>
   </section>
 </template>

@@ -78,20 +78,20 @@ const displayError = computed(() => wasmError.value ?? generationError.value)
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-7xl px-4 py-8">
-    <header class="mb-8 flex flex-col items-center gap-2 text-center">
-      <h1 class="text-3xl font-semibold sm:text-4xl">{{ t('generator.title') }}</h1>
-      <p class="max-w-2xl opacity-80">{{ t('generator.tagline') }}</p>
+  <div class="app-container page-body">
+    <header class="page-hero">
+      <h1 class="page-title">{{ t('generator.title') }}</h1>
+      <p class="page-tagline it-muted">{{ t('generator.tagline') }}</p>
     </header>
 
-    <div class="grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)_18rem]">
-      <section class="rounded-sm border border-border p-4">
+    <div class="generator-columns">
+      <section class="panel">
         <ContentPicker v-model="type" />
       </section>
 
-      <div class="flex flex-col gap-6">
+      <div class="section-stack">
         <QrPreview
-          class="order-2 lg:order-1"
+          class="generator-preview-order"
           :data="data"
           :options="options"
           :loading="!ready && !wasmError"
@@ -100,17 +100,17 @@ const displayError = computed(() => wasmError.value ?? generationError.value)
         />
 
         <section
-          class="order-1 rounded-sm border border-border p-4 lg:order-2"
+          class="generator-content-order panel"
           aria-labelledby="details-heading"
         >
-          <h2 id="details-heading" class="it-h5 mb-3 text-lg font-semibold">
+          <h2 id="details-heading" class="it-h5 panel-title panel-title-gap">
             {{ t('generator.sections.content') }}
           </h2>
           <PayloadForm :type="type" @update:payload="handlePayload" @update:errors="handleErrors" />
         </section>
       </div>
 
-      <section class="rounded-sm border border-border p-4">
+      <section class="panel">
         <OptionsPanel v-model="options" :module-count="data?.size ?? null" />
       </section>
     </div>

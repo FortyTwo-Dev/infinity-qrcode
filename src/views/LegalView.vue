@@ -24,38 +24,38 @@ const hostRows = [
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-3xl px-4 py-8">
-    <h1 class="text-3xl font-semibold sm:text-4xl">Mentions légales</h1>
-    <p class="mt-2 text-sm opacity-70">Dernière mise à jour : {{ LEGAL.updatedAt }}.</p>
+  <div class="app-container narrow-page page-body">
+    <h1 class="page-title">Mentions légales</h1>
+    <p class="lede it-small it-muted">Dernière mise à jour : {{ LEGAL.updatedAt }}.</p>
 
-    <p v-if="incomplete" class="mt-6 border border-dashed border-border p-3 text-sm">
+    <p v-if="incomplete" class="legal-note it-small">
       Certaines informations de l'éditeur restent à compléter avant la mise en ligne.
     </p>
 
-    <section class="mt-8">
-      <h2 class="it-h5 text-lg font-semibold">Éditeur du site</h2>
-      <dl class="mt-3 grid gap-2 text-sm sm:grid-cols-[12rem_1fr]">
+    <section class="section-flow">
+      <h2 class="it-h5 panel-title">Éditeur du site</h2>
+      <dl class="legal-meta it-small">
         <template v-for="row in publisherRows" :key="row.label">
-          <dt class="font-medium">{{ row.label }}</dt>
-          <dd class="m-0">{{ row.value }}</dd>
+          <dt class="legal-term">{{ row.label }}</dt>
+          <dd class="flush">{{ row.value }}</dd>
         </template>
       </dl>
-      <p v-if="LEGAL.vat" class="mt-3 text-sm">{{ LEGAL.vat }}</p>
+      <p v-if="LEGAL.vat" class="legal-text it-small">{{ LEGAL.vat }}</p>
     </section>
 
-    <section class="mt-8">
-      <h2 class="it-h5 text-lg font-semibold">Hébergement</h2>
-      <dl class="mt-3 grid gap-2 text-sm sm:grid-cols-[12rem_1fr]">
+    <section class="section-flow">
+      <h2 class="it-h5 panel-title">Hébergement</h2>
+      <dl class="legal-meta it-small">
         <template v-for="row in hostRows" :key="row.label">
-          <dt class="font-medium">{{ row.label }}</dt>
-          <dd class="m-0">{{ row.value }}</dd>
+          <dt class="legal-term">{{ row.label }}</dt>
+          <dd class="flush">{{ row.value }}</dd>
         </template>
       </dl>
     </section>
 
-    <section class="mt-8">
-      <h2 class="it-h5 text-lg font-semibold">Propriété intellectuelle</h2>
-      <p class="mt-3 text-sm">
+    <section class="section-flow">
+      <h2 class="it-h5 panel-title">Propriété intellectuelle</h2>
+      <p class="legal-text it-small">
         Le code source est publié sous licence MIT dans le
         <a :href="LEGAL.repository" target="_blank" rel="noopener noreferrer">dépôt GitHub</a>. Le
         nom, l'identité visuelle et les textes du site restent la propriété de l'éditeur, sauf
@@ -63,9 +63,9 @@ const hostRows = [
       </p>
     </section>
 
-    <section class="mt-8">
-      <h2 class="it-h5 text-lg font-semibold">Données personnelles et cookies</h2>
-      <p class="mt-3 text-sm">
+    <section class="section-flow">
+      <h2 class="it-h5 panel-title">Données personnelles et cookies</h2>
+      <p class="legal-text it-small">
         Le site ne collecte aucune donnée personnelle et n'utilise aucun cookie de mesure d'audience
         ni de publicité. Seules deux préférences d'affichage sont conservées dans le navigateur. La
         <RouterLink to="/privacy">politique de confidentialité</RouterLink> détaille ces valeurs et
@@ -73,17 +73,17 @@ const hostRows = [
       </p>
     </section>
 
-    <section class="mt-8">
-      <h2 class="it-h5 text-lg font-semibold">Responsabilité</h2>
-      <p class="mt-3 text-sm">
+    <section class="section-flow">
+      <h2 class="it-h5 panel-title">Responsabilité</h2>
+      <p class="legal-text it-small">
         Les QR codes sont générés localement dans le navigateur. L'éditeur ne contrôle pas les
         contenus vers lesquels ils renvoient et décline toute responsabilité à leur sujet.
       </p>
     </section>
 
-    <section class="mt-8">
-      <h2 class="it-h5 text-lg font-semibold">Liens externes</h2>
-      <p class="mt-3 text-sm">
+    <section class="section-flow">
+      <h2 class="it-h5 panel-title">Liens externes</h2>
+      <p class="legal-text it-small">
         Le site renvoie vers des services tiers, notamment GitHub. Leur contenu et leurs pratiques
         relèvent de leurs éditeurs.
       </p>

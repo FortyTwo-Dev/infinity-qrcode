@@ -39,27 +39,27 @@ const displayModuleSize = computed(() => {
 <template>
   <section
     aria-labelledby="preview-heading"
-    class="flex flex-col gap-4 rounded-sm border border-border p-4"
+    class="panel preview-shell"
   >
-    <div class="flex flex-wrap items-end justify-between gap-2">
-      <h2 id="preview-heading" class="it-h5 text-lg font-semibold">
+    <div class="preview-header">
+      <h2 id="preview-heading" class="it-h5 panel-title">
         {{ t('generator.sections.preview') }}
       </h2>
-      <p v-if="data" class="text-xs opacity-70">
+      <p v-if="data" class="fine-print it-muted">
         {{
           t('generator.preview.meta', { version: data.version, size: data.size, mask: data.mask })
         }}
       </p>
     </div>
 
-    <div class="flex min-h-96 items-center justify-center bg-secondary p-4">
-      <output v-if="loading" class="text-sm" :aria-label="t('generator.preview.status')">
+    <div class="preview-stage">
+      <output v-if="loading" class="it-small" :aria-label="t('generator.preview.status')">
         {{ t('generator.preview.loading') }}
       </output>
 
       <p
         v-else-if="error"
-        class="max-w-full rounded-sm border border-destructive p-3 text-sm text-destructive"
+        class="error-box it-small"
         role="alert"
       >
         {{ error }}
@@ -76,10 +76,10 @@ const displayModuleSize = computed(() => {
         :label="t('generator.preview.canvasLabel')"
       />
 
-      <p v-else class="text-center text-sm opacity-70">{{ t('generator.preview.empty') }}</p>
+      <p v-else class="preview-empty it-small it-muted">{{ t('generator.preview.empty') }}</p>
     </div>
 
-    <div class="flex flex-wrap items-center gap-2">
+    <div class="preview-actions">
       <ItButton :disabled="!data" @click="$emit('download')">
         {{ t('generator.preview.download', { format: options.format.toUpperCase() }) }}
       </ItButton>

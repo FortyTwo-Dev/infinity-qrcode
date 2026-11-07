@@ -72,18 +72,18 @@ async function loadExamples() {
     :title="t('learn.controls.version')"
     @open="loadExamples"
   >
-    <p class="text-sm">{{ t('learn.controls.versionIntro') }}</p>
-    <p class="text-sm">{{ t('learn.controls.versionPadding') }}</p>
+    <p class="it-small">{{ t('learn.controls.versionIntro') }}</p>
+    <p class="it-small">{{ t('learn.controls.versionPadding') }}</p>
 
-    <p v-if="loading" class="text-sm opacity-70">{{ t('learn.controls.generatingExamples') }}</p>
-    <p v-else-if="error" class="text-sm text-destructive" role="alert">{{ error }}</p>
-    <ul v-else class="grid grid-cols-2 gap-4">
+    <p v-if="loading" class="it-small it-muted">{{ t('learn.controls.generatingExamples') }}</p>
+    <p v-else-if="error" class="it-small text-danger" role="alert">{{ error }}</p>
+    <ul v-else class="tile-grid">
       <li
         v-for="example in examples"
         :key="example.data.version"
-        class="flex flex-col items-center gap-1"
+        class="tile"
       >
-        <div class="flex min-h-36 w-full items-center justify-center bg-secondary p-2">
+        <div class="tile-stage tile-stage-lg">
           <QrCanvas
             :matrix="example.data.matrix"
             :size="example.data.size"
@@ -94,11 +94,11 @@ async function loadExamples() {
             :label="t('learn.controls.exampleAria', { label: labelOf(example.version) })"
           />
         </div>
-        <span class="text-xs font-medium">{{ labelOf(example.version) }}</span>
-        <span class="text-xs opacity-70">{{ example.caption }}</span>
+        <span class="tile-label">{{ labelOf(example.version) }}</span>
+        <span class="fine-print it-muted">{{ example.caption }}</span>
       </li>
     </ul>
 
-    <p class="text-xs opacity-70">{{ t('learn.controls.sameContentBoth', { sample: SAMPLE }) }}</p>
+    <p class="fine-print it-muted">{{ t('learn.controls.sameContentBoth', { sample: SAMPLE }) }}</p>
   </SectionHelp>
 </template>

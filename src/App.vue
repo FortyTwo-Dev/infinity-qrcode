@@ -14,7 +14,7 @@ const { locale, toggleLocale } = useLocale()
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-background text-foreground">
+  <div class="app-shell">
     <AppHeader
       :is-dark="isDark"
       :dyslexia="dyslexia"
@@ -24,7 +24,7 @@ const { locale, toggleLocale } = useLocale()
       @toggle-locale="toggleLocale"
     />
     <PwaPrompt />
-    <main class="flex-1">
+    <main class="app-main">
       <RouterView />
     </main>
     <AppFooter />

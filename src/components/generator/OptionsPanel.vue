@@ -96,13 +96,13 @@ const moduleHint = computed(() =>
 </script>
 
 <template>
-  <section aria-labelledby="options-heading" class="flex flex-col gap-5">
-    <h2 id="options-heading" class="it-h5 text-lg font-semibold">
+  <section aria-labelledby="options-heading" class="options-stack">
+    <h2 id="options-heading" class="it-h5 panel-title">
       {{ t('generator.sections.options') }}
     </h2>
 
     <fieldset class="it-fieldset-plain">
-      <legend class="mb-2 text-sm font-medium">{{ t('generator.options.errorCorrection') }}</legend>
+      <legend class="option-legend it-small">{{ t('generator.options.errorCorrection') }}</legend>
       <div class="it-choice-group it-choice-group-2">
         <label
           v-for="option in ERROR_CORRECTION_LEVELS"
@@ -123,7 +123,7 @@ const moduleHint = computed(() =>
     </fieldset>
 
     <fieldset class="it-fieldset-plain">
-      <legend class="mb-2 text-sm font-medium">{{ t('generator.options.format') }}</legend>
+      <legend class="option-legend it-small">{{ t('generator.options.format') }}</legend>
       <div class="it-choice-group it-choice-group-4">
         <label
           v-for="option in FORMATS"
@@ -144,7 +144,7 @@ const moduleHint = computed(() =>
     </fieldset>
 
     <ItField :label="t('generator.options.moduleSize')" html-for="module-size" :hint="moduleHint">
-      <div class="flex items-center gap-3">
+      <div class="option-row">
         <ItRange
           id="module-size"
           v-model="moduleSize"
@@ -152,7 +152,7 @@ const moduleHint = computed(() =>
           :min="2"
           :max="24"
           :step="1"
-          class="flex-1"
+          class="control-fill"
         />
         <ItInput
           v-model="moduleSize"
@@ -160,18 +160,18 @@ const moduleHint = computed(() =>
           :aria-label="t('generator.options.moduleSizeValue')"
           :min="2"
           :max="24"
-          class="w-20"
+          class="control-value"
         />
       </div>
     </ItField>
 
-    <div class="flex flex-col gap-1">
+    <div class="column-tight">
       <ItField
         :label="t('generator.options.quietZone')"
         html-for="quiet-zone"
         :hint="t('generator.options.quietZoneHint')"
       >
-        <div class="flex items-center gap-3">
+        <div class="option-row">
           <ItRange
             id="quiet-zone"
             v-model="quietZone"
@@ -179,7 +179,7 @@ const moduleHint = computed(() =>
             :min="0"
             :max="12"
             :step="1"
-            class="flex-1"
+            class="control-fill"
           />
           <ItInput
             v-model="quietZone"
@@ -187,23 +187,23 @@ const moduleHint = computed(() =>
             :aria-label="t('generator.options.quietZoneValue')"
             :min="0"
             :max="12"
-            class="w-20"
+            class="control-value"
           />
         </div>
       </ItField>
-      <p v-if="quietZone < 1" class="border-l-2 border-warning bg-secondary p-2 text-xs">
+      <p v-if="quietZone < 1" class="notice notice-warning">
         {{ t('generator.options.quietZoneWarning') }}
       </p>
     </div>
 
-    <div class="grid grid-cols-2 gap-3">
+    <div class="option-grid-2">
       <ItField :label="t('generator.options.darkColour')" html-for="color-dark">
         <ItInput
           id="color-dark"
           v-model="dark"
           :aria-label="t('generator.options.darkColour')"
           type="color"
-          class="h-10 p-1"
+          class="control-colour"
         />
       </ItField>
       <ItField :label="t('generator.options.lightColour')" html-for="color-light">
@@ -212,15 +212,15 @@ const moduleHint = computed(() =>
           v-model="light"
           :aria-label="t('generator.options.lightColour')"
           type="color"
-          class="h-10 p-1"
+          class="control-colour"
         />
       </ItField>
     </div>
 
-    <p v-if="inverted" class="border-l-2 border-destructive bg-secondary p-2 text-xs">
+    <p v-if="inverted" class="notice notice-danger">
       {{ t('generator.options.invertedWarning') }}
     </p>
-    <p v-else-if="lowContrast" class="border-l-2 border-warning bg-secondary p-2 text-xs">
+    <p v-else-if="lowContrast" class="notice notice-warning">
       {{ t('generator.options.lowContrast', { ratio: contrastRatio.toFixed(1) }) }}
     </p>
   </section>

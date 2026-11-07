@@ -22,45 +22,45 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <header class="border-b border-border">
-    <div class="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-2 px-4 py-3">
+  <header class="app-header">
+    <div class="app-container header-inner">
       <RouterLink
         to="/"
-        class="mr-auto flex items-center gap-2 text-lg font-semibold text-foreground no-underline it-link-accent"
+        class="header-brand it-link-accent"
       >
-        <img src="/img/logo.png" alt="" aria-hidden="true" class="h-7 w-7 rounded-sm" />
+        <img src="/img/logo.png" alt="" aria-hidden="true" class="header-logo" />
         Infinity QRCode
       </RouterLink>
 
-      <nav :aria-label="t('header.nav')" class="order-3 flex w-full items-center gap-1 sm:order-none sm:w-auto">
+      <nav :aria-label="t('header.nav')" class="header-nav">
         <RouterLink to="/" class="it-nav-link">{{ t('header.generate') }}</RouterLink>
         <RouterLink to="/learn" class="it-nav-link">{{ t('header.learn') }}</RouterLink>
       </nav>
 
       <button
         type="button"
-        class="it-btn it-btn-ghost it-btn-sm order-2 sm:order-none"
+        class="it-btn it-btn-ghost it-btn-sm header-button"
         :aria-label="t('header.switchLanguage')"
         @click="$emit('toggle-locale')"
       >
-        <span aria-hidden="true" class="text-sm font-semibold">{{ locale === 'en' ? 'FR' : 'EN' }}</span>
+        <span aria-hidden="true" class="it-small header-label">{{ locale === 'en' ? 'FR' : 'EN' }}</span>
       </button>
 
       <button
         type="button"
-        class="it-btn it-btn-sm it-btn-icon order-2 sm:order-none"
+        class="it-btn it-btn-sm it-btn-icon header-button"
         :class="dyslexia ? 'it-btn-primary' : 'it-btn-secondary'"
         :aria-label="dyslexia ? t('header.dyslexiaOff') : t('header.dyslexiaOn')"
         :aria-pressed="dyslexia"
         :title="dyslexia ? t('header.dyslexiaOff') : t('header.dyslexiaOn')"
         @click="$emit('toggle-dyslexia')"
       >
-        <span aria-hidden="true" class="text-sm font-semibold">aA</span>
+        <span aria-hidden="true" class="it-small header-label">aA</span>
       </button>
 
       <button
         type="button"
-        class="it-btn it-btn-ghost it-btn-sm order-2 sm:order-none"
+        class="it-btn it-btn-ghost it-btn-sm header-button"
         :aria-label="isDark ? t('header.switchToLight') : t('header.switchToDark')"
         :aria-pressed="isDark"
         @click="$emit('toggle-mode')"

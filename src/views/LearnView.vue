@@ -262,18 +262,18 @@ function handleErrors(errors: Record<string, string>) {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-7xl px-4 py-8">
-    <header class="mb-8 flex flex-col items-center gap-2 text-center">
-      <h1 class="text-4xl font-semibold">{{ t('learn.title') }}</h1>
-      <p class="max-w-2xl opacity-80">
+  <div class="app-container page-body">
+    <header class="page-hero">
+      <h1 class="learn-title">{{ t('learn.title') }}</h1>
+      <p class="page-tagline it-muted">
         {{ t('learn.tagline') }}
       </p>
     </header>
 
-    <div class="grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)_20rem]">
+    <div class="learn-columns">
       <section
-        class="flex flex-col gap-6 rounded-sm border border-border p-4 lg:order-1"
-        :class="valid ? 'order-2' : 'order-1'"
+        class="panel section-stack learn-content-slot"
+        :class="valid ? 'stack-second' : 'stack-first'"
         :aria-label="t('learn.sections.content')"
       >
         <PayloadForm
@@ -295,8 +295,8 @@ function handleErrors(errors: Record<string, string>) {
       </section>
 
       <section
-        class="flex flex-col gap-6 lg:order-2"
-        :class="valid ? 'order-1' : 'order-2'"
+        class="section-stack learn-stage-slot"
+        :class="valid ? 'stack-first' : 'stack-second'"
         :aria-label="t('learn.sections.stage')"
       >
         <LearnStage
@@ -321,7 +321,7 @@ function handleErrors(errors: Record<string, string>) {
         />
         <p
           v-if="displayError"
-          class="rounded-sm border border-destructive p-3 text-sm text-destructive"
+          class="error-box it-small text-danger"
           role="alert"
         >
           {{ displayError }}
@@ -329,7 +329,7 @@ function handleErrors(errors: Record<string, string>) {
       </section>
 
       <section
-        class="order-3 flex flex-col gap-6 rounded-sm border border-border p-4 lg:order-3"
+        class="panel section-stack learn-details-slot"
         :aria-label="t('learn.sections.details')"
       >
         <PhasePanel

@@ -10,12 +10,12 @@ const model = defineModel<QrcodeType>({ required: true })
 
 <template>
   <section aria-labelledby="content-heading">
-    <h2 id="content-heading" class="it-h5 mb-3 text-lg font-semibold">
+    <h2 id="content-heading" class="it-h5 panel-title panel-title-gap">
       {{ t('generator.sections.contentType') }}
     </h2>
     <fieldset class="it-fieldset-plain">
-      <legend class="sr-only">{{ t('generator.sections.contentType') }}</legend>
-      <div class="it-choice-group it-choice-group-2 lg:grid-cols-1">
+      <legend class="it-sr-only">{{ t('generator.sections.contentType') }}</legend>
+      <div class="it-choice-group generator-choices">
         <label
           v-for="item in CONTENT_TYPES"
           :key="item.value"
