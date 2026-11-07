@@ -39,7 +39,7 @@ const displayModuleSize = computed(() => {
 <template>
   <section
     aria-labelledby="preview-heading"
-    class="generator-panel preview-shell"
+    class="panel preview-shell"
   >
     <div class="preview-header">
       <h2 id="preview-heading" class="it-h5 panel-title">

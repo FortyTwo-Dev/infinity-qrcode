@@ -85,7 +85,7 @@ const displayError = computed(() => wasmError.value ?? generationError.value)
     </header>
 
     <div class="generator-columns">
-      <section class="generator-panel">
+      <section class="panel">
         <ContentPicker v-model="type" />
       </section>
 
@@ -100,7 +100,7 @@ const displayError = computed(() => wasmError.value ?? generationError.value)
         />
 
         <section
-          class="generator-content-order generator-panel"
+          class="generator-content-order panel"
           aria-labelledby="details-heading"
         >
           <h2 id="details-heading" class="it-h5 panel-title panel-title-gap">
@@ -110,7 +110,7 @@ const displayError = computed(() => wasmError.value ?? generationError.value)
         </section>
       </div>
 
-      <section class="generator-panel">
+      <section class="panel">
         <OptionsPanel v-model="options" :module-count="data?.size ?? null" />
       </section>
     </div>

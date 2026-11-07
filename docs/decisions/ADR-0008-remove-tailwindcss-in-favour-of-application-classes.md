@@ -24,7 +24,7 @@ The audit of the application showed three facts. Most remaining Tailwind
 usage was semantic duplication of the `it-*` classes (`text-sm`, `opacity-70`,
 `font-semibold`), which week-by-week is a debt against the theme
 contract. The genuinely structural part (flex, grids, gaps, orders) mapped
-one-to-one to `src/css/layout.css` classes written once and reused by the
+one-to-one to `src/css/layout/` classes written once and reused by the
 two routes. And the `@theme` bridge held no design data at all: every value
 was an indirection to an `--it-*` token.
 
@@ -35,7 +35,7 @@ was an indirection to an `--it-*` token.
   in `src/css/style.css`. That file keeps a single duty: declaring the
   cascade order for the whole application,
   `it.tokens, it.base, it.variants, components, it.overrides`.
-- The arrangement of a page lives in `src/css/layout.css` as named
+- The arrangement of a page lives in `src/css/layout/` as named
   application classes built on the theme package tokens. Values with no
   token equivalent stay literal, commented as exact carry-overs from the
   Tailwind norms, and are promoted to tokens if they survive the next

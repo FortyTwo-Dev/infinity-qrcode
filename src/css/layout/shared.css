@@ -1,0 +1,113 @@
+/*
+ * Shared page vocabulary: page frame pieces, stacks, rows, panels and
+ * notices used by several routes. Application classes on the theme package
+ * tokens; literal values are exact carry-overs from the former utility
+ * norms (1.875rem and 2.25rem title steps, 1.125rem panel titles,
+ * 1.25rem option column gap).
+ */
+@layer components {
+  .page-body {
+    padding-block: var(--it-space-6);
+  }
+
+  .page-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--it-space-2);
+    margin-block-end: var(--it-space-6);
+    text-align: center;
+  }
+
+  .page-title {
+    font-size: 1.875rem;
+  }
+
+  @media (min-width: 40rem) {
+    .page-title {
+      font-size: 2.25rem;
+    }
+  }
+
+  .page-tagline {
+    max-width: 42rem;
+  }
+
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--it-space-3);
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: var(--it-space-2);
+  }
+
+  .section-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--it-space-5);
+  }
+
+  .panel {
+    border: var(--it-border-width) solid var(--it-border);
+    border-radius: var(--it-radius-sm);
+    padding: var(--it-space-4);
+  }
+
+  /* Section headings: it-h5 carries the weight, these carry the size and
+     the spacing. */
+  .panel-title {
+    font-size: 1.125rem;
+  }
+
+  .panel-title-gap {
+    margin-block-end: var(--it-space-3);
+  }
+
+  .fine-print {
+    font-size: var(--it-font-size-1);
+  }
+
+  .text-danger {
+    color: var(--it-danger);
+  }
+
+  .flush {
+    margin: 0;
+  }
+
+  .lede {
+    margin-block-start: var(--it-space-2);
+  }
+
+  .section-flow {
+    margin-block-start: var(--it-space-6);
+  }
+
+  /* Inline warning and danger notes. */
+  .notice {
+    border-inline-start: 2px solid;
+    background-color: var(--it-surface);
+    padding: var(--it-space-2);
+    font-size: var(--it-font-size-1);
+  }
+
+  .notice-warning {
+    border-inline-start-color: var(--it-warning);
+  }
+
+  .notice-danger {
+    border-inline-start-color: var(--it-danger);
+  }
+
+  .error-box {
+    max-width: 100%;
+    border: var(--it-border-width) solid var(--it-danger);
+    border-radius: var(--it-radius-sm);
+    padding: var(--it-space-3);
+    color: var(--it-danger);
+  }
+}

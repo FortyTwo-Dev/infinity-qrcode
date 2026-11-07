@@ -1,0 +1,302 @@
+/*
+ * Learn route: stage, timeline and phase swatches, phase panel, tiles,
+ * help dialogs and controls. Literal values are exact carry-overs from
+ * the former utility norms (2.25rem title, 18rem and 20rem grid columns,
+ * 24rem stage frame, 6rem and 9rem tile stages).
+ */
+@layer components {
+  .learn-title {
+    font-size: 2.25rem;
+  }
+
+  .learn-columns {
+    display: grid;
+    gap: var(--it-space-5);
+  }
+
+  @media (min-width: 64rem) {
+    .learn-columns {
+      grid-template-columns: 18rem minmax(0, 1fr) 20rem;
+    }
+  }
+
+  /* Below desktop the form and the stage swap by validity: an empty trace
+     shows the form first, a valid one shows the stage first. Desktop slots
+     override the swap. */
+  .stack-first {
+    order: 1;
+  }
+
+  .stack-second {
+    order: 2;
+  }
+
+  @media (min-width: 64rem) {
+    .learn-content-slot {
+      order: 1;
+    }
+
+    .learn-stage-slot {
+      order: 2;
+    }
+
+    .learn-details-slot {
+      order: 3;
+    }
+  }
+
+  /* Stage */
+  .stage-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--it-space-2);
+  }
+
+  .stage-frame {
+    display: flex;
+    height: 24rem;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    border: var(--it-border-width) solid var(--it-border);
+    border-radius: var(--it-radius-sm);
+    padding: var(--it-space-4);
+  }
+
+  /* Timeline */
+  .timeline-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--it-space-2);
+  }
+
+  .timeline-counter {
+    margin: 0;
+    font-size: var(--it-font-size-1);
+  }
+
+  /* A fieldset: the theme reset does not zero its UA margins or its
+     min-inline-size, which the utility reset used to absorb. */
+  .timeline-strip {
+    display: flex;
+    height: 1rem;
+    width: 100%;
+    margin: 0;
+    min-inline-size: 0;
+    background-color: var(--it-surface);
+  }
+
+  .timeline-segment {
+    display: block;
+    height: 100%;
+    min-width: 0.25rem;
+    border: 0;
+    padding: 0;
+  }
+
+  .timeline-segment-current {
+    outline: 2px solid var(--it-fg);
+    outline-offset: 1px;
+  }
+
+  .timeline-legend {
+    margin-block-start: var(--it-space-2);
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: var(--it-space-3);
+    row-gap: var(--it-space-1);
+    font-size: var(--it-font-size-1);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--it-space-1);
+  }
+
+  .phase-swatch {
+    display: inline-block;
+    height: 0.5rem;
+    width: 0.5rem;
+  }
+
+  /* Phase family swatches: the data declaration chooses the class. */
+  .swatch-empty {
+    background-color: color-mix(in oklab, var(--it-fg) 25%, transparent);
+  }
+
+  .swatch-primary {
+    background-color: var(--it-accent);
+  }
+
+  .swatch-warning {
+    background-color: var(--it-warning);
+  }
+
+  .swatch-info {
+    background-color: var(--it-info);
+  }
+
+  .swatch-success {
+    background-color: var(--it-success);
+  }
+
+  .timeline-speed {
+    margin-left: auto;
+  }
+
+  .speed-select {
+    width: 6rem;
+  }
+
+  /* Phase family galleries (version and error correction tiles) */
+  .tile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--it-space-4);
+  }
+
+  @media (min-width: 40rem) {
+    .tile-grid-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--it-space-1);
+  }
+
+  .tile-stage {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--it-surface);
+    padding: var(--it-space-2);
+  }
+
+  .tile-stage-sm {
+    min-height: 6rem;
+  }
+
+  .tile-stage-lg {
+    min-height: 9rem;
+  }
+
+  .tile-label {
+    font-size: var(--it-font-size-1);
+    font-weight: var(--it-font-weight-medium);
+  }
+
+  /* Detail help grid */
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: var(--it-space-4);
+    row-gap: var(--it-space-2);
+  }
+
+  .detail-value {
+    text-align: right;
+    font-weight: var(--it-font-weight-medium);
+  }
+
+  /* Phase panel */
+  .phase-name {
+    font-weight: var(--it-font-weight-medium);
+  }
+
+  .phase-desc {
+    margin-block-start: var(--it-space-1);
+  }
+
+  .phase-facts {
+    margin-block-start: var(--it-space-3);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--it-space-2);
+  }
+
+  .trace-facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--it-space-3);
+    row-gap: var(--it-space-1);
+  }
+
+  .phase-code {
+    margin-block-start: var(--it-space-2);
+    overflow: auto;
+    border: var(--it-border-width) solid var(--it-border);
+    background-color: var(--it-surface);
+    padding: var(--it-space-3);
+    font-size: var(--it-font-size-1);
+  }
+
+  .stat-unknown {
+    opacity: 0.5;
+  }
+
+  /* Help dialogs */
+  .help-dialog {
+    margin: auto;
+    width: min(92vw, 34rem);
+    border: var(--it-border-width) solid var(--it-border);
+    background-color: var(--it-bg);
+    color: var(--it-fg);
+    padding: 0;
+  }
+
+  .help-dialog::backdrop {
+    background-color: rgb(0 0 0 / 50%);
+  }
+
+  .help-body {
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh;
+    gap: var(--it-space-4);
+    overflow: auto;
+    padding: var(--it-space-5);
+  }
+
+  .help-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--it-space-4);
+  }
+
+  .help-subheading {
+    font-weight: var(--it-font-weight-semibold);
+  }
+
+  .help-flow {
+    margin-block-start: var(--it-space-1);
+  }
+
+  /* Trace controls */
+  .controls-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--it-space-4);
+  }
+
+  .controls-toggle {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+@layer components {
+  .timeline-error {
+    font-size: var(--it-font-size-1);
+    color: var(--it-danger);
+  }
+}

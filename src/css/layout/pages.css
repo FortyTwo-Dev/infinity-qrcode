@@ -1,0 +1,64 @@
+/*
+ * Secondary pages: credits, legal and privacy. Literal values are exact
+ * carry-overs from the former utility norms (48rem narrow page, 1.25rem
+ * list gap, 12rem legal meta column).
+ */
+@layer components {
+  .narrow-page {
+    max-width: 48rem;
+  }
+
+  /* Credits */
+  .credits-list {
+    margin-block-start: var(--it-space-6);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .credits-entry {
+    border-inline-start: 2px solid var(--it-border);
+    padding-inline-start: var(--it-space-4);
+  }
+
+  .credits-link {
+    font-weight: var(--it-font-weight-semibold);
+  }
+
+  .entry-line {
+    margin-block: var(--it-space-1) 0;
+  }
+
+  /* Legal and privacy pages */
+  .legal-note {
+    margin-block-start: var(--it-space-5);
+    border: var(--it-border-width) dashed var(--it-border);
+    padding: var(--it-space-3);
+  }
+
+  .legal-meta {
+    margin-block-start: var(--it-space-3);
+    display: grid;
+    gap: var(--it-space-2);
+  }
+
+  @media (min-width: 40rem) {
+    .legal-meta {
+      grid-template-columns: 12rem 1fr;
+    }
+  }
+
+  .legal-term {
+    font-weight: var(--it-font-weight-medium);
+  }
+
+  .legal-text {
+    margin-block-start: var(--it-space-3);
+  }
+
+  .fine-list {
+    margin-block-start: var(--it-space-2);
+    padding-inline-start: 1.25rem;
+    list-style: disc;
+  }
+}

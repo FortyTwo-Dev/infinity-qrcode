@@ -272,7 +272,7 @@ function handleErrors(errors: Record<string, string>) {
 
     <div class="learn-columns">
       <section
-        class="generator-panel section-stack learn-content-slot"
+        class="panel section-stack learn-content-slot"
         :class="valid ? 'stack-second' : 'stack-first'"
         :aria-label="t('learn.sections.content')"
       >
@@ -329,7 +329,7 @@ function handleErrors(errors: Record<string, string>) {
       </section>
 
       <section
-        class="generator-panel section-stack learn-details-slot"
+        class="panel section-stack learn-details-slot"
         :aria-label="t('learn.sections.details')"
       >
         <PhasePanel

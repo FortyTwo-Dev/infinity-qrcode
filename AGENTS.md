@@ -46,7 +46,7 @@ components use the adapters in `src/lib/qrcode/` and the WASM composables. Token
 and base styles come from the `@infinitylib/infinity-theme` package (ADR-0007);
 `src/components/theme` contains thin Vue wrappers without styles. The brand layer
 (accent, typefaces and accent behaviours) lives in `src/css/brand.css`, the page
-arrangement in `src/css/layout.css` as application classes on the structural
+arrangement in `src/css/layout/` as application classes on the structural
 tokens (ADR-0008). `src/i18n` owns the locale engine
 and `src/locales` the message catalogs; `src/lib` layers return catalog keys
 and never display text (ADR-0006).
@@ -64,7 +64,7 @@ See `docs/decisions/ADR-0001` (rebuild and routes), `ADR-0002` (toolchain),
   `bun run build`. Do not add an npm/yarn/pnpm lockfile.
 - Tokens, base styles and `it-*` classes come from `@infinitylib/infinity-theme`;
   no utility framework is installed. The application brand lives in
-  `src/css/brand.css`, the page arrangement in `src/css/layout.css` as named
+  `src/css/brand.css`, the page arrangement in `src/css/layout/` as named
   classes on the theme tokens; `src/css/style.css` only declares the cascade
   order. Before inventing a new layout class, read the existing vocabulary.
 - One accent, the logo yellow (`#ffdf00`), and light/dark mode, driven by

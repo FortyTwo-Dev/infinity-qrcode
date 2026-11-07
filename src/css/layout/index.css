@@ -1,0 +1,9 @@
+/*
+ * Application layout entry: the files of the zone folder, in import order.
+ */
+@import './shell.css';
+@import './shared.css';
+@import './canvas.css';
+@import './generator.css';
+@import './learn.css';
+@import './pages.css';
