@@ -113,7 +113,7 @@ const rows = computed<Row[]>(() => {
           :data-state="row.state"
           :class="{
             'it-mark': row.state === 'active',
-            'opacity-50': row.state === 'unknown',
+            'stat-unknown': row.state === 'unknown',
           }"
         >
           {{ row.value }}

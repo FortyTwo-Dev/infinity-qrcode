@@ -76,7 +76,7 @@ async function loadExamples() {
     <p class="it-small">{{ t('learn.controls.versionPadding') }}</p>
 
     <p v-if="loading" class="it-small it-muted">{{ t('learn.controls.generatingExamples') }}</p>
-    <p v-else-if="error" class="it-small text-destructive" role="alert">{{ error }}</p>
+    <p v-else-if="error" class="it-small text-danger" role="alert">{{ error }}</p>
     <ul v-else class="tile-grid">
       <li
         v-for="example in examples"

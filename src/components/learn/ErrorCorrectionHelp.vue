@@ -57,7 +57,7 @@ function previewModuleSize(data: QrMatrixData): number {
     <p class="it-small">{{ t('learn.controls.errorCorrectionIntro') }}</p>
 
     <p v-if="loading" class="it-small it-muted">{{ t('learn.controls.generatingExamples') }}</p>
-    <p v-else-if="error" class="it-small text-destructive" role="alert">{{ error }}</p>
+    <p v-else-if="error" class="it-small text-danger" role="alert">{{ error }}</p>
     <ul v-else class="tile-grid tile-grid-4">
       <li v-for="example in examples" :key="example.level" class="tile">
         <div class="tile-stage tile-stage-sm">

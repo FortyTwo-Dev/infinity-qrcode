@@ -59,7 +59,7 @@ watchEffect(() => {
 </script>
 
 <template>
-  <figure class="m-0">
+  <figure class="qr-figure">
     <canvas ref="canvas" class="qr-canvas" />
     <figcaption class="it-sr-only">{{ label }}</figcaption>
   </figure>

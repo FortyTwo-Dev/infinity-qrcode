@@ -24,12 +24,12 @@ const info = computed(() => (props.phase ? PHASE_INFO[props.phase] : null))
 
     <div v-if="info.detail">
       <h3 class="it-small help-subheading">{{ t('learn.panel.details') }}</h3>
-      <p class="mt-1 it-small">{{ t(info.detail) }}</p>
+      <p class="help-flow it-small">{{ t(info.detail) }}</p>
     </div>
 
     <div v-if="info.math || info.formula">
       <h3 class="it-small help-subheading">{{ t('learn.panel.math') }}</h3>
-      <p v-if="info.math" class="mt-1 it-small">{{ t(info.math) }}</p>
+      <p v-if="info.math" class="help-flow it-small">{{ t(info.math) }}</p>
       <pre
         v-if="info.formula"
         class="phase-code"

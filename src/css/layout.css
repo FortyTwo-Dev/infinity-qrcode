@@ -473,10 +473,14 @@
     font-size: var(--it-font-size-1);
   }
 
+  /* A fieldset: the theme reset does not zero its UA margins or its
+     min-inline-size, which the utility reset used to absorb. */
   .timeline-strip {
     display: flex;
     height: 1rem;
     width: 100%;
+    margin: 0;
+    min-inline-size: 0;
     background-color: var(--it-surface);
   }
 
@@ -653,11 +657,17 @@
     gap: var(--it-space-4);
   }
 
-  /* QR canvas: drawn by explicit colours, so no text colour is bound. */
+  /* QR canvas: the learn view draws its per-frame module highlights with
+     the current text colour of the canvas, so it binds the accent. */
   .qr-canvas {
     display: block;
     max-width: 100%;
+    color: var(--it-accent);
     image-rendering: pixelated;
+  }
+
+  .qr-figure {
+    margin: 0;
   }
 
   /* Controls and secondary pages */
@@ -752,5 +762,15 @@
 @layer components {
   .help-subheading {
     font-weight: var(--it-font-weight-semibold);
+  }
+}
+
+@layer components {
+  .stat-unknown {
+    opacity: 0.5;
+  }
+
+  .help-flow {
+    margin-block-start: var(--it-space-1);
   }
 }
