@@ -31,7 +31,7 @@ const { t } = useI18n()
 <template>
   <div class="mx-auto w-full max-w-3xl px-4 py-8">
     <h1 class="text-3xl font-semibold sm:text-4xl">{{ t('credits.title') }}</h1>
-    <p class="mt-2 max-w-2xl text-sm opacity-80">{{ t('credits.intro') }}</p>
+    <p class="mt-2 max-w-2xl it-small it-muted">{{ t('credits.intro') }}</p>
 
     <ul class="mt-8 flex flex-col gap-5">
       <li
@@ -47,8 +47,8 @@ const { t } = useI18n()
         >
           {{ name }}
         </a>
-        <p class="m-0 mt-1 text-sm">{{ t(role) }}</p>
-        <p class="m-0 mt-1 text-xs opacity-70">{{ license }}</p>
+        <p class="m-0 mt-1 it-small">{{ t(role) }}</p>
+        <p class="m-0 mt-1 text-xs it-muted">{{ license }}</p>
       </li>
     </ul>
   </div>

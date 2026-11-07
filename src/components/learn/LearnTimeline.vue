@@ -139,7 +139,7 @@ function phaseTitle(phase: LearnPhase): string {
         {{ t('learn.timeline.title') }}
       </h2>
       <div class="flex items-center gap-2">
-        <p class="m-0 text-xs opacity-70" aria-live="polite">
+        <p class="m-0 text-xs it-muted" aria-live="polite">
           {{
             t('learn.timeline.frameCounter', {
               current: frameCount ? frameIndex + 1 : 0,
@@ -383,7 +383,7 @@ function phaseTitle(phase: LearnPhase): string {
         </svg>
       </ItButton>
 
-      <div class="ml-auto flex items-center gap-2 text-sm">
+      <div class="ml-auto flex items-center gap-2 it-small">
         <span>{{ t('learn.timeline.speed') }}</span>
         <ItSelect
           id="timeline-speed"
@@ -399,7 +399,7 @@ function phaseTitle(phase: LearnPhase): string {
       </div>
     </div>
 
-    <p v-if="reducedMotion" class="text-xs opacity-70">
+    <p v-if="reducedMotion" class="text-xs it-muted">
       {{ t('learn.timeline.reducedMotionNote') }}
     </p>
   </section>

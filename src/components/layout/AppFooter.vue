@@ -11,7 +11,7 @@ const { t } = useI18n()
 <template>
   <footer class="border-t border-border">
     <div
-      class="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-4 text-sm leading-5"
+      class="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-4 it-small leading-5"
     >
       <p class="m-0 font-semibold leading-5">© {{ year }} Infinity QRCode</p>
 
@@ -27,7 +27,7 @@ const { t } = useI18n()
         <RouterLink to="/credits" class="it-link-accent">{{ t('footer.credits') }}</RouterLink>
         <RouterLink to="/legal" class="it-link-accent">{{ t('footer.legal') }}</RouterLink>
         <RouterLink to="/privacy" class="it-link-accent">{{ t('footer.privacy') }}</RouterLink>
-        <span class="opacity-70">v{{ version }}</span>
+        <span class="it-muted">v{{ version }}</span>
       </nav>
     </div>
   </footer>

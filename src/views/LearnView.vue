@@ -265,7 +265,7 @@ function handleErrors(errors: Record<string, string>) {
   <div class="mx-auto w-full max-w-7xl px-4 py-8">
     <header class="mb-8 flex flex-col items-center gap-2 text-center">
       <h1 class="text-4xl font-semibold">{{ t('learn.title') }}</h1>
-      <p class="max-w-2xl opacity-80">
+      <p class="max-w-2xl it-muted">
         {{ t('learn.tagline') }}
       </p>
     </header>
@@ -321,7 +321,7 @@ function handleErrors(errors: Record<string, string>) {
         />
         <p
           v-if="displayError"
-          class="rounded-sm border border-destructive p-3 text-sm text-destructive"
+          class="rounded-sm border border-destructive p-3 it-small text-destructive"
           role="alert"
         >
           {{ displayError }}

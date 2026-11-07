@@ -70,7 +70,7 @@ const moduleSize = computed(() => Math.max(1, Math.round(fitModuleSize.value * p
         >
           −
         </ItButton>
-        <span class="text-xs opacity-70">{{ Math.round(zoom * 100) }}%</span>
+        <span class="text-xs it-muted">{{ Math.round(zoom * 100) }}%</span>
         <ItButton
           variant="secondary"
           :disabled="zoom >= 4"
@@ -103,7 +103,7 @@ const moduleSize = computed(() => Math.max(1, Math.round(fitModuleSize.value * p
           })
         "
       />
-      <p v-else class="text-sm opacity-70">{{ t('learn.stage.empty') }}</p>
+      <p v-else class="it-small it-muted">{{ t('learn.stage.empty') }}</p>
     </div>
   </section>
 </template>

@@ -81,7 +81,7 @@ const displayError = computed(() => wasmError.value ?? generationError.value)
   <div class="mx-auto w-full max-w-7xl px-4 py-8">
     <header class="mb-8 flex flex-col items-center gap-2 text-center">
       <h1 class="text-3xl font-semibold sm:text-4xl">{{ t('generator.title') }}</h1>
-      <p class="max-w-2xl opacity-80">{{ t('generator.tagline') }}</p>
+      <p class="max-w-2xl it-muted">{{ t('generator.tagline') }}</p>
     </header>
 
     <div class="grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)_18rem]">

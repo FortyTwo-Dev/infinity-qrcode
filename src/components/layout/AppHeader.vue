@@ -43,7 +43,7 @@ const { t } = useI18n()
         :aria-label="t('header.switchLanguage')"
         @click="$emit('toggle-locale')"
       >
-        <span aria-hidden="true" class="text-sm font-semibold">{{ locale === 'en' ? 'FR' : 'EN' }}</span>
+        <span aria-hidden="true" class="it-small font-semibold">{{ locale === 'en' ? 'FR' : 'EN' }}</span>
       </button>
 
       <button
@@ -55,7 +55,7 @@ const { t } = useI18n()
         :title="dyslexia ? t('header.dyslexiaOff') : t('header.dyslexiaOn')"
         @click="$emit('toggle-dyslexia')"
       >
-        <span aria-hidden="true" class="text-sm font-semibold">aA</span>
+        <span aria-hidden="true" class="it-small font-semibold">aA</span>
       </button>
 
       <button

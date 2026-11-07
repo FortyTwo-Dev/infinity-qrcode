@@ -45,7 +45,7 @@ const displayModuleSize = computed(() => {
       <h2 id="preview-heading" class="it-h5 text-lg font-semibold">
         {{ t('generator.sections.preview') }}
       </h2>
-      <p v-if="data" class="text-xs opacity-70">
+      <p v-if="data" class="text-xs it-muted">
         {{
           t('generator.preview.meta', { version: data.version, size: data.size, mask: data.mask })
         }}
@@ -53,13 +53,13 @@ const displayModuleSize = computed(() => {
     </div>
 
     <div class="flex min-h-96 items-center justify-center bg-secondary p-4">
-      <output v-if="loading" class="text-sm" :aria-label="t('generator.preview.status')">
+      <output v-if="loading" class="it-small" :aria-label="t('generator.preview.status')">
         {{ t('generator.preview.loading') }}
       </output>
 
       <p
         v-else-if="error"
-        class="max-w-full rounded-sm border border-destructive p-3 text-sm text-destructive"
+        class="max-w-full rounded-sm border border-destructive p-3 it-small text-destructive"
         role="alert"
       >
         {{ error }}
@@ -76,7 +76,7 @@ const displayModuleSize = computed(() => {
         :label="t('generator.preview.canvasLabel')"
       />
 
-      <p v-else class="text-center text-sm opacity-70">{{ t('generator.preview.empty') }}</p>
+      <p v-else class="text-center it-small it-muted">{{ t('generator.preview.empty') }}</p>
     </div>
 
     <div class="flex flex-wrap items-center gap-2">

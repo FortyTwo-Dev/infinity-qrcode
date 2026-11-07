@@ -102,7 +102,7 @@ const moduleHint = computed(() =>
     </h2>
 
     <fieldset class="it-fieldset-plain">
-      <legend class="mb-2 text-sm font-medium">{{ t('generator.options.errorCorrection') }}</legend>
+      <legend class="mb-2 it-small font-medium">{{ t('generator.options.errorCorrection') }}</legend>
       <div class="it-choice-group it-choice-group-2">
         <label
           v-for="option in ERROR_CORRECTION_LEVELS"
@@ -123,7 +123,7 @@ const moduleHint = computed(() =>
     </fieldset>
 
     <fieldset class="it-fieldset-plain">
-      <legend class="mb-2 text-sm font-medium">{{ t('generator.options.format') }}</legend>
+      <legend class="mb-2 it-small font-medium">{{ t('generator.options.format') }}</legend>
       <div class="it-choice-group it-choice-group-4">
         <label
           v-for="option in FORMATS"

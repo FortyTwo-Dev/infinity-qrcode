@@ -72,11 +72,11 @@ async function loadExamples() {
     :title="t('learn.controls.version')"
     @open="loadExamples"
   >
-    <p class="text-sm">{{ t('learn.controls.versionIntro') }}</p>
-    <p class="text-sm">{{ t('learn.controls.versionPadding') }}</p>
+    <p class="it-small">{{ t('learn.controls.versionIntro') }}</p>
+    <p class="it-small">{{ t('learn.controls.versionPadding') }}</p>
 
-    <p v-if="loading" class="text-sm opacity-70">{{ t('learn.controls.generatingExamples') }}</p>
-    <p v-else-if="error" class="text-sm text-destructive" role="alert">{{ error }}</p>
+    <p v-if="loading" class="it-small it-muted">{{ t('learn.controls.generatingExamples') }}</p>
+    <p v-else-if="error" class="it-small text-destructive" role="alert">{{ error }}</p>
     <ul v-else class="grid grid-cols-2 gap-4">
       <li
         v-for="example in examples"
@@ -95,10 +95,10 @@ async function loadExamples() {
           />
         </div>
         <span class="text-xs font-medium">{{ labelOf(example.version) }}</span>
-        <span class="text-xs opacity-70">{{ example.caption }}</span>
+        <span class="text-xs it-muted">{{ example.caption }}</span>
       </li>
     </ul>
 
-    <p class="text-xs opacity-70">{{ t('learn.controls.sameContentBoth', { sample: SAMPLE }) }}</p>
+    <p class="text-xs it-muted">{{ t('learn.controls.sameContentBoth', { sample: SAMPLE }) }}</p>
   </SectionHelp>
 </template>

@@ -54,10 +54,10 @@ function previewModuleSize(data: QrMatrixData): number {
     :title="t('learn.controls.errorCorrection')"
     @open="loadExamples"
   >
-    <p class="text-sm">{{ t('learn.controls.errorCorrectionIntro') }}</p>
+    <p class="it-small">{{ t('learn.controls.errorCorrectionIntro') }}</p>
 
-    <p v-if="loading" class="text-sm opacity-70">{{ t('learn.controls.generatingExamples') }}</p>
-    <p v-else-if="error" class="text-sm text-destructive" role="alert">{{ error }}</p>
+    <p v-if="loading" class="it-small it-muted">{{ t('learn.controls.generatingExamples') }}</p>
+    <p v-else-if="error" class="it-small text-destructive" role="alert">{{ error }}</p>
     <ul v-else class="grid grid-cols-2 gap-4 sm:grid-cols-4">
       <li v-for="example in examples" :key="example.level" class="flex flex-col items-center gap-1">
         <div class="flex min-h-24 w-full items-center justify-center bg-secondary p-2">
@@ -72,12 +72,12 @@ function previewModuleSize(data: QrMatrixData): number {
           />
         </div>
         <span class="text-xs font-medium">{{ t(LEVEL_LABELS[example.level]) }}</span>
-        <span class="text-xs opacity-70">
+        <span class="text-xs it-muted">
           v{{ example.data.version }} · {{ example.data.size }}×{{ example.data.size }}
         </span>
       </li>
     </ul>
 
-    <p class="text-xs opacity-70">{{ t('learn.controls.sameContentFour', { sample: SAMPLE }) }}</p>
+    <p class="text-xs it-muted">{{ t('learn.controls.sameContentFour', { sample: SAMPLE }) }}</p>
   </SectionHelp>
 </template>

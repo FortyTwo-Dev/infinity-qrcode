@@ -21,7 +21,7 @@ function close() {
     aria-live="polite"
     class="block border-b border-border bg-secondary text-secondary-foreground"
   >
-    <div class="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-2 px-4 py-2 text-sm">
+    <div class="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-2 px-4 py-2 it-small">
       <span class="mr-auto">
         {{ offlineReady ? t('pwa.offlineReady') : t('pwa.needRefresh') }}
       </span>

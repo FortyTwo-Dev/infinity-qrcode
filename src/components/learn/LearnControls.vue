@@ -55,7 +55,7 @@ const maskCandidates = computed<boolean>({
     <h2 id="trace-options-heading" class="it-h5 text-lg font-semibold">{{ t('learn.controls.title') }}</h2>
 
     <fieldset class="it-fieldset-plain">
-      <legend class="mb-2 flex items-center gap-2 text-sm font-medium">
+      <legend class="mb-2 flex items-center gap-2 it-small font-medium">
         {{ t('learn.controls.errorCorrection') }}
         <ErrorCorrectionHelp />
       </legend>
@@ -122,7 +122,7 @@ const maskCandidates = computed<boolean>({
       </ItSelect>
     </ItField>
 
-    <label for="trace-mask-candidates" class="flex items-center gap-2 text-sm">
+    <label for="trace-mask-candidates" class="flex items-center gap-2 it-small">
       <input
         id="trace-mask-candidates"
         v-model="maskCandidates"
