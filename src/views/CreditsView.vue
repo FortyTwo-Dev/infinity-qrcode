@@ -29,26 +29,26 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-3xl px-4 py-8">
-    <h1 class="text-3xl font-semibold sm:text-4xl">{{ t('credits.title') }}</h1>
-    <p class="mt-2 max-w-2xl it-small it-muted">{{ t('credits.intro') }}</p>
+  <div class="app-container narrow-page page-body">
+    <h1 class="page-title">{{ t('credits.title') }}</h1>
+    <p class="page-tagline lede it-small it-muted">{{ t('credits.intro') }}</p>
 
-    <ul class="mt-8 flex flex-col gap-5">
+    <ul class="credits-list">
       <li
         v-for="[name, role, license, href] in CREDITS"
         :key="name"
-        class="border-l-2 border-border pl-4"
+        class="credits-entry"
       >
         <a
           :href="href"
           target="_blank"
           rel="noopener noreferrer"
-          class="font-semibold underline decoration-primary it-link-accent"
+          class="credits-link it-link-accent"
         >
           {{ name }}
         </a>
-        <p class="m-0 mt-1 it-small">{{ t(role) }}</p>
-        <p class="m-0 mt-1 text-xs it-muted">{{ license }}</p>
+        <p class="entry-line it-small">{{ t(role) }}</p>
+        <p class="entry-line fine-print it-muted">{{ license }}</p>
       </li>
     </ul>
   </div>

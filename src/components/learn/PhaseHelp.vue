@@ -23,16 +23,16 @@ const info = computed(() => (props.phase ? PHASE_INFO[props.phase] : null))
     <p class="it-small">{{ t(info.description) }}</p>
 
     <div v-if="info.detail">
-      <h3 class="it-small font-semibold">{{ t('learn.panel.details') }}</h3>
+      <h3 class="it-small help-subheading">{{ t('learn.panel.details') }}</h3>
       <p class="mt-1 it-small">{{ t(info.detail) }}</p>
     </div>
 
     <div v-if="info.math || info.formula">
-      <h3 class="it-small font-semibold">{{ t('learn.panel.math') }}</h3>
+      <h3 class="it-small help-subheading">{{ t('learn.panel.math') }}</h3>
       <p v-if="info.math" class="mt-1 it-small">{{ t(info.math) }}</p>
       <pre
         v-if="info.formula"
-        class="mt-2 overflow-auto border border-border bg-secondary p-3 text-xs"
+        class="phase-code"
         >{{ t(info.formula) }}</pre>
     </div>
   </SectionHelp>

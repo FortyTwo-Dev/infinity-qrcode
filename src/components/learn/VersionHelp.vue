@@ -77,13 +77,13 @@ async function loadExamples() {
 
     <p v-if="loading" class="it-small it-muted">{{ t('learn.controls.generatingExamples') }}</p>
     <p v-else-if="error" class="it-small text-destructive" role="alert">{{ error }}</p>
-    <ul v-else class="grid grid-cols-2 gap-4">
+    <ul v-else class="tile-grid">
       <li
         v-for="example in examples"
         :key="example.data.version"
-        class="flex flex-col items-center gap-1"
+        class="tile"
       >
-        <div class="flex min-h-36 w-full items-center justify-center bg-secondary p-2">
+        <div class="tile-stage tile-stage-lg">
           <QrCanvas
             :matrix="example.data.matrix"
             :size="example.data.size"
@@ -94,11 +94,11 @@ async function loadExamples() {
             :label="t('learn.controls.exampleAria', { label: labelOf(example.version) })"
           />
         </div>
-        <span class="text-xs font-medium">{{ labelOf(example.version) }}</span>
-        <span class="text-xs it-muted">{{ example.caption }}</span>
+        <span class="tile-label">{{ labelOf(example.version) }}</span>
+        <span class="fine-print it-muted">{{ example.caption }}</span>
       </li>
     </ul>
 
-    <p class="text-xs it-muted">{{ t('learn.controls.sameContentBoth', { sample: SAMPLE }) }}</p>
+    <p class="fine-print it-muted">{{ t('learn.controls.sameContentBoth', { sample: SAMPLE }) }}</p>
   </SectionHelp>
 </template>

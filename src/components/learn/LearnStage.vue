@@ -58,10 +58,10 @@ const moduleSize = computed(() => Math.max(1, Math.round(fitModuleSize.value * p
 </script>
 
 <template>
-  <section aria-labelledby="stage-heading" class="flex flex-col gap-3">
-    <div class="flex flex-wrap items-center justify-between gap-2">
-      <h2 id="stage-heading" class="it-h5 text-lg font-semibold">{{ t('learn.stage.title') }}</h2>
-      <div class="flex items-center gap-2">
+  <section aria-labelledby="stage-heading" class="stack">
+    <div class="stage-toolbar">
+      <h2 id="stage-heading" class="it-h5 panel-title">{{ t('learn.stage.title') }}</h2>
+      <div class="row">
         <ItButton
           variant="secondary"
           :disabled="zoom <= 0.5"
@@ -70,7 +70,7 @@ const moduleSize = computed(() => Math.max(1, Math.round(fitModuleSize.value * p
         >
           −
         </ItButton>
-        <span class="text-xs it-muted">{{ Math.round(zoom * 100) }}%</span>
+        <span class="fine-print it-muted">{{ Math.round(zoom * 100) }}%</span>
         <ItButton
           variant="secondary"
           :disabled="zoom >= 4"
@@ -84,7 +84,7 @@ const moduleSize = computed(() => Math.max(1, Math.round(fitModuleSize.value * p
 
     <div
       ref="stage"
-      class="flex h-96 items-center justify-center overflow-auto rounded-sm border border-border p-4"
+      class="stage-frame"
     >
       <QrCanvas
         v-if="frame"

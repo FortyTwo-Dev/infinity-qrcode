@@ -58,9 +58,9 @@ function previewModuleSize(data: QrMatrixData): number {
 
     <p v-if="loading" class="it-small it-muted">{{ t('learn.controls.generatingExamples') }}</p>
     <p v-else-if="error" class="it-small text-destructive" role="alert">{{ error }}</p>
-    <ul v-else class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-      <li v-for="example in examples" :key="example.level" class="flex flex-col items-center gap-1">
-        <div class="flex min-h-24 w-full items-center justify-center bg-secondary p-2">
+    <ul v-else class="tile-grid tile-grid-4">
+      <li v-for="example in examples" :key="example.level" class="tile">
+        <div class="tile-stage tile-stage-sm">
           <QrCanvas
             :matrix="example.data.matrix"
             :size="example.data.size"
@@ -71,13 +71,13 @@ function previewModuleSize(data: QrMatrixData): number {
             :label="t('learn.controls.exampleLabel', { level: example.level })"
           />
         </div>
-        <span class="text-xs font-medium">{{ t(LEVEL_LABELS[example.level]) }}</span>
-        <span class="text-xs it-muted">
+        <span class="tile-label">{{ t(LEVEL_LABELS[example.level]) }}</span>
+        <span class="fine-print it-muted">
           v{{ example.data.version }} · {{ example.data.size }}×{{ example.data.size }}
         </span>
       </li>
     </ul>
 
-    <p class="text-xs it-muted">{{ t('learn.controls.sameContentFour', { sample: SAMPLE }) }}</p>
+    <p class="fine-print it-muted">{{ t('learn.controls.sameContentFour', { sample: SAMPLE }) }}</p>
   </SectionHelp>
 </template>

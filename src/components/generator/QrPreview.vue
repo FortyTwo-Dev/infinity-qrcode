@@ -45,7 +45,7 @@ const displayModuleSize = computed(() => {
       <h2 id="preview-heading" class="it-h5 panel-title">
         {{ t('generator.sections.preview') }}
       </h2>
-      <p v-if="data" class="preview-meta it-muted">
+      <p v-if="data" class="fine-print it-muted">
         {{
           t('generator.preview.meta', { version: data.version, size: data.size, mask: data.mask })
         }}
@@ -59,7 +59,7 @@ const displayModuleSize = computed(() => {
 
       <p
         v-else-if="error"
-        class="preview-error it-small"
+        class="error-box it-small"
         role="alert"
       >
         {{ error }}

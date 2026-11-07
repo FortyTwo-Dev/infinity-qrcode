@@ -51,11 +51,11 @@ const maskCandidates = computed<boolean>({
 </script>
 
 <template>
-  <section aria-labelledby="trace-options-heading" class="flex flex-col gap-4">
-    <h2 id="trace-options-heading" class="it-h5 text-lg font-semibold">{{ t('learn.controls.title') }}</h2>
+  <section aria-labelledby="trace-options-heading" class="controls-stack">
+    <h2 id="trace-options-heading" class="it-h5 panel-title">{{ t('learn.controls.title') }}</h2>
 
     <fieldset class="it-fieldset-plain">
-      <legend class="mb-2 flex items-center gap-2 it-small font-medium">
+      <legend class="option-legend row it-small">
         {{ t('learn.controls.errorCorrection') }}
         <ErrorCorrectionHelp />
       </legend>
@@ -122,12 +122,12 @@ const maskCandidates = computed<boolean>({
       </ItSelect>
     </ItField>
 
-    <label for="trace-mask-candidates" class="flex items-center gap-2 it-small">
+    <label for="trace-mask-candidates" class="row it-small">
       <input
         id="trace-mask-candidates"
         v-model="maskCandidates"
         type="checkbox"
-        class="h-4 w-4 accent-primary"
+        class="controls-toggle"
       />
       {{ t('learn.controls.maskCandidates') }}
     </label>

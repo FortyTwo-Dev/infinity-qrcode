@@ -78,10 +78,10 @@ const displayError = computed(() => wasmError.value ?? generationError.value)
 </script>
 
 <template>
-  <div class="app-container generator-page">
-    <header class="generator-hero">
-      <h1 class="generator-title">{{ t('generator.title') }}</h1>
-      <p class="generator-tagline it-muted">{{ t('generator.tagline') }}</p>
+  <div class="app-container page-body">
+    <header class="page-hero">
+      <h1 class="page-title">{{ t('generator.title') }}</h1>
+      <p class="page-tagline it-muted">{{ t('generator.tagline') }}</p>
     </header>
 
     <div class="generator-columns">
@@ -89,7 +89,7 @@ const displayError = computed(() => wasmError.value ?? generationError.value)
         <ContentPicker v-model="type" />
       </section>
 
-      <div class="generator-middle">
+      <div class="section-stack">
         <QrPreview
           class="generator-preview-order"
           :data="data"

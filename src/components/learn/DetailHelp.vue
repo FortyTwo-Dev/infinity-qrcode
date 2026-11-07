@@ -61,16 +61,16 @@ async function loadCounts() {
     <p class="it-small">{{ t('learn.controls.detailIntro') }}</p>
 
     <p v-if="loading" class="it-small it-muted">{{ t('learn.controls.countingFrames') }}</p>
-    <p v-else-if="error" class="it-small text-destructive" role="alert">{{ error }}</p>
-    <dl v-else class="grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 it-small">
+    <p v-else-if="error" class="it-small text-danger" role="alert">{{ error }}</p>
+    <dl v-else class="detail-grid it-small">
       <template v-for="row in rows" :key="row.stride">
         <dt>{{ t(row.key, { count: row.stride }) }}</dt>
-        <dd class="text-right font-medium">
+        <dd class="detail-value">
           {{ t('learn.controls.frameCount', { count: row.frames }) }}
         </dd>
       </template>
     </dl>
 
-    <p class="text-xs it-muted">{{ t('learn.controls.sameContentThree', { sample: SAMPLE }) }}</p>
+    <p class="fine-print it-muted">{{ t('learn.controls.sameContentThree', { sample: SAMPLE }) }}</p>
   </SectionHelp>
 </template>

@@ -60,7 +60,7 @@ watchEffect(() => {
 
 <template>
   <figure class="m-0">
-    <canvas ref="canvas" class="block max-w-full text-primary [image-rendering:pixelated]" />
-    <figcaption class="sr-only">{{ label }}</figcaption>
+    <canvas ref="canvas" class="qr-canvas" />
+    <figcaption class="it-sr-only">{{ label }}</figcaption>
   </figure>
 </template>

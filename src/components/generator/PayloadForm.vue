@@ -71,7 +71,7 @@ watch(
 </script>
 
 <template>
-  <div class="payload-stack" @input="touched = true" @change="touched = true">
+  <div class="stack" @input="touched = true" @change="touched = true">
     <template v-if="type === 'text'">
       <ItField :label="t('generator.fields.text')" html-for="text" :error="fieldError('text')">
         <ItInput
