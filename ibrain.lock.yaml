@@ -7,4 +7,4 @@ packs:
   - name: "infinity-qrcode"
     url: "https://github.com/FortyTwo-Dev/iproject-ibrain-packs"
     ref: "main"
-    commit: "c70110c5318f5ee810173a92a9fe92e7458ae416"
+    commit: "cef9168f35fc84c8c1b2e6266da44764c88645b4"
