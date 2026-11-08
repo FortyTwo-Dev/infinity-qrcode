@@ -62,12 +62,12 @@ function renderMatrixToRgba(
   const rgba = new Uint8ClampedArray(dimension * dimension * 4)
   rgba.fill(255)
 
-  expect(matrix.length).toBe(size * size)
+  expect(matrix).toHaveLength(size * size)
   for (const value of matrix) {
     expect(value === 0 || value === 1).toBe(true)
   }
   expect(dimension).toBe(sideModules * SCALE)
-  expect(rgba.length).toBe(dimension * dimension * 4)
+  expect(rgba).toHaveLength(dimension * dimension * 4)
 
   for (let row = 0; row < size; row += 1) {
     for (let col = 0; col < size; col += 1) {
@@ -129,7 +129,7 @@ describe('independent matrix decoding with jsQR', () => {
     const rgba = new Uint8ClampedArray(dimension * dimension * 4)
     rgba.fill(255)
 
-    expect(rgba.length).toBe(dimension * dimension * 4)
+    expect(rgba).toHaveLength(dimension * dimension * 4)
 
     expect(jsQR(rgba, dimension, dimension, { inversionAttempts: 'dontInvert' })).toBeNull()
   })
