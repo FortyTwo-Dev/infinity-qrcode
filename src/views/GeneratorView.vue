@@ -61,7 +61,7 @@ function schedule() {
 function handleRetry() {
   generationError.value = null
   if (wasmError.value) {
-    retry()
+    void retry()
   } else {
     regenerate()
   }

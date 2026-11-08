@@ -1,9 +1,10 @@
 import { mount } from '@vue/test-utils'
-import type { DOMWrapper } from '@vue/test-utils'
 import { h, nextTick } from 'vue'
 import { createMemoryHistory, createRouter, RouterView } from 'vue-router'
 import type { Router } from 'vue-router'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+
+import { alertText, retryButton } from './viewTestUtils'
 
 // The Learn view owns LearnTrace instances from the external learn package.
 // These tests observe the WASM boundary only: every trace that the view builds
@@ -299,20 +300,6 @@ async function settle(rounds = 12): Promise<void> {
     await Promise.resolve()
   }
   await nextTick()
-}
-
-// Reads the accessible failure surface of the view, or undefined when the
-// view currently shows no failure.
-function alertText(source: Wrapper): string | undefined {
-  const alert = source.find('[role="alert"]')
-  return alert.exists() ? alert.text() : undefined
-}
-
-function retryButton(source: Wrapper): DOMWrapper<Element> | undefined {
-  return source.findAll('button').find((node) => {
-    const accessible = node.attributes('aria-label') ?? node.attributes('title') ?? node.text()
-    return /retry/i.test(accessible)
-  })
 }
 
 describe('LearnView', () => {

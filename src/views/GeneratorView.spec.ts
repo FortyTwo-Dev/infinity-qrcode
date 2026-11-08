@@ -1,7 +1,8 @@
 import { mount } from '@vue/test-utils'
-import type { DOMWrapper } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+
+import { alertText, retryButton } from './viewTestUtils'
 
 // The generator view owns QrCodeWasm instances from the external qr package.
 // These tests observe the WASM boundary only: every engine the view builds is
@@ -151,20 +152,6 @@ async function typeText(text: string): Promise<void> {
   const input = wrapper!.find('input#text')
   expect(input.exists(), 'the default text input of the generator').toBe(true)
   await input.setValue(text)
-}
-
-// Reads the accessible failure surface of the view, or undefined when the
-// view currently shows no failure.
-function alertText(source: Wrapper): string | undefined {
-  const alert = source.find('[role="alert"]')
-  return alert.exists() ? alert.text() : undefined
-}
-
-function retryButton(source: Wrapper): DOMWrapper<Element> | undefined {
-  return source.findAll('button').find((node) => {
-    const accessible = node.attributes('aria-label') ?? node.attributes('title') ?? node.text()
-    return /retry/i.test(accessible)
-  })
 }
 
 describe('GeneratorView', () => {

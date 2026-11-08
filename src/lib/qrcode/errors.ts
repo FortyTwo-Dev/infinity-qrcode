@@ -17,7 +17,12 @@ export function classifyQrError(
   cause: unknown,
   fallback: QrFailureKey,
 ): QrFailureKey | 'common.errors.capacity' {
-  const message = cause instanceof Error ? cause.message : typeof cause === 'string' ? cause : ''
+  let message = ''
+  if (cause instanceof Error) {
+    message = cause.message
+  } else if (typeof cause === 'string') {
+    message = cause
+  }
 
   return message.startsWith('data too long') ? 'common.errors.capacity' : fallback
 }
