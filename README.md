@@ -239,8 +239,9 @@ ignored and recreated by `ibrain sync`; update the rules through
 ## Notes
 
 - TypeScript is pinned to 6.0.3 until `vue-tsc` supports TypeScript 7.
-- `bun audit` reports three upstream, build-time advisories in the
-  `workbox-build` chain. There is no high or critical advisory in shipped code.
+- `bun audit` reports two moderate and one low advisory in upstream development
+  tooling dependencies, including Workbox, lint and test tooling. There is no
+  high or critical advisory in shipped code.
 - `bun.lock` is the only lockfile; do not add an npm, yarn or pnpm lockfile.
 
 ## License
