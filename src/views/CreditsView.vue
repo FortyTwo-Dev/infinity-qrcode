@@ -8,7 +8,18 @@ const CREDITS: readonly Credit[] = [
   ['Vue.js', 'credits.roles.vue', 'MIT', 'https://vuejs.org'],
   ['Vue Router', 'credits.roles.vueRouter', 'MIT', 'https://router.vuejs.org'],
   ['Vite', 'credits.roles.vite', 'MIT', 'https://vite.dev'],
-  ['Tailwind CSS', 'credits.roles.tailwind', 'MIT', 'https://tailwindcss.com'],
+  [
+    'Infinity Theme',
+    'credits.roles.infinityTheme',
+    'MIT',
+    'https://github.com/InfinityLib/infinity-theme',
+  ],
+  [
+    'Infinity Theme Vue',
+    'credits.roles.infinityThemeVue',
+    'MIT',
+    'https://github.com/InfinityLib/infinity-theme-vue',
+  ],
   ['vite-plugin-pwa', 'credits.roles.vitePwa', 'MIT', 'https://vite-pwa-org.netlify.app'],
   ['Workbox', 'credits.roles.workbox', 'MIT', 'https://developer.chrome.com/docs/workbox'],
   [
@@ -29,26 +40,26 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-3xl px-4 py-8">
-    <h1 class="text-3xl font-semibold sm:text-4xl">{{ t('credits.title') }}</h1>
-    <p class="mt-2 max-w-2xl text-sm opacity-80">{{ t('credits.intro') }}</p>
+  <div class="app-container narrow-page page-body">
+    <h1 class="page-title">{{ t('credits.title') }}</h1>
+    <p class="page-tagline lede it-small it-muted">{{ t('credits.intro') }}</p>
 
-    <ul class="mt-8 flex flex-col gap-5">
+    <ul class="credits-list">
       <li
         v-for="[name, role, license, href] in CREDITS"
         :key="name"
-        class="border-l-2 border-border pl-4"
+        class="credits-entry"
       >
         <a
           :href="href"
           target="_blank"
           rel="noopener noreferrer"
-          class="font-semibold underline decoration-primary it-link-accent"
+          class="credits-link it-link-accent"
         >
           {{ name }}
         </a>
-        <p class="m-0 mt-1 text-sm">{{ t(role) }}</p>
-        <p class="m-0 mt-1 text-xs opacity-70">{{ license }}</p>
+        <p class="entry-line it-small">{{ t(role) }}</p>
+        <p class="entry-line fine-print it-muted">{{ license }}</p>
       </li>
     </ul>
   </div>

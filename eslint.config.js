@@ -7,7 +7,14 @@ import globals from 'globals'
 
 export default withVueTs(
   {
-    ignores: ['dist/**', 'coverage/**', 'node_modules/**', '.ai/**', '.agents/**'],
+    ignores: [
+      'dist/**',
+      'coverage/**',
+      'node_modules/**',
+      '.cache/ms-playwright/**',
+      '.ai/**',
+      '.agents/**',
+    ],
   },
   js.configs.recommended,
   pluginVue.configs['flat/recommended'],
@@ -18,18 +25,6 @@ export default withVueTs(
       globals: {
         ...globals.browser,
       },
-    },
-  },
-  {
-    files: ['src/components/theme/**/*.vue'],
-    rules: {
-      'vue/require-default-prop': 'off',
-    },
-  },
-  {
-    files: ['src/components/theme/ItField.vue'],
-    rules: {
-      'vuejs-accessibility/label-has-for': 'off',
     },
   },
   {

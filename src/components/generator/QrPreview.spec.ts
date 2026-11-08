@@ -54,6 +54,13 @@ function downloadButton(wrapper: Wrapper): DOMWrapper<Element> {
   return button!
 }
 
+function retryButton(wrapper: Wrapper): DOMWrapper<Element> | undefined {
+  return wrapper.findAll('button').find((node) => {
+    const accessible = node.attributes('aria-label') ?? node.attributes('title') ?? node.text()
+    return /retry/i.test(accessible)
+  })
+}
+
 function isDisabled(wrapper: Wrapper): boolean {
   return downloadButton(wrapper).attributes('disabled') !== undefined
 }
@@ -149,5 +156,25 @@ describe('QrPreview', () => {
     await wrapper.vm.$nextTick()
 
     expect(canvasWidth(wrapper)).toBeLessThanOrEqual(360)
+  })
+
+  test('keeps the retry action limited to the error state', () => {
+    expect(retryButton(mountPreview()), 'idle state').toBeUndefined()
+    expect(retryButton(mountPreview({ data: null, loading: true })), 'loading state').toBeUndefined()
+    expect(retryButton(mountPreview()), 'state with data').toBeUndefined()
+
+    const failed = mountPreview({ data: null, error: 'The engine failed to start.' })
+    expect(retryButton(failed), 'error state').toBeDefined()
+  })
+
+  test('emits retry once when the retry action is clicked', async () => {
+    const wrapper = mountPreview({ data: null, error: 'The engine failed to start.' })
+
+    const button = retryButton(wrapper)
+    expect(button, 'retry action in the error state').toBeDefined()
+
+    await button!.trigger('click')
+
+    expect(wrapper.emitted('retry')).toHaveLength(1)
   })
 })

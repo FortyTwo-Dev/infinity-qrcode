@@ -36,7 +36,7 @@ Everything runs in the browser. No payload is sent to a server.
 
 - Vue 3.5 with the Composition API and `<script setup lang="ts">`.
 - TypeScript 6, pinned because `vue-tsc` 3.3 does not support TypeScript 7.
-- Vite 8, Vue Router 5 and Tailwind CSS 4.
+- Vite 8 and Vue Router 5, with the `@infinitylib/infinity-theme` design system.
 - Bun 1.4 as package manager and test runner.
 - `iqrcode-wasm` for generation and `iqrcode-learn-wasm` for the trace.
 - ESLint 10 with `eslint-plugin-vue`, `typescript-eslint` and
@@ -70,7 +70,7 @@ bun run preview
 | `bun run type-check` | Run `vue-tsc --noEmit` |
 | `bun test` | Run the domain test suite |
 | `bun run test:unit` | Run the component tests with Vitest |
-| `bun run test:e2e` | Run the Playwright suite against the built app |
+| `bun run test:e2e` | Run the Playwright suite on Chromium, Firefox and WebKit against the built app |
 | `bun run check` | Lint, type-check, domain and component tests |
 | `bun run check:all` | `check` plus the end-to-end suite |
 | `bun run format` | Format with Prettier |
@@ -79,9 +79,13 @@ bun run preview
 
 ## Releases
 
-The version follows the Conventional Commits. A push on `main` opens a release
-pull request with the next version and the changelog. Merging it creates the tag
-and the GitHub release, and the footer reads the version from `package.json`.
+The version follows the Conventional Commits. A successful CI run on `main`
+builds the production image once, pushes it as the immutable `sha-<commit>` tag
+and smoke-tests that registry image. Once CI succeeds, release-please opens a
+release pull request with the next version and the changelog. Merging it creates
+the tag and the GitHub release, and the footer reads the version from
+`package.json`. The release adds its version tag (`vX.Y.Z`) and `latest` to the
+same tested image, without rebuilding it.
 
 ## Container
 
@@ -131,9 +135,7 @@ src/
 │   ├── generator/         # content picker, payload form, options, preview
 │   ├── learn/             # controls, stage, timeline, phase panel, stats
 │   ├── qr/                # shared matrix renderer
-│   ├── theme/             # thin Vue wrappers, no styles
 │   └── layout/            # header, footer and PWA prompt
-├── theme/                 # tokens, base HTML and it-* variants
 ├── composables/           # WASM loaders and theme state
 ├── lib/
 │   ├── qrcode/            # payload builders, rendering, export
@@ -149,14 +151,16 @@ that needs them.
 
 ## Theme library
 
-The UI uses the in-repo Infinity Theme library:
+The UI consumes the published `@infinitylib/infinity-theme` package:
 
-- `src/theme` owns design tokens, base HTML styles and `it-*` variants.
-- `src/components/theme` contains thin Vue wrappers without styles.
-
-Tailwind is used for layout only. Its semantic colours map to `--it-*` in
-`src/css/style.css`. The theme is set with `data-theme` on `<html>`; the accent
-is always `data-accent="yellow"`.
+- Design tokens, base HTML styles and `it-*` variants ship from the package.
+- The thin Vue wrappers ship from `@infinitylib/infinity-theme-vue`.
+- The application brand (the yellow accent, the typefaces, the bright-accent
+  behaviours) lives in `src/css/brand.css`.
+- The page arrangement lives in `src/css/layout/` as application classes on
+  the structural tokens; `src/css/style.css` declares the cascade order.
+- The mode is set with `data-theme` on `<html>`; the accent is always
+  `data-accent="yellow"` (ADR-0005, ADR-0007, ADR-0008).
 
 ## Internationalization
 
@@ -182,8 +186,32 @@ Both families and their license files live in `src/assets/fonts`.
 ```sh
 bun test           # domain logic and WASM
 bun run test:unit  # components with Vitest and happy-dom
-bun run test:e2e   # Chromium against the built app
+bun run test:e2e   # Chromium, Firefox and WebKit against the built app
 ```
+
+The end-to-end suite runs on three engines: Chromium (Desktop Chrome), Firefox
+(Desktop Firefox) and WebKit (Desktop Safari). A native run needs the host
+browser dependencies for all three:
+
+```sh
+./node_modules/.bin/playwright install --with-deps chromium firefox webkit
+```
+
+The full suite runs Chromium and Firefox together, then isolates WebKit in a
+fresh process per spec. Targeted arguments are forwarded unchanged to a single
+Playwright run, so a spec still runs on the three configured projects.
+
+On Fedora, or when the host browser dependencies are unavailable, run the same
+suite inside the isolated rootless Podman image:
+
+```sh
+scripts/test-e2e-podman.sh
+scripts/test-e2e-podman.sh e2e/generator.spec.ts
+```
+
+The image carries Bun, the three browsers and their host libraries. The project
+is mounted at `/work`, and the run has no external network: the preview server
+and the browsers share the container loopback.
 
 Three layers:
 
@@ -193,7 +221,7 @@ Three layers:
 - **Components**: forms, choice groups, preview states and the theme menu.
 - **End to end**: generate, switch type, invalid then valid content, the download
   state, the theme menu, dark mode, and no horizontal overflow at 360, 768 and
-  1440 px.
+  1440 px, on Chromium, Firefox and WebKit.
 
 A QR that renders is not necessarily a QR that scans. Scan one code per payload
 type with a phone before a release.
@@ -202,14 +230,18 @@ type with a phone before a release.
 
 The repository uses [ibrain](https://github.com/FortyTwo-Dev/infinity-brain) for
 AI governance knowledge. The Vue standards live in the `vue` pack; the project
-rules live in `ibrain/`. The generated `.ai/` and `.agents/` trees are ignored
-and recreated by `ibrain sync`.
+rules live in the `infinity-qrcode` pack of
+[iproject-ibrain-packs](https://github.com/FortyTwo-Dev/iproject-ibrain-packs),
+pinned in `ibrain.lock.yaml`. The generated `.ai/` and `.agents/` trees are
+ignored and recreated by `ibrain sync`; update the rules through
+`ibrain edit infinity-qrcode`, then `ibrain push` and `ibrain sync`.
 
 ## Notes
 
 - TypeScript is pinned to 6.0.3 until `vue-tsc` supports TypeScript 7.
-- `bun audit` reports three upstream, build-time advisories in the
-  `workbox-build` chain. There is no high or critical advisory in shipped code.
+- `bun audit` reports two moderate and one low advisory in upstream development
+  tooling dependencies, including Workbox, lint and test tooling. There is no
+  high or critical advisory in shipped code.
 - `bun.lock` is the only lockfile; do not add an npm, yarn or pnpm lockfile.
 
 ## License

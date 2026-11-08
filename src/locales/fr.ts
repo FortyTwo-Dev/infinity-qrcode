@@ -10,6 +10,12 @@ export default {
     dyslexiaOn: 'Activer la police adaptée à la dyslexie',
     dyslexiaOff: 'Désactiver la police adaptée à la dyslexie',
   },
+  common: {
+    retry: 'Réessayer',
+    errors: {
+      capacity: 'Le contenu est trop volumineux pour un QR code. Raccourcissez-le puis réessayez.',
+    },
+  },
   generator: {
     title: 'Générateur de QR codes',
     tagline: 'Générateur de QR codes simple, gratuit et open-source.',
@@ -117,6 +123,8 @@ export default {
       download: 'Télécharger {format}',
     },
     errors: {
+      initialization: 'Le moteur QR n\u2019a pas pu être chargé. Réessayez.',
+      generation: 'Le QR code n\u2019a pas pu être généré. Vérifiez le contenu puis réessayez.',
       textRequired: 'Saisissez du texte.',
       urlRequired: 'Saisissez une URL.',
       urlInvalid: 'Saisissez une URL valide.',
@@ -241,6 +249,11 @@ export default {
     help: {
       close: 'Fermer',
     },
+    errors: {
+      initialization: 'Le moteur pédagogique n\u2019a pas pu être chargé. Réessayez.',
+      trace:
+        'La trace de construction n\u2019a pas pu être créée. Vérifiez le contenu puis réessayez.',
+    },
     phases: {
       empty: {
         title: 'Grille vide',
@@ -352,7 +365,8 @@ export default {
       vue: 'Framework de l\u2019application.',
       vueRouter: 'Routage côté client.',
       vite: 'Outil de build et serveur de développement.',
-      tailwind: 'Utilitaires de mise en page.',
+      infinityTheme: 'Jetons de design, styles de base et variantes de composants.',
+      infinityThemeVue: 'Wrappers Vue pour les classes des composants du thème.',
       vitePwa: 'Génération du service worker et invite d\u2019installation.',
       workbox: 'Runtime du service worker, généré par vite-plugin-pwa.',
       spaceGrotesk: 'Police de base.',

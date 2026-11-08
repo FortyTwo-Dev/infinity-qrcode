@@ -1,45 +1,12 @@
 /**
  * Cascade order for the whole application.
  *
- * Declared before the imports because the first declaration wins: Tailwind's
- * own statement is ignored, and its utilities stay above the theme base while
- * `it.overrides` remains the last word.
+ * Declared before everything because the first declaration wins: the theme
+ * package's own statement merges into this order, `components` stays above
+ * the theme variants for the application classes, and `it.overrides` remains
+ * the last word for deliberate exceptions.
  */
-@layer theme, base, it.tokens, it.base, it.variants, components, utilities, it.overrides;
-
-@import 'tailwindcss';
-
-@theme {
-  --radius-sm: var(--it-radius);
-  --radius-md: var(--it-radius);
-  --radius-lg: var(--it-radius);
-
-  --color-background: var(--it-bg);
-  --color-foreground: var(--it-fg);
-
-  --color-primary: var(--it-accent);
-  --color-primary-foreground: var(--it-accent-fg);
-
-  --color-secondary: var(--it-surface);
-  --color-secondary-foreground: var(--it-surface-fg);
-
-  --color-accent: var(--it-accent);
-  --color-accent-foreground: var(--it-accent-fg);
-
-  --color-border: var(--it-border);
-
-  --color-destructive: var(--it-danger);
-  --color-destructive-foreground: var(--it-danger-fg);
-
-  --color-success: var(--it-success);
-  --color-success-foreground: var(--it-success-fg);
-
-  --color-warning: var(--it-warning);
-  --color-warning-foreground: var(--it-warning-fg);
-
-  --color-info: var(--it-info);
-  --color-info-foreground: var(--it-info-fg);
-}
+@layer it.tokens, it.base, it.variants, components, it.overrides;
 
 body {
   margin: 0;

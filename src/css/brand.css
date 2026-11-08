@@ -1,0 +1,92 @@
+/*
+ * Brand layer of infinity-qrcode: everything the theme library deliberately
+ * does not ship. The application owns its accent (ADR-0005), its typefaces
+ * and the behaviours dictated by a bright accent on light backgrounds.
+ *
+ * Loaded after @infinitylib/infinity-theme; the layer order is declared in
+ * src/css/style.css, which the index loads first.
+ */
+
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('../assets/fonts/SpaceGrotesk-VariableFont_wght.ttf') format('truetype');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('../assets/fonts/OpenDyslexic-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('../assets/fonts/OpenDyslexic-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('../assets/fonts/OpenDyslexic-Italic.woff') format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('../assets/fonts/OpenDyslexic-BoldItalic.woff') format('woff');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@layer it.base {
+  :where([data-font='dyslexic']) {
+    --it-font-sans: 'OpenDyslexic', ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
+@layer it.tokens {
+  /* Default typeface of the application: the library ships a neutral stack,
+   * the brand owns the font family (plain :root, imported after the
+   * package, wins by cascade order). */
+  :root {
+    --it-font-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  /*
+   * The brand accent. The library binds its semantic tokens on :root
+   * (specificity 0,1,0): the override must beat it on specificity, never
+   * rely on import order.
+   */
+  :root[data-accent='yellow'] {
+    --it-accent: #ffdf00;
+    --it-accent-fg: var(--it-color-black);
+  }
+}
+
+@layer it.variants {
+  /*
+   * The brand yellow is decorative only on light backgrounds: it fails text
+   * contrast (ADR-0005). The value keeps the foreground colour and the
+   * accent marks it with an underline.
+   */
+  [data-theme='light'] .it-mark {
+    color: inherit;
+    text-decoration-line: underline;
+    text-decoration-color: var(--it-accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+  }
+
+  [data-theme='light'] .it-nav-link[aria-current='page'] {
+    color: var(--it-fg);
+  }
+}

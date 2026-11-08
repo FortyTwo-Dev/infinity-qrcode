@@ -2,6 +2,7 @@ import { onMounted, ref } from 'vue'
 import initLearn, { LearnTrace } from 'iqrcode-learn-wasm'
 import learnWasmUrl from 'iqrcode-learn-wasm/iqrcode_learn_wasm_bg.wasm?url'
 
+import type { QrErrorMessageKey } from '@/lib/qrcode/errors'
 import type { ErrorCorrectionLevel } from '@/types/qr'
 import type { LearnFrameData, LearnPhase, TraceMetadata } from '@/types/learn'
 
@@ -9,7 +10,13 @@ let readyPromise: Promise<void> | null = null
 
 /** Initialize the learn WASM module once. */
 export function loadLearnWasm(): Promise<void> {
-  readyPromise ??= initLearn({ module_or_path: learnWasmUrl }).then(() => undefined)
+  readyPromise ??= initLearn({ module_or_path: learnWasmUrl }).then(
+    () => undefined,
+    (cause: unknown) => {
+      readyPromise = null
+      throw cause
+    },
+  )
   return readyPromise
 }
 
@@ -61,16 +68,20 @@ export function readTraceMetadata(trace: LearnTrace): TraceMetadata {
 /** Reactive loading state for the learn module. */
 export function useLearnWasm() {
   const ready = ref(false)
-  const error = ref<string | null>(null)
+  const error = ref<QrErrorMessageKey | null>(null)
 
-  onMounted(async () => {
+  async function retry(): Promise<void> {
+    ready.value = false
+    error.value = null
     try {
       await loadLearnWasm()
       ready.value = true
-    } catch (cause) {
-      error.value = cause instanceof Error ? cause.message : String(cause)
+    } catch {
+      error.value = 'learn.errors.initialization'
     }
-  })
+  }
 
-  return { ready, error }
+  onMounted(retry)
+
+  return { ready, error, retry }
 }

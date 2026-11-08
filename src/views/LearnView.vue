@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 
+import { ItButton } from '@infinitylib/infinity-theme-vue'
 import type { LearnTrace } from 'iqrcode-learn-wasm'
 
 import PayloadForm from '@components/generator/PayloadForm.vue'
@@ -18,13 +19,14 @@ import {
   useLearnWasm,
 } from '@/composables/useLearnWasm'
 import { useReducedMotion } from '@/composables/useReducedMotion'
+import { classifyQrError } from '@/lib/qrcode/errors'
+import type { QrErrorMessageKey } from '@/lib/qrcode/errors'
 import type { LearnFrameData, LearnPhase, TraceMetadata } from '@/types/learn'
 import type { ErrorCorrectionLevel, QrOptions } from '@/types/qr'
 
 const { t } = useI18n()
 
 const route = useRoute()
-const router = useRouter()
 const reducedMotion = useReducedMotion()
 
 function queryString(value: unknown): string {
@@ -35,7 +37,15 @@ function queryLevel(value: unknown): ErrorCorrectionLevel | null {
   return value === 'L' || value === 'M' || value === 'Q' || value === 'H' ? value : null
 }
 
-const initialText = queryString(route.query.data)
+/** Reads the payload the share link keeps in the fragment, never in the query. */
+function fragmentData(hash: string): string {
+  return new URLSearchParams(hash.startsWith('#') ? hash.slice(1) : hash).get('data') ?? ''
+}
+
+const initialText = queryString(route.query.data) || fragmentData(route.hash)
+const initialShareFragment = initialText
+  ? `#${new URLSearchParams({ data: initialText }).toString()}`
+  : ''
 const initialFrame = (() => {
   const value = Number(route.query.frame)
   return Number.isFinite(value) && value >= 1 ? Math.floor(value) - 1 : null
@@ -52,13 +62,13 @@ const frameCount = ref(0)
 const phases = ref<LearnPhase[]>([])
 const frame = shallowRef<LearnFrameData | null>(null)
 const metadata = ref<TraceMetadata | null>(null)
-const traceError = ref<string | null>(null)
+const traceError = ref<QrErrorMessageKey | null>(null)
 const playing = ref(false)
 const speed = ref(1)
 const zoom = ref(1)
 const trace = shallowRef<LearnTrace | null>(null)
 
-const { ready, error: wasmError } = useLearnWasm()
+const { ready, error: wasmError, retry } = useLearnWasm()
 
 const stageOptions: QrOptions = {
   level: 'H',
@@ -73,7 +83,10 @@ const valid = computed(
   () => payload.value.length > 0 && Object.keys(fieldErrors.value).length === 0,
 )
 
-const displayError = computed(() => wasmError.value ?? traceError.value)
+const displayError = computed(() => {
+  const key = wasmError.value ?? traceError.value
+  return key ? t(key) : null
+})
 
 function disposeTrace() {
   trace.value?.free()
@@ -127,7 +140,7 @@ function rebuildTrace() {
   } catch (cause) {
     disposeTrace()
     frameCount.value = 0
-    traceError.value = cause instanceof Error ? cause.message : String(cause)
+    traceError.value = classifyQrError(cause, 'learn.errors.trace')
   }
 }
 
@@ -227,17 +240,22 @@ let urlTimer: ReturnType<typeof setTimeout> | undefined
 const shareUrl = computed(() => {
   const url = new URL(window.location.href)
   url.search = ''
-  if (payload.value) url.searchParams.set('data', payload.value)
+  url.hash = ''
   url.searchParams.set('level', level.value)
   if (frameIndex.value > 0) url.searchParams.set('frame', String(frameIndex.value + 1))
+  if (payload.value) url.hash = new URLSearchParams({ data: payload.value }).toString()
   return url.toString()
 })
 
 function syncQuery() {
-  const query: Record<string, string> = { level: level.value }
-  if (payload.value) query.data = payload.value
-  if (frameIndex.value > 0) query.frame = String(frameIndex.value + 1)
-  void router.replace({ query })
+  const url = new URL(window.location.href)
+  url.search = ''
+  url.searchParams.set('level', level.value)
+  if (frameIndex.value > 0) url.searchParams.set('frame', String(frameIndex.value + 1))
+  // The payload stays in the fragment only while it is the restored text.
+  url.hash = initialText && payload.value === initialText ? initialShareFragment : ''
+  // Vue Router re-encodes URLSearchParams fragments, so replaceState preserves their encoding.
+  window.history.replaceState(window.history.state, '', url)
 }
 
 watch([payload, level, frameIndex], () => {
@@ -247,6 +265,7 @@ watch([payload, level, frameIndex], () => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', onKeyDown)
+  clearTimeout(debounce)
   clearTimeout(urlTimer)
   stopPlayback()
   disposeTrace()
@@ -262,18 +281,18 @@ function handleErrors(errors: Record<string, string>) {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-7xl px-4 py-8">
-    <header class="mb-8 flex flex-col items-center gap-2 text-center">
-      <h1 class="text-4xl font-semibold">{{ t('learn.title') }}</h1>
-      <p class="max-w-2xl opacity-80">
+  <div class="app-container page-body">
+    <header class="page-hero">
+      <h1 class="learn-title">{{ t('learn.title') }}</h1>
+      <p class="page-tagline it-muted">
         {{ t('learn.tagline') }}
       </p>
     </header>
 
-    <div class="grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)_20rem]">
+    <div class="learn-columns">
       <section
-        class="flex flex-col gap-6 rounded-sm border border-border p-4 lg:order-1"
-        :class="valid ? 'order-2' : 'order-1'"
+        class="panel section-stack learn-content-slot"
+        :class="valid ? 'stack-second' : 'stack-first'"
         :aria-label="t('learn.sections.content')"
       >
         <PayloadForm
@@ -295,8 +314,8 @@ function handleErrors(errors: Record<string, string>) {
       </section>
 
       <section
-        class="flex flex-col gap-6 lg:order-2"
-        :class="valid ? 'order-1' : 'order-2'"
+        class="section-stack learn-stage-slot"
+        :class="valid ? 'stack-first' : 'stack-second'"
         :aria-label="t('learn.sections.stage')"
       >
         <LearnStage
@@ -321,15 +340,18 @@ function handleErrors(errors: Record<string, string>) {
         />
         <p
           v-if="displayError"
-          class="rounded-sm border border-destructive p-3 text-sm text-destructive"
+          class="error-box it-small text-danger"
           role="alert"
         >
           {{ displayError }}
         </p>
+        <ItButton v-if="wasmError" size="sm" variant="secondary" @click="retry">
+          {{ t('common.retry') }}
+        </ItButton>
       </section>
 
       <section
-        class="order-3 flex flex-col gap-6 rounded-sm border border-border p-4 lg:order-3"
+        class="panel section-stack learn-details-slot"
         :aria-label="t('learn.sections.details')"
       >
         <PhasePanel

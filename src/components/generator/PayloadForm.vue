@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { ItButton, ItField, ItInput, ItOption, ItSelect, ItTextarea } from '@components/theme'
+import { ItButton, ItField, ItInput, ItOption, ItSelect, ItTextarea } from '@infinitylib/infinity-theme-vue'
 import { buildPayload } from '@/lib/qrcode/payloads'
 import { createDefaultFormState, type FormState, type QrcodeType } from '@/types/qr'
 
@@ -71,7 +71,7 @@ watch(
 </script>
 
 <template>
-  <div class="flex flex-col gap-3" @input="touched = true" @change="touched = true">
+  <div class="stack" @input="touched = true" @change="touched = true">
     <template v-if="type === 'text'">
       <ItField :label="t('generator.fields.text')" html-for="text" :error="fieldError('text')">
         <ItInput
@@ -87,11 +87,11 @@ watch(
 
     <template v-else-if="type === 'url'">
       <ItField :label="t('generator.fields.url')" html-for="url" :error="fieldError('url')">
-        <div class="flex gap-2">
+        <div class="payload-row">
           <ItSelect
             v-model="urlScheme"
             :aria-label="t('generator.fields.protocol')"
-            class="max-w-32"
+            class="field-narrow"
           >
             <ItOption value="https://" text="https://" />
             <ItOption value="http://" text="http://" />
@@ -141,7 +141,7 @@ watch(
         html-for="wifi-password"
         :error="fieldError('wifiPassword')"
       >
-        <div class="flex gap-2">
+        <div class="payload-row">
           <ItInput
             id="wifi-password"
             v-model="form.wifiPassword"
@@ -233,7 +233,7 @@ watch(
     </template>
 
     <template v-else-if="type === 'vcard'">
-      <div class="grid gap-3 sm:grid-cols-2">
+      <div class="payload-grid">
         <ItField
           :label="t('generator.fields.firstName')"
           html-for="vcard-first"
@@ -257,7 +257,7 @@ watch(
           />
         </ItField>
       </div>
-      <div class="grid gap-3 sm:grid-cols-2">
+      <div class="payload-grid">
         <ItField :label="t('generator.fields.organization')" html-for="vcard-org">
           <ItInput
             id="vcard-org"
@@ -275,7 +275,7 @@ watch(
           />
         </ItField>
       </div>
-      <div class="grid gap-3 sm:grid-cols-2">
+      <div class="payload-grid">
         <ItField :label="t('generator.fields.phoneShort')" html-for="vcard-phone">
           <ItInput
             id="vcard-phone"
@@ -366,7 +366,7 @@ watch(
     </template>
 
     <template v-else-if="type === 'geo'">
-      <div class="grid gap-3 sm:grid-cols-2">
+      <div class="payload-grid">
         <ItField
           :label="t('generator.fields.latitude')"
           html-for="geo-lat"
@@ -425,7 +425,7 @@ watch(
           :placeholder="t('generator.placeholders.location')"
         />
       </ItField>
-      <div class="grid gap-3 sm:grid-cols-2">
+      <div class="payload-grid">
         <ItField
           :label="t('generator.fields.starts')"
           html-for="event-start"

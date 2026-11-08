@@ -16,7 +16,7 @@
     "lint:fix": "eslint . --fix",
     "test": "bun test",
     "test:unit": "vitest run",
-    "test:e2e": "playwright test",
+    "test:e2e": "scripts/test-e2e.sh",
     "check": "bun run lint && bun run type-check && bun run test && bun run test:unit",
     "format": "prettier --write src/ tests/ e2e/ *.ts *.js",
     "governance:sync": "ibrain sync",
@@ -25,6 +25,8 @@
     "check:all": "bun run check && bun run test:e2e"
   },
   "dependencies": {
+    "@infinitylib/infinity-theme": "^0.2.0",
+    "@infinitylib/infinity-theme-vue": "^0.1.0",
     "iqrcode-learn-wasm": "0.1.0",
     "iqrcode-wasm": "0.1.0",
     "vue": "3.5.44",
@@ -34,7 +36,6 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@playwright/test": "1.64.1",
-    "@tailwindcss/vite": "4.3.4",
     "@types/bun": "1.4.4",
     "@types/node": "26.6.6",
     "@vitejs/plugin-vue": "6.0.10",
@@ -47,8 +48,8 @@
     "eslint-plugin-vuejs-accessibility": "2.6.3",
     "globals": "17.14.0",
     "happy-dom": "21.0.4",
+    "jsqr": "1.4.0",
     "prettier": "3.9.10",
-    "tailwindcss": "4.3.4",
     "typescript": "6.0.3",
     "vite": "8.3.5",
     "vite-plugin-pwa": "2.0.0",

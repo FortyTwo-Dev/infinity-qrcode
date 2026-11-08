@@ -1,0 +1,17 @@
+/*
+ * The QR canvas: display norms and the accent-bound highlight colour.
+ */
+@layer components {
+  /* QR canvas: the learn view draws its per-frame module highlights with
+     the current text colour of the canvas, so it binds the accent. */
+  .qr-canvas {
+    display: block;
+    max-width: 100%;
+    color: var(--it-accent);
+    image-rendering: pixelated;
+  }
+
+  .qr-figure {
+    margin: 0;
+  }
+}

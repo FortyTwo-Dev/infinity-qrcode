@@ -22,34 +22,34 @@ const info = computed(() => (props.phase ? PHASE_INFO[props.phase] : null))
 </script>
 
 <template>
-  <section aria-labelledby="phase-heading" class="flex flex-col gap-3">
-    <div class="flex items-center gap-2">
-      <h2 id="phase-heading" class="it-h5 m-0 text-lg font-semibold">
+  <section aria-labelledby="phase-heading" class="stack">
+    <div class="row">
+      <h2 id="phase-heading" class="it-h5 panel-title flush">
         {{ t('learn.panel.title') }}
       </h2>
       <PhaseHelp :phase="phase" />
     </div>
 
     <div v-if="info" aria-live="polite">
-      <h3 class="it-h5 font-medium">{{ t(info.title) }}</h3>
-      <p class="mt-1 text-sm opacity-80">{{ t(info.description) }}</p>
+      <h3 class="it-h5 phase-name">{{ t(info.title) }}</h3>
+      <p class="phase-desc it-small it-muted">{{ t(info.description) }}</p>
 
-      <dl class="mt-3 grid grid-cols-2 gap-2 text-sm">
+      <dl class="phase-facts it-small">
         <template v-if="bitIndex !== undefined">
-          <dt class="opacity-70">{{ t('learn.panel.bitIndex') }}</dt>
+          <dt class="it-muted">{{ t('learn.panel.bitIndex') }}</dt>
           <dd>{{ bitIndex }}</dd>
         </template>
         <template v-if="mask !== undefined">
-          <dt class="opacity-70">{{ t('learn.panel.mask') }}</dt>
+          <dt class="it-muted">{{ t('learn.panel.mask') }}</dt>
           <dd>{{ mask }}</dd>
         </template>
         <template v-if="penalty !== undefined">
-          <dt class="opacity-70">{{ t('learn.panel.penalty') }}</dt>
+          <dt class="it-muted">{{ t('learn.panel.penalty') }}</dt>
           <dd>{{ penalty }}</dd>
         </template>
       </dl>
     </div>
 
-    <p v-else class="text-sm opacity-70">{{ t('learn.panel.noFrame') }}</p>
+    <p v-else class="it-small it-muted">{{ t('learn.panel.noFrame') }}</p>
   </section>
 </template>
