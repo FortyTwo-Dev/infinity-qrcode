@@ -135,9 +135,7 @@ src/
 │   ├── generator/         # content picker, payload form, options, preview
 │   ├── learn/             # controls, stage, timeline, phase panel, stats
 │   ├── qr/                # shared matrix renderer
-│   ├── theme/             # thin Vue wrappers, no styles
 │   └── layout/            # header, footer and PWA prompt
-├── theme/                 # tokens, base HTML and it-* variants
 ├── composables/           # WASM loaders and theme state
 ├── lib/
 │   ├── qrcode/            # payload builders, rendering, export
@@ -156,6 +154,7 @@ that needs them.
 The UI consumes the published `@infinitylib/infinity-theme` package:
 
 - Design tokens, base HTML styles and `it-*` variants ship from the package.
+- The thin Vue wrappers ship from `@infinitylib/infinity-theme-vue`.
 - The application brand (the yellow accent, the typefaces, the bright-accent
   behaviours) lives in `src/css/brand.css`.
 - The page arrangement lives in `src/css/layout/` as application classes on
