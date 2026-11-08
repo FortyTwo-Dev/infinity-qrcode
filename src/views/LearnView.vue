@@ -247,6 +247,7 @@ watch([payload, level, frameIndex], () => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', onKeyDown)
+  clearTimeout(debounce)
   clearTimeout(urlTimer)
   stopPlayback()
   disposeTrace()
