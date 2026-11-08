@@ -1,12 +1,9 @@
 import { mount } from '@vue/test-utils'
+import type { DOMWrapper } from '@vue/test-utils'
 import { h, nextTick } from 'vue'
 import { createMemoryHistory, createRouter, RouterView } from 'vue-router'
 import type { Router } from 'vue-router'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
-
-import i18n from '@/i18n'
-
-import LearnView from './LearnView.vue'
 
 // The Learn view owns LearnTrace instances from the external learn package.
 // These tests observe the WASM boundary only: every trace that the view builds
@@ -208,8 +205,11 @@ const EmptyRouteView = {
 
 let wrapper: Wrapper | undefined
 
+// Each test receives a fresh application module graph: vi.resetModules()
+// clears the loader singleton together with the view module, while the
+// external package mocks above stay registered and controllable.
 beforeEach(() => {
-  i18n.global.locale.value = 'en'
+  vi.resetModules()
   learnWasm.reset()
   learnWasm.init.mockImplementation(async () => ({}))
   vi.useFakeTimers()
@@ -222,19 +222,27 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
+// Mounts through the public UI: the view is imported after vi.resetModules()
+// so the view and the loader singleton are fresh for this test. The i18n
+// instance is imported in the same fresh graph and pinned to English so the
+// plugin and any module level consumer resolve the same messages.
 async function mountLearnView(): Promise<Router> {
+  const i18nModule = await import('@/i18n')
+  const { default: learnView } = await import('./LearnView.vue')
+  i18nModule.default.global.locale.value = 'en'
+
   const router = createRouter({
     history: createMemoryHistory(),
     routes: [
       { path: '/', name: 'home', component: EmptyRouteView },
-      { path: '/learn', name: 'learn', component: LearnView },
+      { path: '/learn', name: 'learn', component: learnView },
     ],
   })
   await router.push('/learn')
   await router.isReady()
 
   wrapper = mount(RouterOutletHost, {
-    global: { plugins: [i18n, router] },
+    global: { plugins: [i18nModule.default, router] },
     attachTo: document.body,
   })
   await nextTick()
@@ -253,6 +261,22 @@ async function navigateAway(router: Router): Promise<void> {
   await router.push('/')
   await nextTick()
   await Promise.resolve()
+}
+
+// Drains pending microtasks, one round per awaited link of the loader chain,
+// then lets Vue flush its render queue.
+async function settle(rounds = 12): Promise<void> {
+  for (let i = 0; i < rounds; i += 1) {
+    await Promise.resolve()
+  }
+  await nextTick()
+}
+
+function retryButton(source: Wrapper): DOMWrapper<Element> | undefined {
+  return source.findAll('button').find((node) => {
+    const accessible = node.attributes('aria-label') ?? node.attributes('title') ?? node.text()
+    return /retry/i.test(accessible)
+  })
 }
 
 describe('LearnView', () => {
@@ -298,5 +322,44 @@ describe('LearnView', () => {
 
     expect(trace.free).toHaveBeenCalled()
     expect(learnWasm.freedTraces).toEqual([trace])
+  })
+
+  test('recovers the learn flow through the retry action after a failed initialization', async () => {
+    learnWasm.init.mockRejectedValueOnce(new Error('learn engine offline'))
+
+    await mountLearnView()
+    await settle()
+
+    const retry = retryButton(wrapper!)
+    expect(retry, 'retry action after a failed initialization').toBeDefined()
+
+    await retry!.trigger('click')
+    await settle()
+
+    expect(learnWasm.init).toHaveBeenCalledTimes(2)
+    expect(retryButton(wrapper!), 'retry action cleared after a successful retry').toBeUndefined()
+
+    await typeText(TEXT_PAYLOAD)
+    await vi.advanceTimersByTimeAsync(DEBOUNCE_GRACE_MS)
+    await Promise.resolve()
+
+    const calls = learnWasm.constructorSpy.mock.calls
+    expect(calls).toHaveLength(1)
+    expect(calls[0]![0]).toBe(TEXT_PAYLOAD)
+    expect(learnWasm.traces).toHaveLength(1)
+    expect(learnWasm.freedTraces).toHaveLength(0)
+  })
+
+  test('keeps the engine initialization cached across an unmount and a new mount', async () => {
+    await mountLearnView()
+    expect(learnWasm.init, 'first mount initializes the engine').toHaveBeenCalledTimes(1)
+
+    wrapper?.unmount()
+    wrapper = undefined
+    document.body.innerHTML = ''
+
+    await mountLearnView()
+
+    expect(learnWasm.init, 'the cached engine must survive the unmount').toHaveBeenCalledTimes(1)
   })
 })

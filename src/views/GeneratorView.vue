@@ -27,7 +27,7 @@ const options = ref<QrOptions>({
   light: '#ffffff',
 })
 
-const { ready, error: wasmError } = useQrWasm()
+const { ready, error: wasmError, retry } = useQrWasm()
 
 const valid = computed(
   () => payload.value.length > 0 && Object.keys(fieldErrors.value).length === 0,
@@ -97,6 +97,7 @@ const displayError = computed(() => wasmError.value ?? generationError.value)
           :loading="!ready && !wasmError"
           :error="displayError"
           @download="handleDownload"
+          @retry="retry"
         />
 
         <section

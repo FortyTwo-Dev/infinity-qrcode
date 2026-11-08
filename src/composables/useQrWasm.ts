@@ -8,7 +8,13 @@ let readyPromise: Promise<void> | null = null
 
 /** Initialize the generator WASM module once. */
 export function loadQrWasm(): Promise<void> {
-  readyPromise ??= initQr({ module_or_path: qrWasmUrl }).then(() => undefined)
+  readyPromise ??= initQr({ module_or_path: qrWasmUrl }).then(
+    () => undefined,
+    (cause: unknown) => {
+      readyPromise = null
+      throw cause
+    },
+  )
   return readyPromise
 }
 
@@ -32,14 +38,18 @@ export function useQrWasm() {
   const ready = ref(false)
   const error = ref<string | null>(null)
 
-  onMounted(async () => {
+  async function retry(): Promise<void> {
+    ready.value = false
+    error.value = null
     try {
       await loadQrWasm()
       ready.value = true
     } catch (cause) {
       error.value = cause instanceof Error ? cause.message : String(cause)
     }
-  })
+  }
 
-  return { ready, error }
+  onMounted(retry)
+
+  return { ready, error, retry }
 }

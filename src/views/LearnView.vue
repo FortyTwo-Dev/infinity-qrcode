@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vu
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 
+import { ItButton } from '@infinitylib/infinity-theme-vue'
 import type { LearnTrace } from 'iqrcode-learn-wasm'
 
 import PayloadForm from '@components/generator/PayloadForm.vue'
@@ -58,7 +59,7 @@ const speed = ref(1)
 const zoom = ref(1)
 const trace = shallowRef<LearnTrace | null>(null)
 
-const { ready, error: wasmError } = useLearnWasm()
+const { ready, error: wasmError, retry } = useLearnWasm()
 
 const stageOptions: QrOptions = {
   level: 'H',
@@ -327,6 +328,9 @@ function handleErrors(errors: Record<string, string>) {
         >
           {{ displayError }}
         </p>
+        <ItButton v-if="wasmError" size="sm" variant="secondary" @click="retry">
+          {{ t('common.retry') }}
+        </ItButton>
       </section>
 
       <section
