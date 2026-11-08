@@ -9,7 +9,13 @@ let readyPromise: Promise<void> | null = null
 
 /** Initialize the learn WASM module once. */
 export function loadLearnWasm(): Promise<void> {
-  readyPromise ??= initLearn({ module_or_path: learnWasmUrl }).then(() => undefined)
+  readyPromise ??= initLearn({ module_or_path: learnWasmUrl }).then(
+    () => undefined,
+    (cause: unknown) => {
+      readyPromise = null
+      throw cause
+    },
+  )
   return readyPromise
 }
 
@@ -63,14 +69,18 @@ export function useLearnWasm() {
   const ready = ref(false)
   const error = ref<string | null>(null)
 
-  onMounted(async () => {
+  async function retry(): Promise<void> {
+    ready.value = false
+    error.value = null
     try {
       await loadLearnWasm()
       ready.value = true
     } catch (cause) {
       error.value = cause instanceof Error ? cause.message : String(cause)
     }
-  })
+  }
 
-  return { ready, error }
+  onMounted(retry)
+
+  return { ready, error, retry }
 }

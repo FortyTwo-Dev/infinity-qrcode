@@ -10,6 +10,9 @@ export default {
     dyslexiaOn: 'Enable dyslexia-friendly font',
     dyslexiaOff: 'Disable dyslexia-friendly font',
   },
+  common: {
+    retry: 'Retry',
+  },
   generator: {
     title: 'QR Code generator',
     tagline: 'Simple, free, open-source QR code generator.',

@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
   error: null,
 })
 
-defineEmits<{ download: [] }>()
+defineEmits<{ download: []; retry: [] }>()
 
 /**
  * The preview size is independent of the export size: the code always fits the
@@ -57,13 +57,14 @@ const displayModuleSize = computed(() => {
         {{ t('generator.preview.loading') }}
       </output>
 
-      <p
-        v-else-if="error"
-        class="error-box it-small"
-        role="alert"
-      >
-        {{ error }}
-      </p>
+      <div v-else-if="error" class="stack">
+        <p class="error-box it-small" role="alert">
+          {{ error }}
+        </p>
+        <ItButton size="sm" variant="secondary" @click="$emit('retry')">
+          {{ t('common.retry') }}
+        </ItButton>
+      </div>
 
       <QrCanvas
         v-else-if="data"

@@ -10,6 +10,9 @@ export default {
     dyslexiaOn: 'Activer la police adaptée à la dyslexie',
     dyslexiaOff: 'Désactiver la police adaptée à la dyslexie',
   },
+  common: {
+    retry: 'Réessayer',
+  },
   generator: {
     title: 'Générateur de QR codes',
     tagline: 'Générateur de QR codes simple, gratuit et open-source.',
