@@ -70,7 +70,7 @@ bun run preview
 | `bun run type-check` | Run `vue-tsc --noEmit` |
 | `bun test` | Run the domain test suite |
 | `bun run test:unit` | Run the component tests with Vitest |
-| `bun run test:e2e` | Run the Playwright suite against the built app |
+| `bun run test:e2e` | Run the Playwright suite on Chromium, Firefox and WebKit against the built app |
 | `bun run check` | Lint, type-check, domain and component tests |
 | `bun run check:all` | `check` plus the end-to-end suite |
 | `bun run format` | Format with Prettier |
@@ -183,8 +183,32 @@ Both families and their license files live in `src/assets/fonts`.
 ```sh
 bun test           # domain logic and WASM
 bun run test:unit  # components with Vitest and happy-dom
-bun run test:e2e   # Chromium against the built app
+bun run test:e2e   # Chromium, Firefox and WebKit against the built app
 ```
+
+The end-to-end suite runs on three engines: Chromium (Desktop Chrome), Firefox
+(Desktop Firefox) and WebKit (Desktop Safari). A native run needs the host
+browser dependencies for all three:
+
+```sh
+./node_modules/.bin/playwright install --with-deps chromium firefox webkit
+```
+
+The full suite runs Chromium and Firefox together, then isolates WebKit in a
+fresh process per spec. Targeted arguments are forwarded unchanged to a single
+Playwright run, so a spec still runs on the three configured projects.
+
+On Fedora, or when the host browser dependencies are unavailable, run the same
+suite inside the isolated rootless Podman image:
+
+```sh
+scripts/test-e2e-podman.sh
+scripts/test-e2e-podman.sh e2e/generator.spec.ts
+```
+
+The image carries Bun, the three browsers and their host libraries. The project
+is mounted at `/work`, and the run has no external network: the preview server
+and the browsers share the container loopback.
 
 Three layers:
 
@@ -194,7 +218,7 @@ Three layers:
 - **Components**: forms, choice groups, preview states and the theme menu.
 - **End to end**: generate, switch type, invalid then valid content, the download
   state, the theme menu, dark mode, and no horizontal overflow at 360, 768 and
-  1440 px.
+  1440 px, on Chromium, Firefox and WebKit.
 
 A QR that renders is not necessarily a QR that scans. Scan one code per payload
 type with a phone before a release.

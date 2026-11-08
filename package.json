@@ -16,7 +16,7 @@
     "lint:fix": "eslint . --fix",
     "test": "bun test",
     "test:unit": "vitest run",
-    "test:e2e": "playwright test",
+    "test:e2e": "scripts/test-e2e.sh",
     "check": "bun run lint && bun run type-check && bun run test && bun run test:unit",
     "format": "prettier --write src/ tests/ e2e/ *.ts *.js",
     "governance:sync": "ibrain sync",

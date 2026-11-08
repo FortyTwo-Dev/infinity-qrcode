@@ -7,7 +7,14 @@ import globals from 'globals'
 
 export default withVueTs(
   {
-    ignores: ['dist/**', 'coverage/**', 'node_modules/**', '.ai/**', '.agents/**'],
+    ignores: [
+      'dist/**',
+      'coverage/**',
+      'node_modules/**',
+      '.cache/ms-playwright/**',
+      '.ai/**',
+      '.agents/**',
+    ],
   },
   js.configs.recommended,
   pluginVue.configs['flat/recommended'],
