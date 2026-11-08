@@ -8,6 +8,11 @@ const VERSION_SIZE = /v\d+\s*·\s*\d+×\d+/
 
 test.beforeEach(async ({ page }) => {
   await page.goto(LEARN_URL)
+
+  // The trace and its stage settle asynchronously: do not interact with the
+  // help controls before the canvas and a nonzero frame counter are rendered.
+  await expect(page.locator('canvas')).toBeVisible()
+  await expect(page.locator('.timeline-counter')).toHaveText(/^Frame [1-9]\d* \/ [1-9]\d*$/)
 })
 
 test('explains error correction and lists one example per level', async ({ page }) => {

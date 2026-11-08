@@ -7,6 +7,7 @@ const DATA_TEXT = decodeURIComponent(DATA)
 const LEARN_URL = `/learn?data=${DATA}&level=H`
 const SPECIAL_TEXT = 'Café & Co = #42?'
 const TEXT_INPUT = 'input#text'
+const CLIPBOARD_ATTRIBUTE = 'data-test-copied-link'
 
 const REDUCED_MOTION_NOTE =
   'Autoplay is off because your system asks for reduced motion. Use the arrows to step through.'
@@ -32,6 +33,42 @@ const hasPayloadInUrl = (page: Page) => {
 
 /** The payload the page carries in its fragment, or null when absent. */
 const fragmentData = (page: Page) => parseUrlParts(page.url()).fragment.get('data')
+
+/**
+ * Firefox and WebKit cannot use Playwright's clipboard permissions in this
+ * container: Playwright rejects clipboard-read for Firefox and clipboard-write
+ * for WebKit before the page is created. Record the text the application writes
+ * in a dataset attribute while still calling the native function, so the copy
+ * and its confirmation stay real. The script runs on every navigation, including
+ * when a test reopens the copied link.
+ */
+const recordClipboardWrites = (attribute: string) => {
+  const clipboard = navigator.clipboard
+  if (!clipboard) return
+
+  const writeText = clipboard.writeText.bind(clipboard)
+  clipboard.writeText = async (text: string) => {
+    document.documentElement.setAttribute(attribute, text)
+    await writeText(text)
+  }
+}
+
+/**
+ * Reads the URL the application copied. Chromium exposes the clipboard, so it
+ * reads it natively. Firefox and WebKit read the value recorded once the native
+ * write resolved, which the `Link copied` confirmation already proves.
+ */
+const readCopiedLink = async (page: Page, browserName: string): Promise<string> => {
+  if (browserName === 'chromium') {
+    return page.evaluate(() => navigator.clipboard.readText())
+  }
+
+  return page.evaluate((attribute) => {
+    const value = document.documentElement.getAttribute(attribute)
+    if (value === null) throw new Error(`Clipboard write was not recorded in ${attribute}`)
+    return value
+  }, CLIPBOARD_ATTRIBUTE)
+}
 
 test('restores the frame from the URL', async ({ page }) => {
   await page.goto(`${LEARN_URL}&frame=90`)
@@ -76,6 +113,10 @@ test.describe('url state', () => {
     await expect(page.locator('body')).toContainText(/Frame 90 \/ \d+/)
     // The legacy query payload moves to the fragment without a reload.
     await expect.poll(() => fragmentData(page)).toBe(DATA_TEXT)
+    // WebKit can expose an intermediate URL during the rewrite: wait for the
+    // settled query before asserting on it.
+    await expect.poll(() => parseUrlParts(page.url()).query.get('frame')).toBe('90')
+    await expect.poll(() => parseUrlParts(page.url()).query.get('data')).toBeNull()
 
     const { query, fragment } = parseUrlParts(page.url())
     expect(query.get('data')).toBeNull()
@@ -127,8 +168,18 @@ test.describe('reduced motion', () => {
 })
 
 test.describe('share link', () => {
-  test.use({ permissions: ['clipboard-read', 'clipboard-write'] })
   test.use({ reducedMotion: 'reduce' })
+
+  test.beforeEach(async ({ page, browserName }) => {
+    if (browserName === 'chromium') {
+      // Chromium accepts both clipboard permissions. They are granted per
+      // test here because Firefox and WebKit reject them before page creation.
+      await page.context().grantPermissions(['clipboard-read', 'clipboard-write'])
+      return
+    }
+
+    await page.addInitScript(recordClipboardWrites, CLIPBOARD_ATTRIBUTE)
+  })
 
   test('confirms the link was copied', async ({ page }) => {
     await page.goto(`${LEARN_URL}&frame=90`)
@@ -138,7 +189,7 @@ test.describe('share link', () => {
     await expect(page.getByRole('button', { name: 'Link copied' })).toBeVisible()
   })
 
-  test('copies a shareable link with the payload in the fragment', async ({ page }) => {
+  test('copies a shareable link with the payload in the fragment', async ({ page, browserName }) => {
     await page.goto(`${LEARN_URL}&frame=90`)
     await expect(page.locator('body')).toContainText(/Frame 90 \/ \d+/)
     await expect.poll(() => fragmentData(page)).toBe(DATA_TEXT)
@@ -146,7 +197,7 @@ test.describe('share link', () => {
     await page.getByRole('button', { name: 'Copy link to this frame' }).click()
     await expect(page.getByRole('button', { name: 'Link copied' })).toBeVisible()
 
-    const link = await page.evaluate(() => navigator.clipboard.readText())
+    const link = await readCopiedLink(page, browserName)
     const { url, query, fragment } = parseUrlParts(link)
     expect(url.pathname).toBe('/learn')
     expect(query.get('data')).toBeNull()
@@ -155,7 +206,7 @@ test.describe('share link', () => {
     expect(fragment.get('data')).toBe(DATA_TEXT)
   })
 
-  test('restores text and frame from a fragment link', async ({ page }) => {
+  test('restores text and frame from a fragment link', async ({ page, browserName }) => {
     const text = 'Hello shared frame'
     await page.goto(`/learn?data=${encodeURIComponent(text)}&level=H&frame=1`)
     await page.getByRole('button', { name: 'Next frame' }).click()
@@ -165,7 +216,7 @@ test.describe('share link', () => {
     await page.getByRole('button', { name: 'Copy link to this frame' }).click()
     await expect(page.getByRole('button', { name: 'Link copied' })).toBeVisible()
 
-    const link = await page.evaluate(() => navigator.clipboard.readText())
+    const link = await readCopiedLink(page, browserName)
     const { query, fragment } = parseUrlParts(link)
     expect(query.get('data')).toBeNull()
     expect(query.get('level')).toBe('H')
@@ -177,7 +228,7 @@ test.describe('share link', () => {
     await expect(page.locator('body')).toContainText(/Frame 2 \/ \d+/)
   })
 
-  test('round-trips special characters through a fragment link', async ({ page }) => {
+  test('round-trips special characters through a fragment link', async ({ page, browserName }) => {
     await page.goto('/learn')
 
     await page.locator(TEXT_INPUT).fill(SPECIAL_TEXT)
@@ -191,7 +242,7 @@ test.describe('share link', () => {
     await page.getByRole('button', { name: 'Copy link to this frame' }).click()
     await expect(page.getByRole('button', { name: 'Link copied' })).toBeVisible()
 
-    const link = await page.evaluate(() => navigator.clipboard.readText())
+    const link = await readCopiedLink(page, browserName)
     const { query: linkQuery, fragment: linkFragment } = parseUrlParts(link)
     expect(linkQuery.get('data')).toBeNull()
     expect(linkQuery.get('level')).toBe('H')
