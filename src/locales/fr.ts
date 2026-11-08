@@ -356,6 +356,7 @@ export default {
       vueRouter: 'Routage côté client.',
       vite: 'Outil de build et serveur de développement.',
       infinityTheme: 'Jetons de design, styles de base et variantes de composants.',
+      infinityThemeVue: 'Wrappers Vue pour les classes des composants du thème.',
       vitePwa: 'Génération du service worker et invite d\u2019installation.',
       workbox: 'Runtime du service worker, généré par vite-plugin-pwa.',
       spaceGrotesk: 'Police de base.',
