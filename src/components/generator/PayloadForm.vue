@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { ItButton, ItField, ItInput, ItOption, ItSelect, ItTextarea } from '@components/theme'
+import { ItButton, ItField, ItInput, ItOption, ItSelect, ItTextarea } from '@infinitylib/infinity-theme-vue'
 import { buildPayload } from '@/lib/qrcode/payloads'
 import { createDefaultFormState, type FormState, type QrcodeType } from '@/types/qr'
 

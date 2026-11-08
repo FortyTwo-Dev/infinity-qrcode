@@ -2,7 +2,7 @@
 import { useRegisterSW } from 'virtual:pwa-register/vue'
 import { useI18n } from 'vue-i18n'
 
-import { ItButton } from '@components/theme'
+import { ItButton } from '@infinitylib/infinity-theme-vue'
 
 const { t } = useI18n()
 

@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { ItButton } from '@components/theme'
+import { ItButton } from '@infinitylib/infinity-theme-vue'
 import QrCanvas from '@components/qr/QrCanvas.vue'
 import type { LearnFrameData } from '@/types/learn'
 import type { QrOptions } from '@/types/qr'

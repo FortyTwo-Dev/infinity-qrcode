@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { ItButton, ItOption, ItRange, ItSelect } from '@components/theme'
+import { ItButton, ItOption, ItRange, ItSelect } from '@infinitylib/infinity-theme-vue'
 import { PHASE_INFO } from '@/lib/learn/phases'
 import type { LearnPhase } from '@/types/learn'
 
