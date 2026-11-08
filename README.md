@@ -135,9 +135,7 @@ src/
 │   ├── generator/         # content picker, payload form, options, preview
 │   ├── learn/             # controls, stage, timeline, phase panel, stats
 │   ├── qr/                # shared matrix renderer
-│   ├── theme/             # thin Vue wrappers, no styles
 │   └── layout/            # header, footer and PWA prompt
-├── theme/                 # tokens, base HTML and it-* variants
 ├── composables/           # WASM loaders and theme state
 ├── lib/
 │   ├── qrcode/            # payload builders, rendering, export
@@ -156,6 +154,7 @@ that needs them.
 The UI consumes the published `@infinitylib/infinity-theme` package:
 
 - Design tokens, base HTML styles and `it-*` variants ship from the package.
+- The thin Vue wrappers ship from `@infinitylib/infinity-theme-vue`.
 - The application brand (the yellow accent, the typefaces, the bright-accent
   behaviours) lives in `src/css/brand.css`.
 - The page arrangement lives in `src/css/layout/` as application classes on
@@ -240,8 +239,9 @@ ignored and recreated by `ibrain sync`; update the rules through
 ## Notes
 
 - TypeScript is pinned to 6.0.3 until `vue-tsc` supports TypeScript 7.
-- `bun audit` reports three upstream, build-time advisories in the
-  `workbox-build` chain. There is no high or critical advisory in shipped code.
+- `bun audit` reports two moderate and one low advisory in upstream development
+  tooling dependencies, including Workbox, lint and test tooling. There is no
+  high or critical advisory in shipped code.
 - `bun.lock` is the only lockfile; do not add an npm, yarn or pnpm lockfile.
 
 ## License
