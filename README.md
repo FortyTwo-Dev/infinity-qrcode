@@ -79,9 +79,13 @@ bun run preview
 
 ## Releases
 
-The version follows the Conventional Commits. A push on `main` opens a release
-pull request with the next version and the changelog. Merging it creates the tag
-and the GitHub release, and the footer reads the version from `package.json`.
+The version follows the Conventional Commits. A successful CI run on `main`
+builds the production image once, pushes it as the immutable `sha-<commit>` tag
+and smoke-tests that registry image. Once CI succeeds, release-please opens a
+release pull request with the next version and the changelog. Merging it creates
+the tag and the GitHub release, and the footer reads the version from
+`package.json`. The release adds its version tag (`vX.Y.Z`) and `latest` to the
+same tested image, without rebuilding it.
 
 ## Container
 
