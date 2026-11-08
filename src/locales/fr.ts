@@ -12,6 +12,9 @@ export default {
   },
   common: {
     retry: 'Réessayer',
+    errors: {
+      capacity: 'Le contenu est trop volumineux pour un QR code. Raccourcissez-le puis réessayez.',
+    },
   },
   generator: {
     title: 'Générateur de QR codes',
@@ -120,6 +123,8 @@ export default {
       download: 'Télécharger {format}',
     },
     errors: {
+      initialization: 'Le moteur QR n\u2019a pas pu être chargé. Réessayez.',
+      generation: 'Le QR code n\u2019a pas pu être généré. Vérifiez le contenu puis réessayez.',
       textRequired: 'Saisissez du texte.',
       urlRequired: 'Saisissez une URL.',
       urlInvalid: 'Saisissez une URL valide.',
@@ -243,6 +248,11 @@ export default {
     },
     help: {
       close: 'Fermer',
+    },
+    errors: {
+      initialization: 'Le moteur pédagogique n\u2019a pas pu être chargé. Réessayez.',
+      trace:
+        'La trace de construction n\u2019a pas pu être créée. Vérifiez le contenu puis réessayez.',
     },
     phases: {
       empty: {

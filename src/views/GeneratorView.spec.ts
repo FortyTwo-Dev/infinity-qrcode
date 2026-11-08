@@ -9,14 +9,29 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 const qrWasm = vi.hoisted(() => {
   const SIZE = 21
 
-  const init = vi.fn<(_input?: unknown) => Promise<unknown>>()
+  const init = vi.fn<(_input?: unknown) => Promise<unknown>>(async () => {
+    const thrown = initThrows.shift()
+    if (thrown !== undefined) {
+      throw thrown
+    }
+    return {}
+  })
+  const initThrows: unknown[] = []
   const constructorSpy = vi.fn<(data: string, level: string) => void>()
+  // Values thrown by the next construction attempts, in order. The view builds
+  // a fresh engine for every generation, so the queue drives one-shot failures
+  // while the spy keeps recording every attempt.
+  const constructorThrows: unknown[] = []
 
   class MockQrCodeWasm {
     readonly free = vi.fn()
 
     constructor(data: string, level: string) {
+      const thrown = constructorThrows.shift()
       constructorSpy(data, level)
+      if (thrown !== undefined) {
+        throw thrown
+      }
     }
 
     matrix(): Uint8Array {
@@ -40,11 +55,13 @@ const qrWasm = vi.hoisted(() => {
   }
 
   function reset(): void {
-    init.mockReset()
+    initThrows.length = 0
+    init.mockClear()
     constructorSpy.mockClear()
+    constructorThrows.length = 0
   }
 
-  return { MockQrCodeWasm, constructorSpy, init, reset }
+  return { MockQrCodeWasm, constructorSpy, constructorThrows, init, initThrows, reset }
 })
 
 vi.mock('iqrcode-wasm', () => ({
@@ -73,6 +90,19 @@ const CORRECTION_LEVELS: readonly string[] = ['L', 'M', 'Q', 'H']
 // Any duration safely above the short content debounce of the view.
 const DEBOUNCE_GRACE_MS = 1000
 
+// Localized runtime failures the view must show instead of raw engine output.
+const INITIALIZE_FAILURE_MESSAGE = 'The QR engine could not be loaded. Try again.'
+const GENERATION_FAILURE_MESSAGE =
+  'The QR code could not be generated. Check the content and try again.'
+const CAPACITY_FAILURE_MESSAGE = 'The content is too large for a QR code. Shorten it and try again.'
+
+// Thrown values only the engine would produce: the view must never surface
+// them, whether they arrive as an Error instance or as a bare string.
+const RAW_INIT_ERROR_FIRST = 'engine offline'
+const RAW_INIT_ERROR_SECOND = 'engine still offline'
+const RAW_GENERATION_ERROR = 'low-level generator detail'
+const RAW_CAPACITY_ERROR = 'data too long for the selected version'
+
 type Wrapper = ReturnType<typeof mount>
 
 let wrapper: Wrapper | undefined
@@ -83,7 +113,6 @@ let wrapper: Wrapper | undefined
 beforeEach(() => {
   vi.resetModules()
   qrWasm.reset()
-  qrWasm.init.mockImplementation(async () => ({}))
   vi.useFakeTimers()
 })
 
@@ -124,6 +153,13 @@ async function typeText(text: string): Promise<void> {
   await input.setValue(text)
 }
 
+// Reads the accessible failure surface of the view, or undefined when the
+// view currently shows no failure.
+function alertText(source: Wrapper): string | undefined {
+  const alert = source.find('[role="alert"]')
+  return alert.exists() ? alert.text() : undefined
+}
+
 function retryButton(source: Wrapper): DOMWrapper<Element> | undefined {
   return source.findAll('button').find((node) => {
     const accessible = node.attributes('aria-label') ?? node.attributes('title') ?? node.text()
@@ -161,11 +197,18 @@ describe('GeneratorView', () => {
   })
 
   test('retries initialization from the error state and recovers the normal flow', async () => {
-    qrWasm.init
-      .mockRejectedValueOnce(new Error('engine offline'))
-      .mockRejectedValueOnce(new Error('engine still offline'))
+    qrWasm.initThrows.push(new Error(RAW_INIT_ERROR_FIRST))
+    qrWasm.initThrows.push(RAW_INIT_ERROR_SECOND)
 
     await mountGeneratorView()
+
+    expect(qrWasm.init).toHaveBeenCalledTimes(1)
+    expect(alertText(wrapper!), 'the first failure shows the localized message').toBe(
+      INITIALIZE_FAILURE_MESSAGE,
+    )
+    expect(wrapper!.text(), 'the raw engine output must never be shown').not.toContain(
+      RAW_INIT_ERROR_FIRST,
+    )
 
     const retry = retryButton(wrapper!)
     expect(retry, 'retry action after a failed initialization').toBeDefined()
@@ -174,6 +217,12 @@ describe('GeneratorView', () => {
     await settle()
 
     expect(qrWasm.init).toHaveBeenCalledTimes(2)
+    expect(alertText(wrapper!), 'a thrown string maps to the same localized message').toBe(
+      INITIALIZE_FAILURE_MESSAGE,
+    )
+    expect(wrapper!.text(), 'the raw thrown string must never be shown').not.toContain(
+      RAW_INIT_ERROR_SECOND,
+    )
     const retryAgain = retryButton(wrapper!)
     expect(retryAgain, 'retry action still available after a repeated failure').toBeDefined()
 
@@ -183,6 +232,7 @@ describe('GeneratorView', () => {
     expect(qrWasm.init).toHaveBeenCalledTimes(3)
     expect(retryButton(wrapper!), 'retry action cleared after a successful retry').toBeUndefined()
     expect(wrapper!.text()).not.toContain('Loading QR engine')
+    expect(wrapper!.find('[role="alert"]').exists(), 'no failure alert remains').toBe(false)
 
     await typeText('Retry recovery probe')
     await vi.advanceTimersByTimeAsync(DEBOUNCE_GRACE_MS)
@@ -193,5 +243,69 @@ describe('GeneratorView', () => {
     expect(calls).toHaveLength(1)
     expect(calls[0]![0]).toBe('Retry recovery probe')
     expect(CORRECTION_LEVELS).toContain(calls[0]![1])
+  })
+
+  describe('localized runtime errors', () => {
+    test('reports an unknown generation failure with the localized message and no stale preview', async () => {
+      await mountGeneratorView()
+      await typeText('First successful generation probe')
+      await vi.advanceTimersByTimeAsync(DEBOUNCE_GRACE_MS)
+      await settle()
+
+      expect(wrapper!.find('canvas').exists(), 'the prior generation rendered a preview').toBe(true)
+
+      qrWasm.constructorThrows.push(new Error(RAW_GENERATION_ERROR))
+      await typeText('Second generation probe that fails')
+      await vi.advanceTimersByTimeAsync(DEBOUNCE_GRACE_MS)
+      await settle()
+
+      expect(alertText(wrapper!), 'a failed generation shows the localized message').toBe(
+        GENERATION_FAILURE_MESSAGE,
+      )
+      expect(wrapper!.text(), 'the raw engine output must never be shown').not.toContain(
+        RAW_GENERATION_ERROR,
+      )
+      expect(wrapper!.find('canvas').exists(), 'no stale preview remains after a failure').toBe(
+        false,
+      )
+
+      const retry = retryButton(wrapper!)
+      expect(retry, 'retry action after a failed generation').toBeDefined()
+
+      await retry!.trigger('click')
+      await settle()
+      await vi.advanceTimersByTimeAsync(DEBOUNCE_GRACE_MS)
+      await settle()
+
+      expect(
+        wrapper!.find('[role="alert"]').exists(),
+        'the failure alert is cleared after a retry',
+      ).toBe(false)
+      expect(wrapper!.find('canvas').exists(), 'the retry recovered the preview').toBe(true)
+    })
+
+    test('reports a capacity failure with the localized message and no stale preview', async () => {
+      await mountGeneratorView()
+      await typeText('First successful generation probe')
+      await vi.advanceTimersByTimeAsync(DEBOUNCE_GRACE_MS)
+      await settle()
+
+      expect(wrapper!.find('canvas').exists(), 'the prior generation rendered a preview').toBe(true)
+
+      qrWasm.constructorThrows.push(RAW_CAPACITY_ERROR)
+      await typeText('Second generation probe that overflows')
+      await vi.advanceTimersByTimeAsync(DEBOUNCE_GRACE_MS)
+      await settle()
+
+      expect(alertText(wrapper!), 'a data-too-long string shows the capacity message').toBe(
+        CAPACITY_FAILURE_MESSAGE,
+      )
+      expect(wrapper!.text(), 'the raw capacity output must never be shown').not.toContain(
+        RAW_CAPACITY_ERROR,
+      )
+      expect(wrapper!.find('canvas').exists(), 'no stale preview remains after a failure').toBe(
+        false,
+      )
+    })
   })
 })

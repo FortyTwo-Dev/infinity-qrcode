@@ -12,6 +12,9 @@ export default {
   },
   common: {
     retry: 'Retry',
+    errors: {
+      capacity: 'The content is too large for a QR code. Shorten it and try again.',
+    },
   },
   generator: {
     title: 'QR Code generator',
@@ -120,6 +123,8 @@ export default {
       download: 'Download {format}',
     },
     errors: {
+      initialization: 'The QR engine could not be loaded. Try again.',
+      generation: 'The QR code could not be generated. Check the content and try again.',
       textRequired: 'Enter some text.',
       urlRequired: 'Enter a URL.',
       urlInvalid: 'Enter a valid URL.',
@@ -243,6 +248,10 @@ export default {
     },
     help: {
       close: 'Close',
+    },
+    errors: {
+      initialization: 'The learning engine could not be loaded. Try again.',
+      trace: 'The construction trace could not be created. Check the content and try again.',
     },
     phases: {
       empty: {

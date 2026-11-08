@@ -19,6 +19,8 @@ import {
   useLearnWasm,
 } from '@/composables/useLearnWasm'
 import { useReducedMotion } from '@/composables/useReducedMotion'
+import { classifyQrError } from '@/lib/qrcode/errors'
+import type { QrErrorMessageKey } from '@/lib/qrcode/errors'
 import type { LearnFrameData, LearnPhase, TraceMetadata } from '@/types/learn'
 import type { ErrorCorrectionLevel, QrOptions } from '@/types/qr'
 
@@ -60,7 +62,7 @@ const frameCount = ref(0)
 const phases = ref<LearnPhase[]>([])
 const frame = shallowRef<LearnFrameData | null>(null)
 const metadata = ref<TraceMetadata | null>(null)
-const traceError = ref<string | null>(null)
+const traceError = ref<QrErrorMessageKey | null>(null)
 const playing = ref(false)
 const speed = ref(1)
 const zoom = ref(1)
@@ -81,7 +83,10 @@ const valid = computed(
   () => payload.value.length > 0 && Object.keys(fieldErrors.value).length === 0,
 )
 
-const displayError = computed(() => wasmError.value ?? traceError.value)
+const displayError = computed(() => {
+  const key = wasmError.value ?? traceError.value
+  return key ? t(key) : null
+})
 
 function disposeTrace() {
   trace.value?.free()
@@ -135,7 +140,7 @@ function rebuildTrace() {
   } catch (cause) {
     disposeTrace()
     frameCount.value = 0
-    traceError.value = cause instanceof Error ? cause.message : String(cause)
+    traceError.value = classifyQrError(cause, 'learn.errors.trace')
   }
 }
 

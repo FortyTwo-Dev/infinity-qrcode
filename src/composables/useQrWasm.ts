@@ -2,6 +2,7 @@ import { onMounted, ref } from 'vue'
 import initQr, { QrCodeWasm } from 'iqrcode-wasm'
 import qrWasmUrl from 'iqrcode-wasm/iqrcode_wasm_bg.wasm?url'
 
+import type { QrErrorMessageKey } from '@/lib/qrcode/errors'
 import type { ErrorCorrectionLevel, QrMatrixData } from '@/types/qr'
 
 let readyPromise: Promise<void> | null = null
@@ -36,7 +37,7 @@ export function generateQr(data: string, level: ErrorCorrectionLevel): QrMatrixD
 /** Reactive loading state for the generator module. */
 export function useQrWasm() {
   const ready = ref(false)
-  const error = ref<string | null>(null)
+  const error = ref<QrErrorMessageKey | null>(null)
 
   async function retry(): Promise<void> {
     ready.value = false
@@ -44,8 +45,8 @@ export function useQrWasm() {
     try {
       await loadQrWasm()
       ready.value = true
-    } catch (cause) {
-      error.value = cause instanceof Error ? cause.message : String(cause)
+    } catch {
+      error.value = 'generator.errors.initialization'
     }
   }
 
