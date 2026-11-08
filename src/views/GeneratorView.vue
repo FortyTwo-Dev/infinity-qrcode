@@ -7,6 +7,8 @@ import OptionsPanel from '@components/generator/OptionsPanel.vue'
 import PayloadForm from '@components/generator/PayloadForm.vue'
 import QrPreview from '@components/generator/QrPreview.vue'
 import { generateQr, useQrWasm } from '@/composables/useQrWasm'
+import { classifyQrError } from '@/lib/qrcode/errors'
+import type { QrErrorMessageKey } from '@/lib/qrcode/errors'
 import { downloadQr } from '@/lib/qrcode/export'
 import type { QrMatrixData, QrOptions, QrcodeType } from '@/types/qr'
 
@@ -16,7 +18,7 @@ const type = ref<QrcodeType>('text')
 const payload = ref('')
 const fieldErrors = ref<Record<string, string>>({})
 const data = shallowRef<QrMatrixData | null>(null)
-const generationError = ref<string | null>(null)
+const generationError = ref<QrErrorMessageKey | null>(null)
 
 const options = ref<QrOptions>({
   level: 'H',
@@ -47,13 +49,22 @@ function regenerate() {
     generationError.value = null
   } catch (cause) {
     data.value = null
-    generationError.value = cause instanceof Error ? cause.message : String(cause)
+    generationError.value = classifyQrError(cause, 'generator.errors.generation')
   }
 }
 
 function schedule() {
   clearTimeout(debounce)
   debounce = setTimeout(regenerate, 180)
+}
+
+function handleRetry() {
+  generationError.value = null
+  if (wasmError.value) {
+    void retry()
+  } else {
+    regenerate()
+  }
 }
 
 watch([payload, valid, () => options.value.level, ready], () => schedule(), { immediate: true })
@@ -74,7 +85,10 @@ function handleDownload() {
   downloadQr(data.value, options.value, basename)
 }
 
-const displayError = computed(() => wasmError.value ?? generationError.value)
+const displayError = computed(() => {
+  const key = wasmError.value ?? generationError.value
+  return key ? t(key) : null
+})
 </script>
 
 <template>
@@ -97,7 +111,7 @@ const displayError = computed(() => wasmError.value ?? generationError.value)
           :loading="!ready && !wasmError"
           :error="displayError"
           @download="handleDownload"
-          @retry="retry"
+          @retry="handleRetry"
         />
 
         <section

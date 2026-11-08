@@ -1,9 +1,10 @@
 import { mount } from '@vue/test-utils'
-import type { DOMWrapper } from '@vue/test-utils'
 import { h, nextTick } from 'vue'
 import { createMemoryHistory, createRouter, RouterView } from 'vue-router'
 import type { Router } from 'vue-router'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+
+import { alertText, retryButton } from './viewTestUtils'
 
 // The Learn view owns LearnTrace instances from the external learn package.
 // These tests observe the WASM boundary only: every trace that the view builds
@@ -25,7 +26,17 @@ const learnWasm = vi.hoisted(() => {
   const MATRIX_SIZE = 4
 
   const constructorSpy = vi.fn<(...args: TraceConstructorArgs) => void>()
-  const init = vi.fn<(_input?: unknown) => Promise<InitOutputLike>>(async () => ({}))
+  const init = vi.fn<(_input?: unknown) => Promise<InitOutputLike>>(async () => {
+    const thrown = initThrows.shift()
+    if (thrown !== undefined) {
+      throw thrown
+    }
+    return {}
+  })
+  const initThrows: unknown[] = []
+  // Values thrown by the next construction attempts, in order. The spy keeps
+  // recording every attempt while the queue drives one-shot failures.
+  const constructorThrows: unknown[] = []
   const traces: MockLearnTrace[] = []
   const freedTraces: MockLearnTrace[] = []
 
@@ -34,12 +45,7 @@ const learnWasm = vi.hoisted(() => {
   }
 
   function finalMatrix(): Uint8Array {
-    return Uint8Array.from([
-      1, 0, 0, 1,
-      0, 1, 1, 0,
-      0, 1, 1, 0,
-      1, 0, 0, 1,
-    ])
+    return Uint8Array.from([1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1])
   }
 
   class MockLearnFrame {
@@ -95,9 +101,13 @@ const learnWasm = vi.hoisted(() => {
       maxFrames: number,
       maskCandidates: boolean,
     ) {
+      const thrown = constructorThrows.shift()
       this.#level = level
       this.#version = version
       constructorSpy(data, level, version, stride, maxFrames, maskCandidates)
+      if (thrown !== undefined) {
+        throw thrown
+      }
       traces.push(this)
     }
 
@@ -146,8 +156,10 @@ const learnWasm = vi.hoisted(() => {
   }
 
   function reset(): void {
+    initThrows.length = 0
     init.mockClear()
     constructorSpy.mockClear()
+    constructorThrows.length = 0
     traces.length = 0
     freedTraces.length = 0
   }
@@ -156,8 +168,10 @@ const learnWasm = vi.hoisted(() => {
     MockLearnFrame,
     MockLearnTrace,
     constructorSpy,
+    constructorThrows,
     freedTraces,
     init,
+    initThrows,
     reset,
     traces,
   }
@@ -191,6 +205,23 @@ const CORRECTION_LEVELS: readonly string[] = ['L', 'M', 'Q', 'H']
 const DEBOUNCE_GRACE_MS = 1000
 const TEXT_PAYLOAD = 'Debounce regression probe'
 
+// Localized runtime failures the view must show instead of raw engine output.
+const LEARN_INITIALIZE_FAILURE_MESSAGE = 'The learning engine could not be loaded. Try again.'
+const TRACE_FAILURE_MESSAGE =
+  'The construction trace could not be created. Check the content and try again.'
+const CAPACITY_FAILURE_MESSAGE = 'The content is too large for a QR code. Shorten it and try again.'
+
+// Thrown values only the engine would produce: the view must never surface
+// them, whether they arrive as an Error instance or as a bare string.
+const RAW_INIT_ERROR_FIRST = 'learn engine offline'
+const RAW_INIT_ERROR_SECOND = 'learn engine still offline'
+const RAW_TRACE_ERROR = 'trace build failed: 208 data modules'
+const RAW_CAPACITY_ERROR = 'data too long for the selected version'
+
+// The success state of the mock trace: the first frame of two, shown with the
+// frame counter of the timeline.
+const SUCCESS_FRAME_COUNTER = 'Frame 1 / 2'
+
 type Wrapper = ReturnType<typeof mount>
 
 const RouterOutletHost = {
@@ -211,7 +242,6 @@ let wrapper: Wrapper | undefined
 beforeEach(() => {
   vi.resetModules()
   learnWasm.reset()
-  learnWasm.init.mockImplementation(async () => ({}))
   vi.useFakeTimers()
 })
 
@@ -272,13 +302,6 @@ async function settle(rounds = 12): Promise<void> {
   await nextTick()
 }
 
-function retryButton(source: Wrapper): DOMWrapper<Element> | undefined {
-  return source.findAll('button').find((node) => {
-    const accessible = node.attributes('aria-label') ?? node.attributes('title') ?? node.text()
-    return /retry/i.test(accessible)
-  })
-}
-
 describe('LearnView', () => {
   test('builds exactly one learn trace when valid text settles', async () => {
     await mountLearnView()
@@ -325,10 +348,19 @@ describe('LearnView', () => {
   })
 
   test('recovers the learn flow through the retry action after a failed initialization', async () => {
-    learnWasm.init.mockRejectedValueOnce(new Error('learn engine offline'))
+    learnWasm.initThrows.push(new Error(RAW_INIT_ERROR_FIRST))
+    learnWasm.initThrows.push(RAW_INIT_ERROR_SECOND)
 
     await mountLearnView()
     await settle()
+
+    expect(learnWasm.init).toHaveBeenCalledTimes(1)
+    expect(alertText(wrapper!), 'the first failure shows the localized message').toBe(
+      LEARN_INITIALIZE_FAILURE_MESSAGE,
+    )
+    expect(wrapper!.text(), 'the raw engine output must never be shown').not.toContain(
+      RAW_INIT_ERROR_FIRST,
+    )
 
     const retry = retryButton(wrapper!)
     expect(retry, 'retry action after a failed initialization').toBeDefined()
@@ -337,7 +369,21 @@ describe('LearnView', () => {
     await settle()
 
     expect(learnWasm.init).toHaveBeenCalledTimes(2)
+    expect(alertText(wrapper!), 'a thrown string maps to the same localized message').toBe(
+      LEARN_INITIALIZE_FAILURE_MESSAGE,
+    )
+    expect(wrapper!.text(), 'the raw thrown string must never be shown').not.toContain(
+      RAW_INIT_ERROR_SECOND,
+    )
+    const retryAgain = retryButton(wrapper!)
+    expect(retryAgain, 'retry action still available after a repeated failure').toBeDefined()
+
+    await retryAgain!.trigger('click')
+    await settle()
+
+    expect(learnWasm.init).toHaveBeenCalledTimes(3)
     expect(retryButton(wrapper!), 'retry action cleared after a successful retry').toBeUndefined()
+    expect(wrapper!.find('[role="alert"]').exists(), 'no failure alert remains').toBe(false)
 
     await typeText(TEXT_PAYLOAD)
     await vi.advanceTimersByTimeAsync(DEBOUNCE_GRACE_MS)
@@ -361,5 +407,69 @@ describe('LearnView', () => {
     await mountLearnView()
 
     expect(learnWasm.init, 'the cached engine must survive the unmount').toHaveBeenCalledTimes(1)
+  })
+
+  describe('localized runtime errors', () => {
+    test('reports an unknown trace failure with the localized message and no stale frame', async () => {
+      await mountLearnView()
+      await typeText('First successful trace probe')
+      await vi.advanceTimersByTimeAsync(DEBOUNCE_GRACE_MS)
+      await Promise.resolve()
+
+      expect(wrapper!.find('canvas').exists(), 'the prior trace rendered a frame').toBe(true)
+      expect(wrapper!.text(), 'the prior frame counter is visible').toContain(SUCCESS_FRAME_COUNTER)
+
+      learnWasm.constructorThrows.push(new Error(RAW_TRACE_ERROR))
+      await typeText('Second trace probe that fails')
+      await vi.advanceTimersByTimeAsync(DEBOUNCE_GRACE_MS)
+      await Promise.resolve()
+
+      expect(alertText(wrapper!), 'a failed trace shows the localized message').toBe(
+        TRACE_FAILURE_MESSAGE,
+      )
+      expect(wrapper!.text(), 'the raw engine output must never be shown').not.toContain(
+        RAW_TRACE_ERROR,
+      )
+      expect(wrapper!.find('canvas').exists(), 'no stale frame remains after a failure').toBe(false)
+      expect(wrapper!.text(), 'the stale frame counter is gone').not.toContain(
+        SUCCESS_FRAME_COUNTER,
+      )
+
+      await typeText('Third recovery trace probe')
+      await vi.advanceTimersByTimeAsync(DEBOUNCE_GRACE_MS)
+      await Promise.resolve()
+
+      expect(
+        wrapper!.find('[role="alert"]').exists(),
+        'the failure alert is cleared after new content',
+      ).toBe(false)
+      expect(wrapper!.find('canvas').exists(), 'new content rebuilt the trace').toBe(true)
+    })
+
+    test('reports a capacity failure with the localized message and no stale frame', async () => {
+      await mountLearnView()
+      await typeText('First successful trace probe')
+      await vi.advanceTimersByTimeAsync(DEBOUNCE_GRACE_MS)
+      await Promise.resolve()
+
+      expect(wrapper!.find('canvas').exists(), 'the prior trace rendered a frame').toBe(true)
+      expect(wrapper!.text(), 'the prior frame counter is visible').toContain(SUCCESS_FRAME_COUNTER)
+
+      learnWasm.constructorThrows.push(RAW_CAPACITY_ERROR)
+      await typeText('Second trace probe that overflows')
+      await vi.advanceTimersByTimeAsync(DEBOUNCE_GRACE_MS)
+      await Promise.resolve()
+
+      expect(alertText(wrapper!), 'a data-too-long string shows the capacity message').toBe(
+        CAPACITY_FAILURE_MESSAGE,
+      )
+      expect(wrapper!.text(), 'the raw capacity output must never be shown').not.toContain(
+        RAW_CAPACITY_ERROR,
+      )
+      expect(wrapper!.find('canvas').exists(), 'no stale frame remains after a failure').toBe(false)
+      expect(wrapper!.text(), 'the stale frame counter is gone').not.toContain(
+        SUCCESS_FRAME_COUNTER,
+      )
+    })
   })
 })
