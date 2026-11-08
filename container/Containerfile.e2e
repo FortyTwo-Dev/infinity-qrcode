@@ -3,12 +3,12 @@
 # their host libraries so the suite runs without host packages.
 
 # oven/bun:1.4.4
-FROM docker.io/oven/bun:1.4.4@sha256:1d22548f177f4ff38e0c15baa3c2c46c6c2060ba2d1bc573bb4720b407548f1d AS bun
+FROM docker.io/oven/bun@sha256:1d22548f177f4ff38e0c15baa3c2c46c6c2060ba2d1bc573bb4720b407548f1d AS bun
 
 # mcr.microsoft.com/playwright:v1.64.1-noble, the Ubuntu 24.04 runtime with
 # Chromium, Firefox, WebKit and their host libraries. The tag matches
 # @playwright/test 1.64.1.
-FROM mcr.microsoft.com/playwright:v1.64.1-noble@sha256:2f05f8a734509a7b3f26a912639488ee08f58a7b292d14d62271bcff9038768f
+FROM mcr.microsoft.com/playwright@sha256:2f05f8a734509a7b3f26a912639488ee08f58a7b292d14d62271bcff9038768f
 
 # Copy the Bun binary from the Bun image; the app's scripts are the only
 # toolchain this image needs on top of the browsers.
