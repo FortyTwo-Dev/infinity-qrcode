@@ -194,6 +194,10 @@ browser dependencies for all three:
 ./node_modules/.bin/playwright install --with-deps chromium firefox webkit
 ```
 
+The full suite runs Chromium and Firefox together, then isolates WebKit in a
+fresh process per spec. Targeted arguments are forwarded unchanged to a single
+Playwright run, so a spec still runs on the three configured projects.
+
 On Fedora, or when the host browser dependencies are unavailable, run the same
 suite inside the isolated rootless Podman image:
 
