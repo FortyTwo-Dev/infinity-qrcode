@@ -22,7 +22,7 @@ export function describeWasmLoader(name: string, scenario: WasmLoaderScenario): 
   describe(name, () => {
     beforeEach(() => {
       scenario.init.mockReset()
-      scenario.init.mockImplementation(async () => ({}))
+      scenario.init.mockImplementation(() => Promise.resolve({}))
     })
 
     test('shares one pending initialization between concurrent callers', async () => {
