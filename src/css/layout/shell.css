@@ -111,10 +111,21 @@
 
   /* PWA prompt */
   .pwa-banner {
+    position: fixed;
+    inset-inline: var(--it-space-4);
+    bottom: var(--it-space-4);
+    z-index: var(--it-z-overlay);
     display: block;
     border-bottom: var(--it-border-width) solid var(--it-border);
     background-color: var(--it-surface);
     color: var(--it-surface-fg);
+  }
+
+  @media (min-width: 40rem) {
+    .pwa-banner {
+      inset-inline-start: auto;
+      max-width: 28rem;
+    }
   }
 
   .pwa-inner {
