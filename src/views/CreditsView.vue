@@ -14,6 +14,12 @@ const CREDITS: readonly Credit[] = [
     'MIT',
     'https://github.com/InfinityLib/infinity-theme',
   ],
+  [
+    'Infinity Theme Vue',
+    'credits.roles.infinityThemeVue',
+    'MIT',
+    'https://github.com/InfinityLib/infinity-theme-vue',
+  ],
   ['vite-plugin-pwa', 'credits.roles.vitePwa', 'MIT', 'https://vite-pwa-org.netlify.app'],
   ['Workbox', 'credits.roles.workbox', 'MIT', 'https://developer.chrome.com/docs/workbox'],
   [
