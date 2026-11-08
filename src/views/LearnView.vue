@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 import { ItButton } from '@infinitylib/infinity-theme-vue'
 import type { LearnTrace } from 'iqrcode-learn-wasm'
@@ -25,7 +25,6 @@ import type { ErrorCorrectionLevel, QrOptions } from '@/types/qr'
 const { t } = useI18n()
 
 const route = useRoute()
-const router = useRouter()
 const reducedMotion = useReducedMotion()
 
 function queryString(value: unknown): string {
@@ -36,7 +35,15 @@ function queryLevel(value: unknown): ErrorCorrectionLevel | null {
   return value === 'L' || value === 'M' || value === 'Q' || value === 'H' ? value : null
 }
 
-const initialText = queryString(route.query.data)
+/** Reads the payload the share link keeps in the fragment, never in the query. */
+function fragmentData(hash: string): string {
+  return new URLSearchParams(hash.startsWith('#') ? hash.slice(1) : hash).get('data') ?? ''
+}
+
+const initialText = queryString(route.query.data) || fragmentData(route.hash)
+const initialShareFragment = initialText
+  ? `#${new URLSearchParams({ data: initialText }).toString()}`
+  : ''
 const initialFrame = (() => {
   const value = Number(route.query.frame)
   return Number.isFinite(value) && value >= 1 ? Math.floor(value) - 1 : null
@@ -228,17 +235,22 @@ let urlTimer: ReturnType<typeof setTimeout> | undefined
 const shareUrl = computed(() => {
   const url = new URL(window.location.href)
   url.search = ''
-  if (payload.value) url.searchParams.set('data', payload.value)
+  url.hash = ''
   url.searchParams.set('level', level.value)
   if (frameIndex.value > 0) url.searchParams.set('frame', String(frameIndex.value + 1))
+  if (payload.value) url.hash = new URLSearchParams({ data: payload.value }).toString()
   return url.toString()
 })
 
 function syncQuery() {
-  const query: Record<string, string> = { level: level.value }
-  if (payload.value) query.data = payload.value
-  if (frameIndex.value > 0) query.frame = String(frameIndex.value + 1)
-  void router.replace({ query })
+  const url = new URL(window.location.href)
+  url.search = ''
+  url.searchParams.set('level', level.value)
+  if (frameIndex.value > 0) url.searchParams.set('frame', String(frameIndex.value + 1))
+  // The payload stays in the fragment only while it is the restored text.
+  url.hash = initialText && payload.value === initialText ? initialShareFragment : ''
+  // Vue Router re-encodes URLSearchParams fragments, so replaceState preserves their encoding.
+  window.history.replaceState(window.history.state, '', url)
 }
 
 watch([payload, level, frameIndex], () => {
