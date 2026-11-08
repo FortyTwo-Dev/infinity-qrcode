@@ -194,6 +194,18 @@ browser dependencies for all three:
 ./node_modules/.bin/playwright install --with-deps chromium firefox webkit
 ```
 
+On Fedora, or when the host browser dependencies are unavailable, run the same
+suite inside the isolated rootless Podman image:
+
+```sh
+scripts/test-e2e-podman.sh
+scripts/test-e2e-podman.sh e2e/generator.spec.ts
+```
+
+The image carries Bun, the three browsers and their host libraries. The project
+is mounted at `/work`, and the run has no external network: the preview server
+and the browsers share the container loopback.
+
 Three layers:
 
 - **Domain**: every payload builder, invalid and boundary input, the mandatory
