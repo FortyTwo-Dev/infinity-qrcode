@@ -21,18 +21,6 @@ export default withVueTs(
     },
   },
   {
-    files: ['src/components/theme/**/*.vue'],
-    rules: {
-      'vue/require-default-prop': 'off',
-    },
-  },
-  {
-    files: ['src/components/theme/ItField.vue'],
-    rules: {
-      'vuejs-accessibility/label-has-for': 'off',
-    },
-  },
-  {
     files: ['**/*.test.ts'],
     languageOptions: {
       globals: {

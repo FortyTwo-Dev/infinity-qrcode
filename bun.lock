@@ -5,7 +5,8 @@
     "": {
       "name": "infinity-qrcode",
       "dependencies": {
-        "@infinitylib/infinity-theme": "^0.1.1",
+        "@infinitylib/infinity-theme": "^0.2.0",
+        "@infinitylib/infinity-theme-vue": "^0.1.0",
         "iqrcode-learn-wasm": "0.1.0",
         "iqrcode-wasm": "0.1.0",
         "vue": "3.5.44",
@@ -263,7 +264,9 @@
 
     "@humanwhocodes/retry": ["@humanwhocodes/retry@0.4.3", "", {}, "sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ=="],
 
-    "@infinitylib/infinity-theme": ["@infinitylib/infinity-theme@0.1.1", "", {}, "sha512-f1MrvCbu7bTYfy6HQ8uvP0lW76x2pYAgp42vWVh77wtPfrKzZl+Dj1IwPij4KfnF5bbRQict6nA4UdPbswD4yQ=="],
+    "@infinitylib/infinity-theme": ["@infinitylib/infinity-theme@0.2.0", "", {}, "sha512-/BSKTHzXF+hNdo09ycWVHh1XZmm04xsiXcRfM0Rlc4lvUWPQRN8jK2y+lgKcWkOiTqOW+1ZWyl0j9VLNkfMf6g=="],
+
+    "@infinitylib/infinity-theme-vue": ["@infinitylib/infinity-theme-vue@0.1.0", "", { "peerDependencies": { "vue": "^3.5.0" } }, "sha512-fURbyGU3LibR7yeW2DkFOQ8rW4fOIZay27VHJ2ie0tKg7tuHh4u/N7lUZSdM8VOhr9lTNJtRhe1k8hn2ni02Rw=="],
 
     "@intlify/core-base": ["@intlify/core-base@11.4.18", "", { "dependencies": { "@intlify/devtools-types": "11.4.18", "@intlify/message-compiler": "11.4.18", "@intlify/shared": "11.4.18" } }, "sha512-uryU7clROKIJsCLM8I8J6GA4pw9EVI5BCptnFQslpUXGPj/dCrlrixOaV/6gL1jLXZe3Hl8YY3yNi24bgfhvBw=="],
 

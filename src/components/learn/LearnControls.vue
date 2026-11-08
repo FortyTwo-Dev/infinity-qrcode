@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { ItField, ItOption, ItSelect } from '@components/theme'
+import { ItField, ItOption, ItSelect } from '@infinitylib/infinity-theme-vue'
 import { LEVEL_LABELS } from '@/i18n/keys'
 import { ERROR_CORRECTION_LEVELS, type ErrorCorrectionLevel } from '@/types/qr'
 
