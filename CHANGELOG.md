@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.4.0](https://github.com/FortyTwo-Dev/infinity-qrcode/compare/v3.3.0...v3.4.0) (2026-11-16)
+
+
+### Features
+
+* **generator:** copy the QR code as a PNG image ([d98a385](https://github.com/FortyTwo-Dev/infinity-qrcode/commit/d98a38569624602f79356207d0a08ca1982b79d9))
+* **generator:** copy the QR code as a PNG image ([6710d77](https://github.com/FortyTwo-Dev/infinity-qrcode/commit/6710d7761ac4b9fb47776000a3c32bcf004300c9))
+
 ## [3.3.0](https://github.com/FortyTwo-Dev/infinity-qrcode/compare/v3.2.1...v3.3.0) (2026-11-08)
 
 
