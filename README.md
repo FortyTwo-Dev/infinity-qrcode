@@ -39,7 +39,8 @@ Everything runs in the browser. No payload is sent to a server.
 - TypeScript 6, pinned because `vue-tsc` 3.3 does not support TypeScript 7.
 - Vite 8 and Vue Router 5, with the `@infinitylib/infinity-theme` design system.
 - Bun 1.4 as package manager and test runner.
-- `iqrcode-wasm` for generation and `iqrcode-learn-wasm` for the trace.
+- `@infinitylib/iqrcode-wasm` for generation and
+  `@infinitylib/iqrcode-learn-wasm` for the trace.
 - ESLint 10 with `eslint-plugin-vue`, `typescript-eslint` and
   `eslint-plugin-vuejs-accessibility`.
 

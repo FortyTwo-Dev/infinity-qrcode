@@ -1,6 +1,6 @@
 import { onMounted, ref } from 'vue'
-import initLearn, { LearnTrace } from 'iqrcode-learn-wasm'
-import learnWasmUrl from 'iqrcode-learn-wasm/iqrcode_learn_wasm_bg.wasm?url'
+import initLearn, { LearnTrace } from '@infinitylib/iqrcode-learn-wasm'
+import learnWasmUrl from '@infinitylib/iqrcode-learn-wasm/iqrcode_learn_wasm_bg.wasm?url'
 
 import type { QrErrorMessageKey } from '@/lib/qrcode/errors'
 import type { ErrorCorrectionLevel } from '@/types/qr'

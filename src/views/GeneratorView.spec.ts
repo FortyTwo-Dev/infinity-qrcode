@@ -65,7 +65,7 @@ const qrWasm = vi.hoisted(() => {
   return { MockQrCodeWasm, constructorSpy, constructorThrows, init, initThrows, reset }
 })
 
-vi.mock('iqrcode-wasm', () => ({
+vi.mock('@infinitylib/iqrcode-wasm', () => ({
   default: qrWasm.init,
   initSync: vi.fn(() => {
     throw new Error('GeneratorView must initialize the module through the async init')

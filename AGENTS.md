@@ -30,15 +30,16 @@ Infinity QRCode is a client-side Vue 3 application with two product routes:
 - `/` (`src/views/GeneratorView.vue`): generate a QR code from one of ten
   payload types and export it as SVG, PNG, WebP or JPEG.
 - `/learn` (`src/views/LearnView.vue`): replay the construction of a QR code
-  frame by frame with `iqrcode-learn-wasm`.
+  frame by frame with `@infinitylib/iqrcode-learn-wasm`.
 
 The shell also exposes `/credits` (open-source and font credits), `/legal`
 (mentions légales) and `/privacy` (politique de confidentialité). The last two
 are written in French for the French legal notice.
 
-Generation uses `iqrcode-wasm`; tracing uses `iqrcode-learn-wasm`. Both are
-`wasm-bindgen` web-target packages loaded lazily per route. The two views share
-`QrCanvas`, the payload builders, the export utilities and the theme.
+Generation uses `@infinitylib/iqrcode-wasm`; tracing uses
+`@infinitylib/iqrcode-learn-wasm`. Both are `wasm-bindgen` web-target packages
+loaded lazily per route. The two views share `QrCanvas`, the payload builders,
+the export utilities and the theme.
 
 Layers: `views` → `components/{generator,learn,qr,theme}` → `composables`/`lib` →
 `types`. `App.vue` is the shell only. No QR business logic lives in a component;
