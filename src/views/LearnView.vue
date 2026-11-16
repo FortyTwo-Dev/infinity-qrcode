@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
 import { ItButton } from '@infinitylib/infinity-theme-vue'
-import type { LearnTrace } from 'iqrcode-learn-wasm'
+import type { LearnTrace } from '@infinitylib/iqrcode-learn-wasm'
 
 import PayloadForm from '@components/generator/PayloadForm.vue'
 import LearnControls from '@components/learn/LearnControls.vue'

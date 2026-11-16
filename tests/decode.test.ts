@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 
 import { beforeAll, describe, expect, test } from 'bun:test'
-import initQr, { QrCodeWasm } from 'iqrcode-wasm'
+import initQr, { QrCodeWasm } from '@infinitylib/iqrcode-wasm'
 import jsQR from 'jsqr'
 import type { QRCode } from 'jsqr'
 
@@ -100,7 +100,7 @@ function expectDecodedData(decoded: QRCode | null): string {
 
 beforeAll(async () => {
   await initQr({
-    module_or_path: readFileSync('node_modules/iqrcode-wasm/iqrcode_wasm_bg.wasm'),
+    module_or_path: readFileSync('node_modules/@infinitylib/iqrcode-wasm/iqrcode_wasm_bg.wasm'),
   })
 })
 

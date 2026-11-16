@@ -12,7 +12,7 @@ const qrWasm = vi.hoisted(() => {
   return { init }
 })
 
-vi.mock('iqrcode-wasm', () => ({
+vi.mock('@infinitylib/iqrcode-wasm', () => ({
   default: qrWasm.init,
   QrCodeWasm: class {},
 }))
