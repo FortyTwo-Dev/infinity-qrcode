@@ -64,10 +64,10 @@ jobs:
             exit 1
           fi
           docker buildx imagetools create \
-            --annotation "org.opencontainers.image.source=https://github.com/FortyTwo-Dev/infinity-qrcode" \
-            --annotation "org.opencontainers.image.version=$TAG_NAME" \
-            --annotation "org.opencontainers.image.revision=$SOURCE_SHA" \
-            --annotation "org.opencontainers.image.licenses=MIT" \
+            --annotation "index:org.opencontainers.image.source=https://github.com/FortyTwo-Dev/infinity-qrcode" \
+            --annotation "index:org.opencontainers.image.version=$TAG_NAME" \
+            --annotation "index:org.opencontainers.image.revision=$SOURCE_SHA" \
+            --annotation "index:org.opencontainers.image.licenses=MIT" \
             --tag "$IMAGE:$TAG_NAME" \
             --tag "$IMAGE:latest" \
             "$IMAGE:sha-$SOURCE_SHA"
