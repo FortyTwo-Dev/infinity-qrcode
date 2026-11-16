@@ -177,7 +177,7 @@ const learnWasm = vi.hoisted(() => {
   }
 })
 
-vi.mock('iqrcode-learn-wasm', () => ({
+vi.mock('@infinitylib/iqrcode-learn-wasm', () => ({
   default: learnWasm.init,
   initSync: vi.fn(() => {
     throw new Error('LearnView must initialize the learn module through the async init')

@@ -30,15 +30,16 @@ Infinity QRCode is a client-side Vue 3 application with two product routes:
 - `/` (`src/views/GeneratorView.vue`): generate a QR code from one of ten
   payload types and export it as SVG, PNG, WebP or JPEG.
 - `/learn` (`src/views/LearnView.vue`): replay the construction of a QR code
-  frame by frame with `iqrcode-learn-wasm`.
+  frame by frame with `@infinitylib/iqrcode-learn-wasm`.
 
 The shell also exposes `/credits` (open-source and font credits), `/legal`
 (mentions légales) and `/privacy` (politique de confidentialité). The last two
 are written in French for the French legal notice.
 
-Generation uses `iqrcode-wasm`; tracing uses `iqrcode-learn-wasm`. Both are
-`wasm-bindgen` web-target packages loaded lazily per route. The two views share
-`QrCanvas`, the payload builders, the export utilities and the theme.
+Generation uses `@infinitylib/iqrcode-wasm`; tracing uses
+`@infinitylib/iqrcode-learn-wasm`. Both are `wasm-bindgen` web-target packages
+loaded lazily per route. The two views share `QrCanvas`, the payload builders,
+the export utilities and the theme.
 
 Layers: `views` → `components/{generator,learn,qr,theme}` → `composables`/`lib` →
 `types`. `App.vue` is the shell only. No QR business logic lives in a component;
@@ -189,6 +190,21 @@ Always write in English: commit messages (subject and body), branch names, and P
 | ci | CI workflow changes |
 | build | Build system or package manager changes |
 
+## Releases
+
+The type is not only a classification: the release automation reads it. A type
+map (release-please and its kind): `fix` produces a patch release, `feat` a
+minor, and `ci`, `test`, `docs`, `chore` and `build` produce none. The
+consequences, all deliberate choices:
+
+- A production correction ships as `fix(...)`, never as `ci(release)`: the
+  latter classifies pipeline maintenance, and it releases nothing.
+- A pipeline change that needs no application release stays `ci(...)`.
+- No empty commit invented to trigger a release: if nothing changed, there is
+  no release to declare.
+- No rewrite of published history to change a release-triggering type. If the
+  wrong type already shipped, the next commit carries the right one.
+
 ## Scope
 
 <!-- adapt: list the domains of your project -->
@@ -325,6 +341,26 @@ others. Delegate on purpose.
 - Point at the rules and conventions that apply instead of paraphrasing them:
   the child can read them (`ibrain resolve <path> --render`).
 
+## Review scope
+
+A fresh review is valuable exactly because it sees only the agreed task; the
+same independence obliges it not to invent requirements. Every finding is
+labelled and the label decides what happens to it:
+
+- **blocker**: the change breaks the spec or introduces a defect; it must be
+  fixed before merge.
+- **required-by-spec**: the spec asks for it and the change missed it.
+- **optional hardening**: worth doing, not owed by the task. Never promoted to
+  a requirement by the review itself; its cost is stated and the author decides.
+- **out of scope**: named once, not pursued. It goes to the feedback trail, not
+  into the review loop.
+
+A review of a test-only task asks no production change unless a real defect is
+demonstrated; simplifying duplicated fixtures preserves the behaviour contract
+they pin. The roles stay separate (implementation, test authorship, review),
+and a fresh reviewer may reject a production change proposed only to satisfy
+tests: that is the blindness rule working, not an obstruction.
+
 ## Lifetime
 
 Close the session as soon as its turn is over and its results are collected.
@@ -411,6 +447,23 @@ no `.ai/rules/` and no skills until `sync` runs; the `AGENTS.md` block keeps the
 always-on rules, which are inlined, but a skill is only ever materialized. Your
 own rules and skills belong in a pack, not under those roots.
 
+## When a command fails
+
+- A read that fails on a stale lock (`index.lock`, left behind by an
+  interrupted run in a pack clone or in the cache) has a fallback that touches
+  nothing: `resolve <path> --list` reads the rules, and the source paths it
+  reports are readable directly. Work from them.
+- Recovery from a stale lock is removing that one lock file, the path the error
+  names, once. Editing a cache, a generated file or a pack source to bypass a
+  lock is not recovery; if the failure survives the lock removal, report it
+  instead of retrying.
+- Distinguish the failure classes: a lock failure names a lock file, a missing
+  rule names a rule, an invalid path names a path. Read the message; do not
+  lump them into "ibrain is broken".
+- A failed command is reported as failed. Never present the output of a
+  command that errored as if it had succeeded, and never fill the gap from
+  memory.
+
 ## Where to write knowledge
 
 - **A rule** is a markdown file in a pack's `rules/`, with a `paths:` frontmatter
@@ -449,6 +502,118 @@ French for its documentation, and English for everything listed above.
 
 Conversations with the user may happen in any language. Only the artefacts are
 constrained; the discussion is not.
+
+### global/routing
+
+# Routing
+
+Work is split between two roles defined by cost class, never by model name.
+Models change, the economics do not.
+
+- **The worker**: the low cost model attached to the main session. It owns
+  volume: reading code, exploration, inventory, implementation, corrections,
+  running tests, and every iteration. Its sessions may be long, because
+  repeated context on a low cost model is close to free.
+- **The specialist**: the high capability, high cost model. It is only ever
+  invoked in one shot, on a compact context. It owns judgment: arbitration,
+  design, security sensitive review, and cases outside any established
+  pattern. Its session ends after one turn.
+
+## Core rules
+
+- Volume never reaches the specialist. Every token sent to the specialist is
+  billed at a multiple of the worker rate. If the worker could have read it,
+  filtered it or summarized it, the specialist must not receive it.
+- The specialist is always one shot: a single self contained request with no
+  reference to prior exchanges. The test is simple: could a fresh session
+  answer it with nothing but the request? If not, the brief is not ready.
+- Iteration happens with the worker. If a specialist answer needs refining,
+  the worker converges the follow up into a new one shot, it does not open a
+  dialogue.
+- The worker never silently upgrades. Calling the specialist is a decision
+  the worker states out loud, with the trigger that caused it.
+- Durable state lives in files, not in conversation: the dossier, the
+  decisions, the spec, the pattern and the test brief are written to the
+  project. Any agent resumes from the files, including after an interruption
+  of weeks.
+
+## The path
+
+1. **Explore (worker)**: scan the relevant code and context, produce a
+   dossier: constraints, options with trade offs, the extracts that matter,
+   concrete examples. Bound the dossier to what the next step needs.
+2. **Decide (specialist, one shot)**: input, the dossier. Output: the
+   decision with its justification, a spec the worker can execute alone, a
+   reference pattern when the work repeats, the pitfalls, and the signatures
+   the tests will pin.
+3. **Implement (worker)**: follow the spec and the reference pattern, write
+   the code, run the tests, fix until green.
+4. **Review (specialist, one shot)**: input, the diff of the sensitive parts
+   only. Output: a verdict, and the missing cases fed back to the test author
+   as one shot briefs.
+5. **Escalate (specialist, one shot)**: any case the reference pattern does
+   not cover goes back as an isolated brief: the case, the signature it
+   concerns, the expected outcome, and the reference pattern for alignment.
+   Never the whole codebase again.
+
+Steps 2 and 4 are the only mandatory specialist calls. Step 5 repeats as
+needed, always compact.
+
+## When to call the specialist
+
+Call it when any of these holds:
+
+- The decision has silent or irreversible failure modes: security,
+  authentication, money, data loss, data migration.
+- No established pattern exists in the project for the task.
+- Two viable options have cross cutting consequences and the project
+  conventions do not settle it.
+- The worker has attempted the task twice and failed. On the third attempt,
+  escalate instead of retrying.
+- The task contradicts or forces a change to an established pattern.
+
+## When not to call the specialist
+
+Never call it for: reading, searching, summarizing, boilerplate, glue code,
+styling, mechanical refactoring, applying an established pattern, fixing a
+test with a clear cause, or writing documentation. These are worker work,
+and sending them to the specialist is paying a premium for reading.
+
+## Specialist briefs
+
+Brief construction follows the delegation rule: the brief carries
+everything the child needs, says what done looks like, and what to report
+back. A specialist brief adds:
+
+- Self contained: objective in one sentence, relevant context only,
+  constraints, the expected output format. Could a fresh session answer it
+  with nothing but the brief? If not, the brief is not ready.
+- Every missing fact becomes an instruction: the specialist states its
+  assumptions explicitly instead of asking questions back. It cannot ask
+  the user either, so an open question in the brief is a blocked task.
+- Bounded to a few tens of thousands of tokens. If the brief exceeds that,
+  the worker has not done its triage.
+- Reusable: the brief and its answer are saved as files, so the next
+  session, or a different agent, starts from them.
+
+## Session lifecycle
+
+- One objective per session. When the objective is reached or blocked, the
+  session ends.
+- The worker ends a session by writing a handoff file: decisions taken, what
+  is done, what remains, files concerned, conventions adopted, points of
+  attention.
+- The next session starts from the handoff file, never from a summary of
+  the previous conversation.
+- A specialist session is a one shot turn and nothing more: brief in,
+  complete answer out, session closed.
+
+## Tests
+
+Test authorship follows the testing rule: delegated to a subagent that has
+not seen the implementation, briefed before the code exists, from the spec
+and the signatures. The test brief follows the same one shot and bounding
+rules as any specialist brief.
 
 ### global/safety
 
@@ -507,67 +672,129 @@ Aim for the widest realistic case coverage.
   a whole. When you add or change a unit or a feature, add or update its tests
   in the same change.
 - **Test both sides**: verify the feature succeeds on valid input (positive
-  cases) *and* fails on invalid input (negative cases). A feature must work
+  cases) and fails on invalid input (negative cases). A feature must work
   when expected and not work when not expected.
 - **Cover the edge cases**: empty input, missing values, duplicate values,
   boundary values, malformed input, unexpected keys, and default state.
+- **Isolation is a harness concern**: never reset a module-level cache or
+  global state in production code so tests run isolated. The only reset
+  production performs is one the agreed behaviour asks for (a cache that
+  releases on unmount is a contract, not a convenience).
+- **A test state leak is a harness defect by default**: fix the harness, not
+  the production lifecycle, and prove the intended behaviour with a control
+  test before concluding the leak is the application's fault.
+- **Spec before code**: the expected behavior of a change is written and agreed
+  before implementation starts. The spec and the test brief are written from
+  the design, never by reading the implementation or the diff. A brief derived
+  from the code produces tests that mirror the code, whatever the test author
+  is allowed to see afterwards.
+- **Examples in the brief**: every behavior handed to a test author comes with
+  at least one concrete input and its expected output. A behavior described
+  only in prose is a behavior the test author will guess at, and the tests
+  will pin the guess instead of the agreement.
 
 ## Where tests live
 
-- A unit test sits next to the code it covers.
-<!-- adapt: name the test layout and the naming convention of your stack -->
+- A unit test sits next to the code it covers. Name the test layout and the
+  naming convention of your stack in this section.
 - Integration tests live in a dedicated directory and exercise the feature end
   to end.
 - Keep I/O and process execution at the edges so the core logic is testable
   without a real system.
 - Build fixtures with the project's own helpers rather than by hand, and check
   whether an existing state already covers the case before adding a new one.
-<!-- adapt: name the factories, builders or fixtures of your stack -->
+  Name the factories, builders or fixtures of your stack in this section.
 
 ## What to test
 
-<!-- adapt: list the modules of your project and the cases each must cover -->
+List the modules of your project and the cases each must cover in the table
+below, and keep it current when the project changes.
 
 | Target | Cases |
 | ------ | ----- |
-| ... | ... |
+| module or component | positive, negative and edge cases it must cover |
 
 ## Rules
 
-- Tests must be deterministic and not require a real system: no network, no
-  git, no reads or writes outside a temporary directory.
+- Unit and integration tests must be deterministic and require no real
+  system: no network, no git, no reads or writes outside a temporary
+  directory. The end to end suite, if the project keeps one, follows its own
+  rules in the next section.
 - Run the narrowest suite that covers the change while working; rerun a test
   after each change to it.
 - Run the complete test suite before pushing; never push on stale green.
-<!-- adapt: give the command that runs the full suite -->
+  Give the command that runs the full suite in this section.
 - Do not reduce coverage to silence a failing test: fix the test or the code.
 - Never delete a test or a test file without approval: tests are part of the
   application.
+
+## End to end suite
+
+The determinism rules above do not apply to a true end to end suite: a real
+HTTP server, a real browser, a real database. If the project keeps one, it
+lives under its own rules, and it never replaces or excuses missing unit or
+integration coverage.
+
+- Each end to end run uses a disposable environment: throwaway containers or
+  directories, fixed seed data, ports chosen by the runner. Nothing reaches
+  an external service.
+- Before fixing a failing end to end test, reproduce the case as an
+  integration test, so the behavior stays covered when the disposable
+  environment changes or is rebuilt.
+- Flakiness in the end to end suite is contained there: it is never a reason
+  to relax the determinism rule for unit and integration tests.
 
 ## Writing tests with an impartial subagent
 
 When adding or updating tests for a behavior change, delegate test authorship
 to a subagent that has not seen the implementation.
 
-- Brief it with the expected behaviors only: user-facing outcomes, constraints,
-  and how to run the suite. Never show it the implementation code, migrations,
-  or internal design, and forbid it explicitly, in the brief itself, from
-  reading the application's functional code on its own: a subagent that peeks
-  at the implementation writes tests that mirror it instead of pinning the
-  agreed behavior.
+### The brief
+
+- Write the spec and the brief before the implementation exists, from the
+  design. Never write or edit the brief while reading the implementation or
+  the diff. If the change is already implemented, reconstruct the expected
+  behavior from the original request and the design notes, not from the code.
+- Brief it with the expected behaviors only: user-facing outcomes,
+  constraints, and how to run the suite.
+- Bound the brief: signatures, spec, examples, and the style reference list.
+  A few tens of thousands of tokens at most. Do not attach files, folders or
+  diffs the test author does not need: every token sent to the test author is
+  billed at its full rate, and the test author needs almost none of it.
+- Never show it the implementation code, migrations, or internal design, and
+  forbid it explicitly, in the brief itself, from reading the application's
+  functional code on its own: a subagent that peeks at the implementation
+  writes tests that mirror it instead of pinning the agreed behavior.
 - To let it match the project's test style without losing impartiality, the
-  brief may list a small, explicit set of existing test files (paths only) it is
-  allowed to open as style references. Curate that list: only tests whose
+  brief may list a small, explicit set of existing test files (paths only) it
+  is allowed to open as style references. Curate that list: only tests whose
   conventions and assertions you trust, never a whole directory, and never a
-  file covering the very behavior under test. Open-ended "sibling tests"
+  file covering the very behavior under test. Open-ended sibling test
   browsing stays forbidden.
+
+### The subagent
+
 - The subagent chooses its own assertions and structure, and runs its tests
   itself.
+- Tests written before the implementation exists are expected to fail. The
+  subagent checks that each test fails for the right reason: the test runs,
+  reaches the behavior under test, and fails on the outcome, not on a syntax
+  or import error.
 - If a test fails, fix the implementation rather than rewriting the test,
   unless the test contradicts the agreed spec.
 - Close the session as soon as its turn is over, and hand a review to a fresh
   eye rather than to the author: see the delegation rule for the lifetime and
   the brief.
+
+### After the suite is green
+
+Black box tests cannot see the cases only the implementation reveals: boundary
+conditions, degenerate paths, internal limits. After the suite passes, the
+review of the implementation diff may list missing cases of this kind. Feed
+each listed case back to the test subagent as a one shot brief containing the
+isolated case, the signature it concerns, and the expected outcome. The
+implementation itself stays out of the brief, and the review never edits the
+tests directly.
 
 ### global/verification
 
@@ -585,6 +812,23 @@ A change is not done because it looks done. It is done when it has been run.
   name, the error line. Not "the tests pass".
 - If a check cannot run here (no database, no network, no host access), say so,
   and name the command the user must run instead. Never imply you ran it.
+
+## Before pushing: the recurring regressions
+
+Static analysis, when the project runs it, catches these; the checklist keeps
+them out of a push regardless, because the analytic runs after the review and
+these cost a round trip each. In new code, check for:
+
+- duplicated blocks above the duplication threshold the project sets;
+- a promise with no `await`, `.catch`, `.then` or explicit `void`;
+- nested ternaries that should be separate statements;
+- an `async` function with no `await` in it;
+- a generic `expect(value.length).toBe(n)` where a length matcher reports
+  better;
+- in container work, a tag combined with a digest in a `FROM` and an annotation
+  without its explicit target prefix.
+
+The checklist supplements, never replaces, whatever analysis the project runs.
 
 ## When there is no test
 

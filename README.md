@@ -25,6 +25,7 @@ Everything runs in the browser. No payload is sent to a server.
 - Live preview with error correction level, module size, quiet zone and custom
   colours.
 - Export as SVG, PNG, WebP or JPEG.
+- Copy the QR code to the clipboard as a PNG image, with a confirmation toast.
 - Pedagogical trace with timeline, phase explanations, mask penalties and
   trace metadata.
 - The logo yellow (`#ffdf00`) as the single accent, and light/dark mode.
@@ -38,7 +39,8 @@ Everything runs in the browser. No payload is sent to a server.
 - TypeScript 6, pinned because `vue-tsc` 3.3 does not support TypeScript 7.
 - Vite 8 and Vue Router 5, with the `@infinitylib/infinity-theme` design system.
 - Bun 1.4 as package manager and test runner.
-- `iqrcode-wasm` for generation and `iqrcode-learn-wasm` for the trace.
+- `@infinitylib/iqrcode-wasm` for generation and
+  `@infinitylib/iqrcode-learn-wasm` for the trace.
 - ESLint 10 with `eslint-plugin-vue`, `typescript-eslint` and
   `eslint-plugin-vuejs-accessibility`.
 

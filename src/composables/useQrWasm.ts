@@ -1,6 +1,6 @@
 import { onMounted, ref } from 'vue'
-import initQr, { QrCodeWasm } from 'iqrcode-wasm'
-import qrWasmUrl from 'iqrcode-wasm/iqrcode_wasm_bg.wasm?url'
+import initQr, { QrCodeWasm } from '@infinitylib/iqrcode-wasm'
+import qrWasmUrl from '@infinitylib/iqrcode-wasm/iqrcode_wasm_bg.wasm?url'
 
 import type { QrErrorMessageKey } from '@/lib/qrcode/errors'
 import type { ErrorCorrectionLevel, QrMatrixData } from '@/types/qr'

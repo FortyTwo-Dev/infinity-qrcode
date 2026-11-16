@@ -61,6 +61,13 @@ function retryButton(wrapper: Wrapper): DOMWrapper<Element> | undefined {
   })
 }
 
+function copyButton(wrapper: Wrapper): DOMWrapper<Element> | undefined {
+  return wrapper.findAll('button').find((node) => {
+    const accessible = node.attributes('aria-label') ?? node.attributes('title') ?? node.text()
+    return /copy/i.test(accessible)
+  })
+}
+
 function isDisabled(wrapper: Wrapper): boolean {
   return downloadButton(wrapper).attributes('disabled') !== undefined
 }
@@ -176,5 +183,24 @@ describe('QrPreview', () => {
     await button!.trigger('click')
 
     expect(wrapper.emitted('retry')).toHaveLength(1)
+  })
+
+  test('disables the copy action until a code is available', () => {
+    expect(copyButton(mountPreview({ data: null }))?.attributes('disabled')).toBeDefined()
+    expect(
+      copyButton(mountPreview({ data: null, loading: true }))?.attributes('disabled'),
+    ).toBeDefined()
+    expect(copyButton(mountPreview())?.attributes('disabled')).toBeUndefined()
+  })
+
+  test('emits copy once when the copy action is clicked with data', async () => {
+    const wrapper = mountPreview()
+
+    const button = copyButton(wrapper)
+    expect(button, 'copy action with data').toBeDefined()
+
+    await button!.trigger('click')
+
+    expect(wrapper.emitted('copy')).toHaveLength(1)
   })
 })

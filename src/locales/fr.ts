@@ -12,6 +12,7 @@ export default {
   },
   common: {
     retry: 'Réessayer',
+    close: 'Fermer',
     errors: {
       capacity: 'Le contenu est trop volumineux pour un QR code. Raccourcissez-le puis réessayez.',
     },
@@ -121,6 +122,10 @@ export default {
       empty: 'Saisissez un contenu valide pour voir le QR code.',
       canvasLabel: 'QR code généré',
       download: 'Télécharger {format}',
+      copy: 'Copier l\u2019image',
+      copyStatus: 'État de la copie',
+      copySuccess: 'QR code copié dans le presse-papiers.',
+      copyFailure: 'L\u2019image n\u2019a pas pu être copiée. Téléchargez-la à la place.',
     },
     errors: {
       initialization: 'Le moteur QR n\u2019a pas pu être chargé. Réessayez.',

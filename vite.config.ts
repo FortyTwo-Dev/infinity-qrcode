@@ -52,7 +52,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    exclude: ['iqrcode-wasm', 'iqrcode-learn-wasm'],
+    exclude: ['@infinitylib/iqrcode-wasm', '@infinitylib/iqrcode-learn-wasm'],
   },
   define: {
     __APP_VERSION__: JSON.stringify(packageJson.version),

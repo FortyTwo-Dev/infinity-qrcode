@@ -12,7 +12,7 @@ const learnWasm = vi.hoisted(() => {
   return { init }
 })
 
-vi.mock('iqrcode-learn-wasm', () => ({
+vi.mock('@infinitylib/iqrcode-learn-wasm', () => ({
   default: learnWasm.init,
   LearnTrace: class {},
 }))

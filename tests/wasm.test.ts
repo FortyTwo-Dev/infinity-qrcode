@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs'
 
 import { beforeAll, describe, expect, test } from 'bun:test'
-import initLearn, { LearnTrace } from 'iqrcode-learn-wasm'
-import initQr, { QrCodeWasm } from 'iqrcode-wasm'
+import initLearn, { LearnTrace } from '@infinitylib/iqrcode-learn-wasm'
+import initQr, { QrCodeWasm } from '@infinitylib/iqrcode-wasm'
 
 import type { ErrorCorrectionLevel } from '../src/types/qr'
 
@@ -10,10 +10,12 @@ const LEVELS: ErrorCorrectionLevel[] = ['L', 'M', 'Q', 'H']
 
 beforeAll(async () => {
   await initQr({
-    module_or_path: readFileSync('node_modules/iqrcode-wasm/iqrcode_wasm_bg.wasm'),
+    module_or_path: readFileSync('node_modules/@infinitylib/iqrcode-wasm/iqrcode_wasm_bg.wasm'),
   })
   await initLearn({
-    module_or_path: readFileSync('node_modules/iqrcode-learn-wasm/iqrcode_learn_wasm_bg.wasm'),
+    module_or_path: readFileSync(
+      'node_modules/@infinitylib/iqrcode-learn-wasm/iqrcode_learn_wasm_bg.wasm',
+    ),
   })
 })
 
