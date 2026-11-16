@@ -12,6 +12,7 @@ export default {
   },
   common: {
     retry: 'Retry',
+    close: 'Close',
     errors: {
       capacity: 'The content is too large for a QR code. Shorten it and try again.',
     },
@@ -121,6 +122,10 @@ export default {
       empty: 'Enter valid content to see the QR code.',
       canvasLabel: 'Generated QR code',
       download: 'Download {format}',
+      copy: 'Copy image',
+      copyStatus: 'Copy status',
+      copySuccess: 'QR code copied to the clipboard.',
+      copyFailure: 'The image could not be copied. Download it instead.',
     },
     errors: {
       initialization: 'The QR engine could not be loaded. Try again.',

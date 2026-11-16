@@ -25,6 +25,7 @@ Everything runs in the browser. No payload is sent to a server.
 - Live preview with error correction level, module size, quiet zone and custom
   colours.
 - Export as SVG, PNG, WebP or JPEG.
+- Copy the QR code to the clipboard as a PNG image, with a confirmation toast.
 - Pedagogical trace with timeline, phase explanations, mask penalties and
   trace metadata.
 - The logo yellow (`#ffdf00`) as the single accent, and light/dark mode.

@@ -146,4 +146,44 @@
     align-items: center;
     gap: var(--it-space-2);
   }
+
+  /* Copy confirmation: a fixed overlay in the PWA prompt's corner, never in
+     the document flow, so showing it cannot move the controls under the
+     pointer. */
+  .copy-toast {
+    position: fixed;
+    inset-inline: var(--it-space-4);
+    bottom: var(--it-space-4);
+    z-index: var(--it-z-overlay);
+    display: block;
+    border-bottom: var(--it-border-width) solid var(--it-border);
+    background-color: var(--it-surface);
+    color: var(--it-surface-fg);
+  }
+
+  @media (min-width: 40rem) {
+    .copy-toast {
+      inset-inline-start: auto;
+      max-width: 28rem;
+    }
+  }
+
+  /* The update prompt owns the corner while it is visible: lift the toast
+     above its single-line height instead of covering it. */
+  body:has(.pwa-banner) .copy-toast {
+    bottom: calc(var(--it-space-4) + 3.5rem);
+  }
+
+  .copy-toast-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--it-space-2);
+    padding-block: var(--it-space-2);
+    padding-inline: var(--it-gutter);
+  }
+
+  .copy-toast-message {
+    margin-right: auto;
+  }
 }
