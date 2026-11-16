@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
   error: null,
 })
 
-defineEmits<{ download: []; retry: [] }>()
+defineEmits<{ download: []; copy: []; retry: [] }>()
 
 /**
  * The preview size is independent of the export size: the code always fits the
@@ -83,6 +83,9 @@ const displayModuleSize = computed(() => {
     <div class="preview-actions">
       <ItButton :disabled="!data" @click="$emit('download')">
         {{ t('generator.preview.download', { format: options.format.toUpperCase() }) }}
+      </ItButton>
+      <ItButton variant="secondary" :disabled="!data" @click="$emit('copy')">
+        {{ t('generator.preview.copy') }}
       </ItButton>
     </div>
   </section>

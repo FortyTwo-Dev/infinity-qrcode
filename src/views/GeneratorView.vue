@@ -3,10 +3,12 @@ import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import ContentPicker from '@components/generator/ContentPicker.vue'
+import CopyToast from '@components/generator/CopyToast.vue'
 import OptionsPanel from '@components/generator/OptionsPanel.vue'
 import PayloadForm from '@components/generator/PayloadForm.vue'
 import QrPreview from '@components/generator/QrPreview.vue'
 import { generateQr, useQrWasm } from '@/composables/useQrWasm'
+import { copyQrImage } from '@/lib/qrcode/clipboard'
 import { classifyQrError } from '@/lib/qrcode/errors'
 import type { QrErrorMessageKey } from '@/lib/qrcode/errors'
 import { downloadQr } from '@/lib/qrcode/export'
@@ -19,6 +21,7 @@ const payload = ref('')
 const fieldErrors = ref<Record<string, string>>({})
 const data = shallowRef<QrMatrixData | null>(null)
 const generationError = ref<QrErrorMessageKey | null>(null)
+const copyStatus = ref<'idle' | 'copied' | 'failed'>('idle')
 
 const options = ref<QrOptions>({
   level: 'H',
@@ -36,6 +39,10 @@ const valid = computed(
 )
 
 let debounce: ReturnType<typeof setTimeout> | undefined
+let copyTimer: ReturnType<typeof setTimeout> | undefined
+
+/** How long a successful copy confirmation stays on screen. */
+const COPY_FEEDBACK_MS = 4000
 
 function regenerate() {
   if (!ready.value || !valid.value) {
@@ -69,7 +76,10 @@ function handleRetry() {
 
 watch([payload, valid, () => options.value.level, ready], () => schedule(), { immediate: true })
 
-onBeforeUnmount(() => clearTimeout(debounce))
+onBeforeUnmount(() => {
+  clearTimeout(debounce)
+  clearTimeout(copyTimer)
+})
 
 function handlePayload(value: string) {
   payload.value = value
@@ -84,6 +94,42 @@ function handleDownload() {
   const basename = `qrcode-${type.value.replace(/[^a-z0-9]+/g, '-')}`
   downloadQr(data.value, options.value, basename)
 }
+
+async function handleCopy() {
+  if (!data.value) return
+  dismissCopy()
+  try {
+    await copyQrImage(data.value, options.value)
+    showCopy('copied')
+  } catch {
+    showCopy('failed')
+  }
+}
+
+function showCopy(status: 'copied' | 'failed') {
+  copyStatus.value = status
+  clearTimeout(copyTimer)
+  // A failure stays until it is closed or the code changes: it tells the user
+  // to download the image instead.
+  if (status === 'copied') {
+    copyTimer = setTimeout(dismissCopy, COPY_FEEDBACK_MS)
+  }
+}
+
+function dismissCopy() {
+  clearTimeout(copyTimer)
+  copyStatus.value = 'idle'
+}
+
+// A copied image describes the previous content or options, so any change
+// clears the confirmation.
+watch([payload, valid, options, data], dismissCopy)
+
+const copyMessage = computed(() => {
+  if (copyStatus.value === 'copied') return t('generator.preview.copySuccess')
+  if (copyStatus.value === 'failed') return t('generator.preview.copyFailure')
+  return null
+})
 
 const displayError = computed(() => {
   const key = wasmError.value ?? generationError.value
@@ -111,6 +157,7 @@ const displayError = computed(() => {
           :loading="!ready && !wasmError"
           :error="displayError"
           @download="handleDownload"
+          @copy="handleCopy"
           @retry="handleRetry"
         />
 
@@ -130,4 +177,6 @@ const displayError = computed(() => {
       </section>
     </div>
   </div>
+
+  <CopyToast :message="copyMessage" @close="dismissCopy" />
 </template>
